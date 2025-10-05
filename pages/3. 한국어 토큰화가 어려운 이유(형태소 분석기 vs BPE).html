@@ -1,0 +1,193 @@
+<p data-ke-size="size16">&nbsp;</p>
+<div>
+<style>
+        /* 1. Core Design Philosophy & 2. Technical Specifications */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            margin: 0;
+            background-color: #ffffff; /* Pure white background */
+            color: #212529; /* Primary Text Color */
+            display: flex;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        .header, .section-title {
+            text-align: center; /* Centered top-level elements */
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Emphasis with font-weight only */
+        strong, b {
+            font-weight: 700;
+            color: #212529; /* Black color for emphasis */
+        }
+        
+        hr {
+            border: none;
+            height: 1px;
+            background-color: #dee2e6; /* Borders & Dividers color */
+            margin: 3rem 0;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .section-title .section-subtitle {
+            font-size: 1rem;
+            color: #6c757d;
+            margin-top: 0.5rem;
+            line-height: 1.7;
+        }
+
+        /* 3. Component Library & Structure */
+        .model-compare {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem; /* Card Grid Gap */
+            margin-top: 2rem;
+        }
+
+        .model-card {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: left;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .model-card h3 {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .content-block {
+            padding: 1.5rem;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            text-align: left;
+            line-height: 1.8;
+            font-size: 1rem;
+            margin-top: 2rem;
+            transition: box-shadow 0.3s ease;
+        }
+
+        aside {
+            margin-top: 1.5rem;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            padding: 1rem;
+        }
+        
+        aside p, aside ul {
+            padding: 0;
+            margin: 0 0 1rem 0;
+            list-style-position: inside;
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+        
+        aside p:last-child, aside ul:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* 4. Interactivity & Highlighting */
+        .model-card:hover, .content-block:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .highlight-gray {
+             background-color: #f8f9fa;
+        }
+
+        .highlight-purple {
+            background-color: #f3f0ff;
+            border-color: #dcd6ff;
+        }
+
+        /* Responsive Layout */
+        @media (max-width: 768px) {
+            .model-compare { grid-template-columns: 1fr; }
+            .container { padding: 0 1rem; }
+        }
+    </style>
+</div>
+<div class="container">
+<div class="header">
+<h1>한국어 토큰화, 왜 어려울까?</h1>
+<h2 style="background-color: #ffffff; color: #000000; text-align: center;" data-ke-size="size26">한국어 토큰화의 핵심 과제 : <b>교착어</b></h2>
+</div>
+<div class="content-block" data-animation-target="">
+<p data-ke-size="size16"><b>토큰화(Tokenization)</b>는 문장을 의미 단위(토큰)로 분절하는 과정입니다. <br />영어와 달리 한국어 토큰화가 어려운 이유는, 단어의 핵심 의미(어간)에 문법 기능을 하는 <br /><b>여러 조사나 어미가 풀처럼 달라붙는</b> <b>교착어</b>의 특징 때문입니다.</p>
+<aside>
+<p data-ke-size="size16"><b>문제점<br /></b>: '잡다'라는 어간에 여러 접사가 붙어 '잡히시었겠더라'처럼 무수히 많은 단어가 파생됩니다. <br />단순 띄어쓰기로는 '잡다'라는 핵심 의미를 추출할 수 없습니다.</p>
+<p data-ke-size="size16"><b>해결책<br /></b>: 따라서 어간과 접사를 분리하는 <b>형태소 분석</b>이 필수적입니다. <br />이는 <b>문장을 의미를 가진 최소 단위(형태소)로 분해</b>하고, <b>각 역할(품사)을 태깅하는 작업을 포함</b>합니다. <b>Mecab(메캅)</b>이 대표적인 형태소 분석기입니다.</p>
+</aside>
+</div>
+<div class="section-title">
+<h2 data-ke-size="size26">두 가지 접근법 : 형태소 분석기 vs. BPE</h2>
+<p class="section-subtitle" data-ke-size="size16">한국어 토큰화 문제를 해결하기 위한 두 가지 핵심적인 방법론입니다.</p>
+</div>
+<div class="model-compare">
+<div class="model-card highlight-gray" data-animation-target="">
+<h3 data-ke-size="size23">형태소 분석기 🥷 (언어학자)</h3>
+<p data-ke-size="size16"><b>미리 학습된 문법 지식</b>과 사전을 이용해 단어를 분석적으로 분리합니다.</p>
+<p data-ke-size="size16"><b>접근법</b></p>
+<p data-ke-size="size16"><span style="font-size: 0.95rem; letter-spacing: 0px;">: <b>"'먹었다'는</b> 동사 어간 <b>'먹-'</b>과 과거형 어미 <br /><b>'-었-'</b>, 종결 어미 <b>'-다'</b>의 조합으로서, 이는 </span><span style="font-size: 0.95rem; letter-spacing: 0px;"><b>언어학적 지식</b>에 기반한 </span><b>하향식(Top-down)</b><span style="font-size: 0.95rem; letter-spacing: 0px;">으로 접근하는 방식입니다.</span></p>
+</div>
+<div class="model-card highlight-purple" data-animation-target="">
+<h3 data-ke-size="size23">BPE 🕵️&zwj;♂️ (통계학자)</h3>
+<p data-ke-size="size16"><b>문법 지식 없이</b>, 방대한 텍스트에서 <b>통계적</b>으로 <br />자주 함께 나오는 글자 덩어리를 찾아냅니다.</p>
+<p data-ke-size="size16"><b>접근법<br /></b><span style="color: #333333; text-align: left;">: "데이터를 보니&nbsp;</span><b>'먹'</b><span style="color: #333333; text-align: left;">과&nbsp;</span><b>'었'</b><span style="color: #333333; text-align: left;">,&nbsp;</span><b>'다'</b><span style="color: #333333; text-align: left;">는 각자 다른 단어에도 자주 등장하므로,</span><br /><span style="color: #333333; text-align: left;">독립적인 부품</span><b>(서브워드)</b><span style="color: #333333; text-align: left;">일 것이다. 이는 </span><b>데이터 빈도</b><span style="color: #333333; text-align: left;">에 기반한&nbsp;</span><b>상향식(Bottom-up)</b><span style="color: #333333; text-align: left;">으로 접근하는 방식입니다.</span></p>
+</div>
+</div>
+<div class="section-title" style="margin-top: 2rem;">
+<h2 data-ke-size="size26">BPE의 장단점</h2>
+<p data-ke-size="size16"><span style="background-color: #ffffff; color: #666666; text-align: left;"> BPE는 <b>통계만</b>으로 형태소와 유사한 의미 단위를 발견하며, 다음과 같은 특징을 가집니다 </span></p>
+</div>
+<div class="content-block" data-animation-target="">
+<h3 data-ke-size="size23"><b>장점</b></h3>
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+<li><b>범용성<br /></b>: 특정 언어의 <b>문법 지식이 필요 없어</b> BERT, GPT처럼 다국어 모델에 쉽게 적용할 수 있습니다.</li>
+<li><b>신조어 처리<br /></b>: 사전에 없는 단어나 오타가 나와도 <b>통계적으로 분절하여 의미를 유추</b>합니다.</li>
+</ul>
+<h3 data-ke-size="size23"><b>단점</b></h3>
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+<li><b>정확성<br /></b>: 분절 <b>결과가 항상 문법적으로 완벽하지는 않을 수 있습니다.</b> <br />(예: '습니다'처럼 자주 쓰이는 어미는 하나의 토큰으로 통째로 합쳐버리기도 함)</li>
+</ul>
+</div>
+</div>
+<script>
+        // 4. Interactivity
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('[data-animation-target]').forEach((element) => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(element);
+        });
+    </script>

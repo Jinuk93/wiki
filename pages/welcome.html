@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>홈 - 김진욱의 지식 저장소</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* CSS는 변경 사항이 없습니다. */
+        body, html { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; background-color: #fcfcfd; color: #212529; line-height: 1.7; height: 100%; overflow: hidden; }
+        body::before { content: ''; position: absolute; top: -20%; left: -20%; width: 60%; height: 100%; background: radial-gradient(circle, rgba(160, 210, 255, 0.3), transparent 70%); filter: blur(100px); z-index: 0; animation: fadeIn 2s ease-in-out; }
+        .split-container { display: flex; width: 100%; height: 100%; padding: 4rem; box-sizing: border-box; position: relative; z-index: 1; animation: fadeIn 1s ease-in-out; }
+        .left-pane { flex: 1; display: flex; flex-direction: column; justify-content: center; padding-right: 4rem; }
+        .left-pane-content { margin-top: -4rem; }
+        .profile-image { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem; border: 3px solid #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .left-pane h1 { font-size: 3.5rem; font-weight: 900; margin-bottom: 1.5rem; line-height: 1.3; background: linear-gradient(90deg, #1e3a8a, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .left-pane p { font-size: 1.1rem; color: #495057; max-width: 500px; }
+        .right-pane { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-content: center; }
+        .bento-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 20px; padding: 2rem; text-decoration: none; color: inherit; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .bento-card:hover { transform: translateY(-10px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); border-color: rgba(0, 0, 0, 0.1); }
+        .bento-card h3 { margin-top: 0; margin-bottom: 0.5rem; font-size: 1.6rem; }
+        .bento-card p { margin: 0; color: #495057; font-size: 1rem; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+    <div class="split-container">
+        <div class="left-pane">
+            <div class="left-pane-content">
+                <img src="../assets/profile.png" alt="프로필 이미지" class="profile-image">
+                <h1>김진욱의<br>지식 저장소</h1>
+                <p>기술을 탐구하고, 복잡한 개념을 저만의 언어로 다시 정리하며 쌓아가는 개인 위키입니다. 제가 정리한 기록이 비슷한 고민을 하는 분들께 작은 도움이 되기를 바랍니다.</p>
+            </div>
+        </div>
+
+        <div class="right-pane">
+            <a href="#" class="bento-card" id="nlp-card">
+                <h3>자연어 처리 (NLP)</h3>
+                <p>텍스트 전처리부터 최신 모델까지, 자연어 처리의 핵심 개념들을 정리합니다.</p>
+            </a>
+            
+            <a href="#" class="bento-card" onclick="alert('준비중인 페이지입니다.');">
+                <h3>Computer Vision</h3>
+                <p>이미지 처리의 기초부터 객체 탐지까지 학습하고 기록합니다.</p>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const nlpCard = document.getElementById('nlp-card');
+
+            nlpCard.addEventListener('click', function(event) {
+                // a 태그의 기본 동작(페이지 이동 등)을 막음
+                event.preventDefault();
+
+                // 부모 창(index.html)의 문서에서 사이드바의 NLP 링크를 찾음
+                const nlpLinkInSidebar = window.parent.document.querySelector('a[href="pages/0. 자연어처리(NLP)란.html"]');
+
+                // 해당 링크가 존재하면 클릭 이벤트를 실행
+                if (nlpLinkInSidebar) {
+                    nlpLinkInSidebar.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

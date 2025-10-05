@@ -1,0 +1,432 @@
+<p data-ke-size="size16">&nbsp;</p>
+<div>
+<style>
+        /* --- 기본 스타일 리셋 --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* --- 전체 레이아웃 --- */
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #ffffff;
+            color: #2d3748;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background-color: #e2e8f0;
+            margin: 40px 0;
+        }
+
+        /* --- 헤더 --- */
+        .header {
+            text-align: center;
+            padding: 40px 0;
+        }
+        .header h1 {
+            font-size: 36px;
+            font-weight: 800;
+            color: #1a202c;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+        .header p {
+            font-size: 18px;
+            color: #718096;
+        }
+
+        /* --- 섹션 제목 --- */
+        .section-title {
+            text-align: center;
+            padding: 40px 0 20px 0;
+        }
+        .section-title h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 10px;
+        }
+        .section-title .section-subtitle {
+            font-size: 16px;
+            color: #718096;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* --- 1부: 기본 단계 카드 --- */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .step-card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: #2d3748;
+            color: #ffffff;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            transition: transform 0.3s ease;
+        }
+
+        .step-card h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .step-card > p {
+            font-size: 15px;
+            color: #4a5568;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .step-card .task-list {
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        .step-card .task-list li {
+            list-style: none;
+            padding: 12px 15px;
+            background: #f7fafc;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            color: #4a5568;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        .step-card .task-list b {
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .example-box {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .example-box .label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        .example-box .text {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            font-size: 13px;
+            color: #4a5568;
+            line-height: 1.7;
+            word-break: break-all;
+        }
+        
+        /* --- 2부: 전략 섹션 --- */
+        .strategy-intro {
+            background: #f7fafc;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0 40px 0;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        .strategy-intro h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+        .strategy-intro p {
+            font-size: 16px;
+            color: #4a5568;
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+
+        .model-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .model-card {
+            padding: 30px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border: 1px solid;
+        }
+        .model-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+        .model-card h3 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .model-card p {
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            color: #4a5568;
+        }
+        .model-card .detail {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #4a5568;
+            line-height: 1.6;
+            border: 1px solid #e2e8f0;
+        }
+        .model-card.traditional { background: #f0f4f8; border-color: #dbe1e8; }
+        .model-card.traditional h3 { color: #365a82; }
+        .model-card.modern { background: #fbfaff; border-color: #e9d8fd; }
+        .model-card.modern h3 { color: #6b46c1; }
+
+        .task-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            transition: opacity 0.3s ease;
+        }
+        .task-card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .task-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+        .task-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 15px; }
+        .task-card .subtitle {
+            font-size: 12px;
+            font-weight: 700;
+            color: #a0aec0;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+        .task-card p { font-size: 15px; line-height: 1.7; color: #4a5568; margin-bottom: 15px; }
+        .task-card .highlight {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 14px;
+            line-height: 1.6;
+            border: 1px solid #e2e8f0;
+        }
+        .task-card .highlight ul { padding-left: 20px; } /* For bullet points */
+
+        /* --- 반응형 디자인 --- */
+        @media (max-width: 900px) {
+            .steps-grid, .model-compare, .task-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            body { padding: 15px; }
+            .header h1 { font-size: 30px; }
+            .section-title h2 { font-size: 24px; }
+            .step-card, .model-card, .task-card { padding: 25px; }
+        }
+    </style>
+</div>
+<div class="container">
+<div class="header">
+<h1>텍스트 전처리(Text Preprocessing)란?</h1>
+<p data-ke-size="size16">컴퓨터가 텍스트를 이해하기 위한 첫 번째 단계</p>
+</div>
+<div class="section-title">
+<h2 data-ke-size="size26">1부 : 텍스트 전처리의 기본 단계</h2>
+<p class="section-subtitle" data-ke-size="size16">가장 보편적으로 사용되는 네 가지 기본 전처리 단계를 통해 텍스트를 <br />정제하는 방법을 알아봅니다.</p>
+</div>
+<div class="steps-grid">
+<div class="step-card">
+<div class="step-header">
+<div class="step-number">1</div>
+<h3 data-ke-size="size23">정제 (Cleaning)</h3>
+</div>
+<p data-ke-size="size16">텍스트에서 분석에 불필요한 <b>노이즈를 제거</b>하는 과정입니다.</p>
+<div class="task-list">
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+<li><b>HTML 태그 제거 <br />:</b> 웹에서 수집한 데이터의 &lt;a&gt;, &lt;br&gt; 같은 태그들을 없애줍니다.</li>
+<li><b>특수 문자 및 부호 제거 <br />:</b> 문장 분석에 불필요한 #, @, $ 같은 기호나 문장 부호를 제거합니다.</li>
+<li><b>대소문자 통일 (주로 영어) <br />:</b> 'Apple'과 'apple'을 컴퓨터가 같은 단어로 인식하도록 모두 소문자로 바꿔줍니다.</li>
+</ul>
+</div>
+</div>
+<div class="step-card">
+<div class="step-header">
+<div class="step-number">2</div>
+<h3 data-ke-size="size23">토큰화 (Tokenization)</h3>
+</div>
+<p data-ke-size="size16">정제된 텍스트를 의미 있는 최소 단위인 <b>토큰(token)으로 분절</b>하는 과정입니다.</p>
+<div class="task-list">
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+<li><b>단어 토큰화 <br />:</b> 문장을 공백이나 문장 부호를 기준으로 단어 단위로 나눕니다.</li>
+<li><b>문장 토큰화 <br />:</b> 긴 글(문서)을 마침표(.), 물음표(?) 등을 기준으로 문장 단위로 나눌 수도 있습니다.</li>
+</ul>
+</div>
+</div>
+<div class="step-card">
+<div class="step-header">
+<div class="step-number">3</div>
+<h3 data-ke-size="size23">불용어 제거 <br />(Stopword Removal)</h3>
+</div>
+<p data-ke-size="size16"><b>의미 분석에 큰 도움이 되지 않는</b>, 문법적 기능을 하는 <b>단어들을 제거</b>합니다.</p>
+<div class="task-list">
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+<li><b>불용어(Stopwords)란?</b><br />: 은, 는, 이, 가 (한국어), a, the, is (영어) 처럼 의미는 거의 없지만 자주 등장하는 단어들을 말합니다.</li>
+</ul>
+</div>
+</div>
+<div class="step-card">
+<div class="step-header">
+<div class="step-number">4</div>
+<h3 data-ke-size="size23">단어 형태 통일</h3>
+</div>
+<p data-ke-size="size16">같은 의미를 가진 <b>여러 형태의 단어들을 하나의 기본 형태로 통일</b>하는 작업입니다.</p>
+<div class="task-list">
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+<li><b>어간 추출 (Stemming) <br />:</b> 단어의 <b>뒷부분을 규칙에 따라 잘라</b> 원형을 찾습니다. (예: studies, studying &rarr; <b>studi</b>)</li>
+<li><b>표제어 추출 (Lemmatization) <br />:</b> 단어의 <b>품사 정보를 고려해 사전적인 기본형을 찾</b>습니다. (예: studies, studying &rarr; <b>study</b>)</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section-title">
+<h2 data-ke-size="size26">2부 : Task와 모델에 따른 전처리 전략</h2>
+<p class="section-subtitle" data-ke-size="size16">모든 상황에 맞는 완벽한 전처리는 없습니다. 목표와 도구에 따라 전략은 달라져야 합니다.</p>
+</div>
+<div class="strategy-intro">
+<h3 data-ke-size="size23">나의 목표는 무엇인가?</h3>
+<p data-ke-size="size16">스팸/정상 메일 <b>분류</b>인가? (핵심 단어가 중요)<br />사용자 질문에 답을 <b>검색</b>하는 챗봇인가? (정보의 정확성이 중요)<br /><span style="background-color: #f7fafc; color: #4a5568; text-align: center;">긴 글을<span>&nbsp;</span></span><b>요약</b><span style="background-color: #f7fafc; color: #4a5568; text-align: center;">하거나 다른 언어로<span>&nbsp;</span></span><b>번역</b><span style="background-color: #f7fafc; color: #4a5568; text-align: center;">하는 것인가? (원문의 의미와 뉘앙스가 중요)</span></p>
+</div>
+<h2 style="text-align: center; font-size: 24px;" data-ke-size="size26">왜 모델마다 전처리 방법이 달라야 할까?</h2>
+<p style="text-align: center; color: #718096; margin-bottom: 28px; font-size: 16px;" data-ke-size="size16">핵심은 <b>모델이 텍스트를 이해하는 방식</b>이 근본적으로 다르기 때문입니다.</p>
+<div class="model-compare">
+<div class="model-card traditional">
+<h3 data-ke-size="size23">전통 모델 : TF-IDF</h3>
+<p data-ke-size="size16">: 단어를 '낱개의 구슬'처럼 봅니다. 단어의<b> 순서(문맥)는 무시하고, 문서 내 출현 빈도를 중심으로 특징을 추출</b>합니다.</p>
+<div class="detail"><b>실행 <br />:</b> 기본 <b>전처리 4단계를 적극적으로 사용</b>하여 '신호'가 되는 핵심 단어만 남기고 '<b>노이즈</b>'를 최대한 <b>제거</b>합니다.</div>
+</div>
+<div class="model-card modern">
+<h3 data-ke-size="size23">최신 모델 : BERT, GPT</h3>
+<p data-ke-size="size16">: 단어를 '<b>문장의 일부'로 봅니다. 단어의 순서, 주변 단어와의 관계 속에서 동적인 의미를 파악</b>합니다.</p>
+<div class="detail"><b>실행 <br />:</b> 문맥 정보를 최대한 보존하기 위해 <b>전처리를 최소화</b>합니다. 조사, 관사 등도 중요한 단서로 활용됩니다.</div>
+</div>
+</div>
+<div class="task-cards">
+<div class="task-card">
+<div class="subtitle">분류 (Classification)</div>
+<h3 data-ke-size="size23">전략적 전처리</h3>
+<p data-ke-size="size16">목표 모델에 맞춰 전처리 강도를 조절합니다. 전통 모델은 강하게, 최신 모델은 부드럽게.</p>
+<div class="highlight">
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+<li><b>TF-IDF <br />:</b> 불용어 제거, 단어 형태 통일로 핵심 단어의 통계적 중요도 극대화</li>
+<li><b>Transformer<br />:</b> 문맥 파악에 중요한 <b>조사, 시제 정보 등을 보존</b></li>
+</ul>
+</div>
+</div>
+<div class="task-card">
+<div class="subtitle">검색 / RAG</div>
+<h3 data-ke-size="size23">보존적 전처리</h3>
+<p data-ke-size="size16">정보의 정확성이 생명! 검색의 핵심이 될 단서를 훼손하지 않는 것이 가장 중요합니다.</p>
+<div class="highlight">
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+<li>고유명사 (예: Python)</li>
+<li>전문 용어, URL, 코드 블록</li>
+<li>위와 같은 핵심 정보를 보존하는 방향으로 클리닝 규칙을 설계합니다.</li>
+</ul>
+</div>
+</div>
+<div class="task-card">
+<div class="subtitle">생성 (Generation)</div>
+<h3 data-ke-size="size23">최소한의 전처리</h3>
+<p data-ke-size="size16">원문의 의미와 뉘앙스를 조금이라도 바꾸면 결과물의 품질이 크게 저하될 수 있습니다.</p>
+<div class="highlight">
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+<li>"I am <b>not</b> happy"에서 'not'을 제거하면 의미가 반전됩니다.</li>
+<li>마침표, 쉼표 등은 문장의 리듬과 구조를 형성하는 중요 요소입니다.</li>
+<li>오타나 깨진 문자 정리 외에는 원본을 최대한 유지합니다.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script>
+        // --- 스크롤에 따른 부드러운 등장 애니메이션 ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    observer.unobserve(entry.target); // 한 번 실행 후 관찰 중지
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.step-card, .model-card, .task-card, .strategy-intro').forEach((element) => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(element);
+        });
+        
+        // --- 카드 호버 효과 ---
+        const stepCards = document.querySelectorAll('.step-card');
+        stepCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                const number = card.querySelector('.step-number');
+                if (number) {
+                    number.style.transform = 'scale(1.15) rotate(5deg)';
+                }
+            });
+            card.addEventListener('mouseleave', () => {
+                const number = card.querySelector('.step-number');
+                if (number) {
+                    number.style.transform = 'scale(1) rotate(0deg)';
+                }
+            });
+        });
+    </script>
