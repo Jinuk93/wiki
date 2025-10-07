@@ -11,36 +11,11 @@
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Noto Sans KR', sans-serif; overflow: hidden; }
         .wiki-container { display: flex; width: 100%; height: 100%; }
         .sidebar { width: 300px; background-color: #ffffff; padding: 1.5rem; height: 100vh; box-sizing: border-box; border-right: 1px solid #e9ecef; overflow-y: auto; display: flex; flex-direction: column; }
-        
-        .search-section {
-            margin-bottom: 1.5rem; 
-            padding-bottom: 1rem; 
-            border-bottom: 1px solid #e9ecef; 
-        }
-        .search-wrapper {
-            position: relative;
-        }
-        #searchInput { 
-            width: 100%; 
-            padding: 10px 12px 10px 38px;
-            border: 1px solid #dee2e6; 
-            border-radius: 8px;
-            box-sizing: border-box; 
-            font-size: 15px; 
-        }
+        .search-section { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #e9ecef; }
+        .search-wrapper { position: relative; }
+        #searchInput { width: 100%; padding: 10px 12px 10px 38px; border: 1px solid #dee2e6; border-radius: 8px; box-sizing: border-box; font-size: 15px; }
         #searchInput:focus { outline: none; border-color: #868e96; }
-        .search-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 18px;
-            height: 18px;
-            stroke: #868e96;
-            stroke-width: 2.5;
-            pointer-events: none;
-        }
-
+        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; stroke: #868e96; stroke-width: 2.5; pointer-events: none; }
         .sidebar ul { list-style: none; padding: 0; margin: 0; }
         .sidebar ul ul { padding-left: 1.2rem; margin-top: 0.5rem; }
         .sidebar li a { display: flex; align-items: center; gap: 10px; padding: 7px 15px; color: #495057; text-decoration: none; border-radius: 5px; transition: background-color 0.2s, color 0.2s; font-size: 15px; font-weight: 400; }
@@ -84,7 +59,7 @@
                         <li><a href="pages/3. 한국어 토큰화가 어려운 이유(형태소 분석기 vs BPE).html" target="contentFrame">한국어 토큰화가 어려운 이유</a></li> 
                         <li><a href="pages/4. 서브워드 토큰화(Subword Tokenization)란.html" target="contentFrame">서브워드 토큰화(Subword Tokenization)란?</a></li> 
                         <li><a href="pages/5. Byte-Pair Encoding.html" target="contentFrame">Byte-Pair Encoding (BPE)</a></li>
-                        <li><a href="pages/6. 원-핫 인코딩(One-hot Encoding).html" target="contentFrame">원-핫 인코딩이란?</a></li> 
+                        <li><a href="pages/6. 원-핫 인코딩(One-hot Encoding)과 한계.html" target="contentFrame">원-핫 인코딩(One-hot Encoding)과 한계</a></li> 
                     </ul>
                 </li>
             </ul>
@@ -101,17 +76,19 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // --- 필요한 요소들을 미리 찾아둡니다. ---
         const sidebar = document.querySelector('.sidebar');
         const links = sidebar.querySelectorAll('li a');
         const searchInput = document.getElementById('searchInput');
-        const iframe = document.querySelector('iframe[name="contentFrame"]');
+        const contentArea = document.querySelector('.content-area'); // iframe의 부모 요소를 선택
+        
+        // ▼▼▼ [수정 1] iframe 변수를 let으로 변경 ▼▼▼
+        // iframe을 새로 만들어야 하므로, 변수를 재할당할 수 있도록 let으로 선언합니다.
+        let iframe = document.querySelector('iframe[name="contentFrame"]');
+        
         const scrollToTopBtn = document.getElementById('scrollToTopBtn');
         const goHomeBtn = document.getElementById('goHomeBtn');
         const homeLink = document.querySelector('.sidebar a[href="pages/welcome.html"]');
 
-        // --- 사이드바 링크 클릭 시 'active' 클래스 관리 ---
-        // 이 로직은 모든 링크(홈 링크 포함)에 적용됩니다.
         links.forEach(link => {
             link.addEventListener('click', function() {
                 links.forEach(node => node.classList.remove('active'));
@@ -119,7 +96,6 @@
             });
         });
 
-        // --- 검색 기능 ---
         searchInput.addEventListener('input', function(e) { 
             const searchTerm = e.target.value.toLowerCase();
             const categoryGroups = sidebar.querySelectorAll('ul > li');
@@ -147,21 +123,37 @@
             });
         });
 
-        // --- 맨 위로 가기 버튼 ---
         scrollToTopBtn.addEventListener('click', function() {
-            if (iframe.contentWindow) {
+            // iframe이 새로 만들어져도 정상적으로 동작하도록
+            if (iframe && iframe.contentWindow) {
                 iframe.contentWindow.scrollTo({ top: 0, behavior: 'smooth' });
             }
         });
-
-        // --- [최종 수정된 홈으로 가기 버튼] ---
+        
+        // ▼▼▼ [수정 2] 홈으로 가기 버튼 로직 전체 변경 ▼▼▼
         goHomeBtn.addEventListener('click', function() {
             if (homeLink) {
-                // 홈 링크를 직접 클릭하는 이벤트를 발생시킵니다.
-                // 이렇게 하면 브라우저가 링크의 target과 href를 원래 방식대로 처리하여
-                // 보안 문제 없이 iframe의 페이지를 안정적으로 이동시킬 수 있습니다.
-                // 'active' 클래스 관리도 위의 링크 클릭 이벤트 리스너가 알아서 처리해줍니다.
-                homeLink.click();
+                // 1. 기존 iframe을 완전히 제거합니다.
+                contentArea.innerHTML = '';
+
+                // 2. 새로운 iframe 요소를 만듭니다.
+                const newIframe = document.createElement('iframe');
+                newIframe.name = 'contentFrame';
+                newIframe.src = homeLink.href;
+                // style="border:none"과 같은 속성을 자바스크립트로 설정합니다.
+                newIframe.style.border = 'none'; 
+                newIframe.style.width = '100%';
+                newIframe.style.height = '100%';
+
+                // 3. 비워진 content-area에 새로 만든 iframe을 추가합니다.
+                contentArea.appendChild(newIframe);
+                
+                // 4. 스크립트가 사용하는 iframe 변수를 새로운 iframe으로 교체합니다.
+                iframe = newIframe;
+
+                // 5. 사이드바의 'active' 클래스를 올바르게 설정합니다.
+                links.forEach(node => node.classList.remove('active'));
+                homeLink.classList.add('active');
             }
         });
     });
