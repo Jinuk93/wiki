@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>서브워드 토큰(Subword Token)이란?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* 1. Core Design Philosophy & Technical Specs */
+        :root {
+            --color-text-primary: #212529;
+            --color-text-secondary: #6c757d;
+            --color-border: #dee2e6;
+            --color-bg-white: #ffffff;
+            --color-bg-subtle: #f8f9fa;
+            --color-highlight-purple-bg: #f3f0ff;
+            --color-highlight-purple-border: #dcd6ff;
+            --font-family-base: 'Noto Sans KR', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-family-base);
+            font-size: 1rem; /* 16px */
+            line-height: 1.7;
+            background-color: var(--color-bg-white);
+            color: var(--color-text-primary);
+            margin: 0;
+            padding: 4rem 1rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 2. Typography & Hierarchy */
+        h1, h2, h3 {
+            font-weight: 700;
+            line-height: 1.3;
+            margin-top: 0;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 900; /* Extra bold for main title */
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        
+        strong, b {
+           font-weight: 700;
+           color: var(--color-text-primary);
+        }
+
+        /* 3. Component Library & Structure */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header, .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header p, .section-title p {
+            font-size: 1.125rem;
+            color: var(--color-text-secondary);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 0;
+        }
+
+        /* Base Card Style */
+        .card {
+            background-color: var(--color-bg-white);
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem; /* 8px */
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Card Hover Effect */
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.07);
+        }
+
+        /* Component Variations */
+        .content-block {
+            text-align: left;
+        }
+
+        .model-compare-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .model-compare-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .model-card h3 {
+            font-size: 1.25rem;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Special Highlighting */
+        .highlight-purple {
+            background-color: var(--color-highlight-purple-bg);
+            border-color: var(--color-highlight-purple-border);
+        }
+        
+        .highlight-gray {
+             background-color: var(--color-bg-subtle);
+        }
+
+        /* Nested Aside Block */
+        aside {
+            background-color: var(--color-bg-subtle);
+            border-left: 3px solid var(--color-border);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 0.25rem 0.25rem 0;
+        }
+        
+        aside p:last-child {
+            margin-bottom: 0;
+        }
+        
+        ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Standalone Concluding Paragraph */
+        .conclusion {
+            text-align: center;
+            max-width: 700px;
+            margin: 3rem auto 0 auto;
+            font-size: 1.1rem;
+            color: #495057; /* Slightly lighter than primary text */
+        }
+        
+        /* 4. Interactivity (Scroll Animation) */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    </style>
+</head>
+<body>
+
+    <main class="container">
+        <header class="header">
+            <h1>서브워드 토큰(Subword Token)이란? 🧱</h1>
+        </header>
+
+        <section class="content-block card fade-in-up">
+            <p>서브워드 토큰은 단어를 구성하는 <strong>의미 있는 더 작은 단위(조각)</strong>입니다.</p>
+            <p>단어를 쪼갤 수 없는 최소 단위가 아닌, 레고 블록처럼 더 작은 조각들의 조합으로 보는 것이 좋습니다.</p>
+            <aside>
+                <p>자주 쓰는 단어 (love) → <strong>하나의 토큰 (love)</strong><br>
+                복잡한 단어 (lovingly) → <strong>여러 토큰의 조합 (love + ##ing + ##ly)</strong></p>
+            </aside>
+        </section>
+
+        <div class="section-title">
+            <h2>왜 서브워드 토큰이 필요한가요? 🤔</h2>
+        </div>
+        
+        <section class="content-block card fade-in-up">
+             <p>기존의 단어 단위(띄어쓰기 기준) 처리 방식은<br><strong>OOV(Out-of-Vocabulary, 어휘집에 없는 단어)</strong> 문제에 취약했습니다.</p>
+            <aside>
+                <p><strong>문제점 :</strong><br>
+                모델이 <strong>'먹다'</strong>는 알지만 '먹었다'는 모를 경우, '먹었다'를 의미 없는 기호(&lt;UNK&gt;)로 처리해 버립니다.<br> 핵심 의미('먹다')를 알면서도 정보를 놓치는 것이죠.<br>
+                이는 특히 조사, 어미 활용이 다양한 한국어에서 더 큰 문제였습니다.</p>
+                <p><strong>해결책 :</strong><br>
+                서브워드는 <strong>'먹었다'</strong>를 아는 조각인 먹 + ##었 + <strong>##다</strong>로 분리합니다.<br>
+                덕분에 모델은 처음 보는 단어라도 의미를 유추할 수 있게 됩니다.</p>
+            </aside>
+        </section>
+
+        <div class="section-title">
+            <h2>대표적인 알고리즘</h2>
+        </div>
+
+        <section class="content-block card fade-in-up">
+            <p>이 똑똑한 '단어 쪼개기'는 주로 아래 세 가지 알고리즘을 통해 이루어집니다.</p>
+            <aside>
+                <ul>
+                    <li><strong>BPE (Byte Pair Encoding)</strong><br>: 글자 단위에서 시작해 가장 자주 함께 나오는 글자 쌍을 합쳐 하나의 토큰으로 만드는 과정을 반복</li>
+                    <li><strong>WordPiece</strong><br>: BPE와 유사하지만, 단순히 빈도수가 아닌 '데이터의 의미를 가장 잘 보존할 가능성(Likelihood)'이 높은 쌍을 병합합니다. (BERT에서 사용)</li>
+                    <li><strong>SentencePiece</strong><br>: 띄어쓰기까지 하나의 문자로 취급하여 언어에 구애받지 않고 토큰화를 수행합니다.</li>
+                </ul>
+            </aside>
+        </section>
+        
+        <div class="section-title">
+            <h2>장점과 단점 : 트레이드오프 ⚖️</h2>
+        </div>
+
+        <section class="model-compare-grid">
+            <div class="model-card card fade-in-up">
+                <h3>👍 장점</h3>
+                <ul>
+                    <li><strong>OOV 문제 해결</strong> :<br> 모르는 단어를 크게 줄여 모델의 이해력을 높입니다.</li>
+                    <li><strong>효율적인 어휘 관리</strong> :<br> 적은 수의 서브워드로 무한한 단어를 표현할 수 있습니다.</li>
+                    <li><strong>신조어 및 오타 대응</strong> :<br> '핵인싸' 같은 단어도 핵+##인싸 등으로 분리해 의미를 추론합니다.</li>
+                    <li><strong>다양한 언어 적용</strong> :<br> 특히 조사와 어미가 발달한 한국어(챗봇+##이란)에 효과적입니다.</li>
+                </ul>
+            </div>
+            <div class="model-card card highlight-gray fade-in-up">
+                <h3>👎 단점</h3>
+                <ul>
+                    <li><strong>고유 의미 손실</strong><br>: '해바라기'가 해+##바라기로 나뉘면, 'sunflower'라는 고유한 의미가 약해질 수 있습니다.</li>
+                    <li><strong>비직관적 분리</strong><br>: algorithm이 al+##go+##rithm처럼 통계에만 의존해 의미 없는 조각으로 나뉠 수 있습니다.</li>
+                    <li><strong>시퀀스 길이 증가</strong><br>: 한 단어가 여러 토큰이 되므로 처리 속도가 느려지고, 모델의 최대 입력 길이에 제약이 생길 수 있습니다.</li>
+                </ul>
+            </div>
+        </section>
+
+        <p class="conclusion fade-in-up">
+            이러한 단점들에도 불구하고, OOV 문제를 해결하는 이점이 워낙 막강하기 때문에<br> 현대 NLP 모델들은 서브워드 방식을 표준으로 채택하고 있습니다.
+        </p>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const animatedElements = document.querySelectorAll('.fade-in-up');
+
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.1
+                });
+
+                animatedElements.forEach(el => {
+                    observer.observe(el);
+                });
+            } else {
+                // Fallback for older browsers
+                animatedElements.forEach(el => {
+                    el.classList.add('visible');
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

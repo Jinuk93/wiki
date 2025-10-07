@@ -86,6 +86,7 @@
                         <li><a href="pages/1. 텍스트 전처리(Text Preprocessing)란.html" target="contentFrame">텍스트 전처리(Text Preprocessing) 개요</a></li>
                         <li><a href="pages/2. 토큰화(Tokenization)란.html" target="contentFrame">토큰화(Tokenization)란?</a></li>
                         <li><a href="pages/3. 한국어 토큰화가 어려운 이유(형태소 분석기 vs BPE).html" target="contentFrame">한국어 토큰화가 어려운 이유</a></li> 
+                        <li><a href="pages/4. 서브워드 토큰화(Subword Tokenization)란.html" target="contentFrame">서브워드 토큰화란?</a></li> 
                     </ul>
                 </li>
             </ul>
@@ -101,46 +102,70 @@
     </div>
 
     <script>
-        // JavaScript는 변경할 필요가 없습니다.
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebar = document.querySelector('.sidebar');
-            const links = sidebar.querySelectorAll('li a');
-            const searchInput = document.getElementById('searchInput');
-            links.forEach(link => { link.addEventListener('click', function() { links.forEach(node => node.classList.remove('active')); this.classList.add('active'); }); });
-            // 검색 기능은 이전과 동일하게 작동합니다.
-            searchInput.addEventListener('input', function(e) { 
-                const searchTerm = e.target.value.toLowerCase();
-                const categoryGroups = sidebar.querySelectorAll('ul > li');
-                categoryGroups.forEach(group => {
-                    const titleElement = group.querySelector('.category-title') || group.querySelector('a');
-                    const subLinks = group.querySelectorAll('ul li');
-                    let hasVisibleSubLink = false;
-                    if (subLinks.length > 0) {
-                        subLinks.forEach(subItem => {
-                            const subLink = subItem.querySelector('a');
-                            if (subLink && subLink.textContent.toLowerCase().includes(searchTerm)) {
-                                subItem.style.display = 'list-item';
-                                hasVisibleSubLink = true;
-                            } else {
-                                subItem.style.display = 'none';
-                            }
-                        });
-                    }
-                    const isTitleMatch = titleElement.textContent.toLowerCase().includes(searchTerm);
-                    if (hasVisibleSubLink || isTitleMatch) {
-                        group.style.display = 'list-item';
-                    } else {
-                        group.style.display = 'none';
-                    }
-                });
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- 필요한 요소들을 미리 찾아둡니다. ---
+        const sidebar = document.querySelector('.sidebar');
+        const links = sidebar.querySelectorAll('li a');
+        const searchInput = document.getElementById('searchInput');
+        const iframe = document.querySelector('iframe[name="contentFrame"]');
+        const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+        const goHomeBtn = document.getElementById('goHomeBtn');
+        const homeLink = document.querySelector('.sidebar a[href="pages/welcome.html"]');
+
+        // --- 사이드바 링크 클릭 시 'active' 클래스 관리 ---
+        links.forEach(link => {
+            link.addEventListener('click', function() {
+                links.forEach(node => node.classList.remove('active'));
+                this.classList.add('active');
             });
-            const iframe = document.querySelector('iframe[name="contentFrame"]');
-            const scrollToTopBtn = document.getElementById('scrollToTopBtn');
-            const goHomeBtn = document.getElementById('goHomeBtn');
-            const homeLink = document.querySelector('.sidebar a[href="pages/welcome.html"]');
-            scrollToTopBtn.addEventListener('click', function() { iframe.contentWindow.scrollTo({ top: 0, behavior: 'smooth' }); });
-            goHomeBtn.addEventListener('click', function() { if (homeLink) { homeLink.click(); } });
         });
+
+        // --- 검색 기능 (기존과 동일) ---
+        searchInput.addEventListener('input', function(e) { 
+            const searchTerm = e.target.value.toLowerCase();
+            const categoryGroups = sidebar.querySelectorAll('ul > li');
+            categoryGroups.forEach(group => {
+                const titleElement = group.querySelector('.category-title') || group.querySelector('a');
+                const subLinks = group.querySelectorAll('ul li');
+                let hasVisibleSubLink = false;
+                if (subLinks.length > 0) {
+                    subLinks.forEach(subItem => {
+                        const subLink = subItem.querySelector('a');
+                        if (subLink && subLink.textContent.toLowerCase().includes(searchTerm)) {
+                            subItem.style.display = 'list-item';
+                            hasVisibleSubLink = true;
+                        } else {
+                            subItem.style.display = 'none';
+                        }
+                    });
+                }
+                const isTitleMatch = titleElement.textContent.toLowerCase().includes(searchTerm);
+                if (hasVisibleSubLink || isTitleMatch) {
+                    group.style.display = 'list-item';
+                } else {
+                    group.style.display = 'none';
+                }
+            });
+        });
+
+        // --- 맨 위로 가기 버튼 ---
+        scrollToTopBtn.addEventListener('click', function() {
+            iframe.contentWindow.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ▼▼▼ [수정된 부분] 홈으로 가기 버튼 ▼▼▼
+        goHomeBtn.addEventListener('click', function() {
+            if (homeLink) {
+                // 1. iframe의 주소를 직접 홈으로 변경합니다.
+                iframe.src = homeLink.href;
+
+                // 2. 모든 링크의 active 클래스를 제거하고 홈 링크에만 추가합니다.
+                links.forEach(node => node.classList.remove('active'));
+                homeLink.classList.add('active');
+            }
+        });
+        // ▲▲▲ [수정된 부분] 홈으로 가기 버튼 ▲▲▲
+    });
     </script>
 </body>
 </html>
