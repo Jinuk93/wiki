@@ -82,8 +82,9 @@
                         <li><a href="pages/1. 텍스트 전처리(Text Preprocessing)란.html" target="contentFrame">텍스트 전처리(Text Preprocessing) 개요</a></li>
                         <li><a href="pages/2. 토큰화(Tokenization)란.html" target="contentFrame">토큰화(Tokenization)란?</a></li>
                         <li><a href="pages/3. 한국어 토큰화가 어려운 이유(형태소 분석기 vs BPE).html" target="contentFrame">한국어 토큰화가 어려운 이유</a></li> 
-                        <li><a href="pages/4. 서브워드 토큰화(Subword Tokenization)란.html" target="contentFrame">서브워드 토큰화란?</a></li> 
+                        <li><a href="pages/4. 서브워드 토큰화(Subword Tokenization)란.html" target="contentFrame">서브워드 토큰화(Subword Tokenization)란?</a></li> 
                         <li><a href="pages/5. Byte-Pair Encoding.html" target="contentFrame">Byte-Pair Encoding (BPE)</a></li>
+                        <li><a href="pages/6. 원-핫 인코딩(One-hot Encoding).html" target="contentFrame">원-핫 인코딩이란?</a></li> 
                     </ul>
                 </li>
             </ul>
@@ -110,6 +111,7 @@
         const homeLink = document.querySelector('.sidebar a[href="pages/welcome.html"]');
 
         // --- 사이드바 링크 클릭 시 'active' 클래스 관리 ---
+        // 이 로직은 모든 링크(홈 링크 포함)에 적용됩니다.
         links.forEach(link => {
             link.addEventListener('click', function() {
                 links.forEach(node => node.classList.remove('active'));
@@ -152,16 +154,14 @@
             }
         });
 
-        // --- 홈으로 가기 버튼 ---
+        // --- [최종 수정된 홈으로 가기 버튼] ---
         goHomeBtn.addEventListener('click', function() {
-            if (homeLink && iframe.contentWindow) {
-                // --- [수정된 핵심 부분] ---
-                // iframe.src 대신 contentWindow.location.href를 사용해 직접 페이지 이동을 명령합니다.
-                iframe.contentWindow.location.href = homeLink.href;
-
-                // 모든 링크의 active 클래스를 제거하고 홈 링크에만 추가합니다.
-                links.forEach(node => node.classList.remove('active'));
-                homeLink.classList.add('active');
+            if (homeLink) {
+                // 홈 링크를 직접 클릭하는 이벤트를 발생시킵니다.
+                // 이렇게 하면 브라우저가 링크의 target과 href를 원래 방식대로 처리하여
+                // 보안 문제 없이 iframe의 페이지를 안정적으로 이동시킬 수 있습니다.
+                // 'active' 클래스 관리도 위의 링크 클릭 이벤트 리스너가 알아서 처리해줍니다.
+                homeLink.click();
             }
         });
     });
