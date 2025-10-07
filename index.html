@@ -8,19 +8,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* 기존 스타일은 그대로 유지 */
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Noto Sans KR', sans-serif; overflow: hidden; }
         .wiki-container { display: flex; width: 100%; height: 100%; }
         .sidebar { width: 300px; background-color: #ffffff; padding: 1.5rem; height: 100vh; box-sizing: border-box; border-right: 1px solid #e9ecef; overflow-y: auto; display: flex; flex-direction: column; }
         
-        /* ▼▼▼ [수정된 부분] 검색창 스타일 ▼▼▼ */
-        /* 전체 섹션의 하단 여백과 선을 담당 */
         .search-section {
             margin-bottom: 1.5rem; 
             padding-bottom: 1rem; 
             border-bottom: 1px solid #e9ecef; 
         }
-        /* 아이콘 위치 기준을 위한 새로운 래퍼(wrapper) */
         .search-wrapper {
             position: relative;
         }
@@ -37,22 +33,22 @@
             position: absolute;
             left: 12px;
             top: 50%;
-            transform: translateY(-50%); /* 이제 정확히 입력창 중앙에 위치함 */
+            transform: translateY(-50%);
             width: 18px;
             height: 18px;
             stroke: #868e96;
             stroke-width: 2.5;
             pointer-events: none;
         }
-        /* ▲▲▲ [수정된 부분] 검색창 스타일 ▲▲▲ */
 
         .sidebar ul { list-style: none; padding: 0; margin: 0; }
         .sidebar ul ul { padding-left: 1.2rem; margin-top: 0.5rem; }
         .sidebar li a { display: flex; align-items: center; gap: 10px; padding: 7px 15px; color: #495057; text-decoration: none; border-radius: 5px; transition: background-color 0.2s, color 0.2s; font-size: 15px; font-weight: 400; }
         .sidebar li a svg { width: 18px; height: 18px; stroke: #495057; stroke-width: 2; flex-shrink: 0; }
-        .sidebar li a:hover, .sidebar li a:hover svg { background-color: #f8f9fa; stroke: #212529; }
+        .sidebar li a:hover { background-color: #f8f9fa; }
+        .sidebar li a:hover, .sidebar li a:hover * { stroke: #212529; }
         .sidebar li a.active { background-color: #f1f3f5; color: #212529; font-weight: 500; }
-        .sidebar li a.active svg { stroke: #212529; }
+        .sidebar li a.active svg, .sidebar li a.active span { stroke: #212529; color: #212529; }
         .category-title { padding: 7px 15px; font-size: 15px; font-weight: 700; color: #343a40; margin-top: 1rem; }
         .category-title:first-child { margin-top: 0; }
         .content-area { flex-grow: 1; height: 100vh; }
@@ -75,7 +71,7 @@
             <ul>
                 <li>
                     <a href="pages/welcome.html" target="contentFrame" class="active">
-                        <svg xmlns="http://www.w.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                         <span>홈</span>
                     </a>
                 </li>
@@ -87,6 +83,7 @@
                         <li><a href="pages/2. 토큰화(Tokenization)란.html" target="contentFrame">토큰화(Tokenization)란?</a></li>
                         <li><a href="pages/3. 한국어 토큰화가 어려운 이유(형태소 분석기 vs BPE).html" target="contentFrame">한국어 토큰화가 어려운 이유</a></li> 
                         <li><a href="pages/4. 서브워드 토큰화(Subword Tokenization)란.html" target="contentFrame">서브워드 토큰화란?</a></li> 
+                        <li><a href="pages/5. Byte-Pair Encoding.html" target="contentFrame">Byte-Pair Encoding (BPE)</a></li>
                     </ul>
                 </li>
             </ul>
@@ -98,7 +95,7 @@
 
     <div class="floating-buttons">
         <button id="scrollToTopBtn" title="맨 위로"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
-        <button id="goHomeBtn" title="홈으로"><svg xmlns="http://www.w.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></button>
+        <button id="goHomeBtn" title="홈으로"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></button>
     </div>
 
     <script>
@@ -120,7 +117,7 @@
             });
         });
 
-        // --- 검색 기능 (기존과 동일) ---
+        // --- 검색 기능 ---
         searchInput.addEventListener('input', function(e) { 
             const searchTerm = e.target.value.toLowerCase();
             const categoryGroups = sidebar.querySelectorAll('ul > li');
@@ -150,21 +147,23 @@
 
         // --- 맨 위로 가기 버튼 ---
         scrollToTopBtn.addEventListener('click', function() {
-            iframe.contentWindow.scrollTo({ top: 0, behavior: 'smooth' });
+            if (iframe.contentWindow) {
+                iframe.contentWindow.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         });
 
-        // ▼▼▼ [수정된 부분] 홈으로 가기 버튼 ▼▼▼
+        // --- 홈으로 가기 버튼 ---
         goHomeBtn.addEventListener('click', function() {
-            if (homeLink) {
-                // 1. iframe의 주소를 직접 홈으로 변경합니다.
-                iframe.src = homeLink.href;
+            if (homeLink && iframe.contentWindow) {
+                // --- [수정된 핵심 부분] ---
+                // iframe.src 대신 contentWindow.location.href를 사용해 직접 페이지 이동을 명령합니다.
+                iframe.contentWindow.location.href = homeLink.href;
 
-                // 2. 모든 링크의 active 클래스를 제거하고 홈 링크에만 추가합니다.
+                // 모든 링크의 active 클래스를 제거하고 홈 링크에만 추가합니다.
                 links.forEach(node => node.classList.remove('active'));
                 homeLink.classList.add('active');
             }
         });
-        // ▲▲▲ [수정된 부분] 홈으로 가기 버튼 ▲▲▲
     });
     </script>
 </body>
