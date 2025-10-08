@@ -80,19 +80,16 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // --- 필요한 요소들을 미리 찾아둡니다. ---
         const sidebar = document.querySelector('.sidebar');
         const links = sidebar.querySelectorAll('li a');
         const searchInput = document.getElementById('searchInput');
-        const contentArea = document.querySelector('.content-area'); // iframe의 부모 요소를 선택
-        
-        // ▼▼▼ [수정 1] iframe 변수를 let으로 변경 ▼▼▼
-        // iframe을 새로 만들어야 하므로, 변수를 재할당할 수 있도록 let으로 선언합니다.
-        let iframe = document.querySelector('iframe[name="contentFrame"]');
-        
+        const iframe = document.querySelector('iframe[name="contentFrame"]');
         const scrollToTopBtn = document.getElementById('scrollToTopBtn');
         const goHomeBtn = document.getElementById('goHomeBtn');
         const homeLink = document.querySelector('.sidebar a[href="pages/welcome.html"]');
 
+        // --- 사이드바 링크 클릭 시 'active' 클래스 관리 ---
         links.forEach(link => {
             link.addEventListener('click', function() {
                 links.forEach(node => node.classList.remove('active'));
@@ -100,6 +97,7 @@
             });
         });
 
+        // --- 검색 기능 ---
         searchInput.addEventListener('input', function(e) { 
             const searchTerm = e.target.value.toLowerCase();
             const categoryGroups = sidebar.querySelectorAll('ul > li');
@@ -127,37 +125,20 @@
             });
         });
 
+        // --- 맨 위로 가기 버튼 ---
         scrollToTopBtn.addEventListener('click', function() {
-            // iframe이 새로 만들어져도 정상적으로 동작하도록
-            if (iframe && iframe.contentWindow) {
+            if (iframe.contentWindow) {
                 iframe.contentWindow.scrollTo({ top: 0, behavior: 'smooth' });
             }
         });
         
-        // ▼▼▼ [수정 2] 홈으로 가기 버튼 로직 전체 변경 ▼▼▼
+        // ▼▼▼ [최종 수정된 홈으로 가기 버튼] ▼▼▼
         goHomeBtn.addEventListener('click', function() {
             if (homeLink) {
-                // 1. 기존 iframe을 완전히 제거합니다.
-                contentArea.innerHTML = '';
-
-                // 2. 새로운 iframe 요소를 만듭니다.
-                const newIframe = document.createElement('iframe');
-                newIframe.name = 'contentFrame';
-                newIframe.src = homeLink.href;
-                // style="border:none"과 같은 속성을 자바스크립트로 설정합니다.
-                newIframe.style.border = 'none'; 
-                newIframe.style.width = '100%';
-                newIframe.style.height = '100%';
-
-                // 3. 비워진 content-area에 새로 만든 iframe을 추가합니다.
-                contentArea.appendChild(newIframe);
-                
-                // 4. 스크립트가 사용하는 iframe 변수를 새로운 iframe으로 교체합니다.
-                iframe = newIframe;
-
-                // 5. 사이드바의 'active' 클래스를 올바르게 설정합니다.
-                links.forEach(node => node.classList.remove('active'));
-                homeLink.classList.add('active');
+                // 사이드바의 '홈' 링크를 대신 클릭해줍니다.
+                // 이 방식은 브라우저의 정상적인 링크 이동을 실행시키므로 가장 안정적입니다.
+                // 'active' 클래스 관리도 위의 링크 클릭 이벤트 리스너가 알아서 처리해줍니다.
+                homeLink.click();
             }
         });
     });

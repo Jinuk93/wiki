@@ -14,253 +14,63 @@
             --color-text-secondary: #6c757d;
             --color-border: #dee2e6;
             --color-bg-white: #ffffff;
-            --color-bg-subtle: #f0f0f0; /* 단순 벡터화 배경색 살짝 진하게 */
-            --color-highlight-orange-bg: #ffe8d4; /* 워드 임베딩 배경색 살짝 진하게 */
-            --color-highlight-orange-border: #ffcf9f; /* 워드 임베딩 보더색 살짝 진하게 */
+            /* ▼▼▼ [수정된 부분] 색상을 더 연하게 변경 ▼▼▼ */
+            --color-bg-subtle: #f8f9fa; /* 연한 회색 */
+            --color-highlight-orange-bg: #fffaf5; /* 연한 오렌지 */
+            --color-highlight-orange-border: #ffe6cc;
+            --color-highlight-purple-bg: #f5f3ff; /* 연한 보라색 (표) */
+            --color-highlight-purple-border: #e0d8ff;
+            /* ▲▲▲ [수정된 부분] 색상을 더 연하게 변경 ▲▲▲ */
             --font-family-base: 'Noto Sans KR', sans-serif;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: var(--font-family-base);
-            font-size: 1rem;
-            line-height: 1.7;
-            background-color: var(--color-bg-white);
-            color: var(--color-text-primary);
-            margin: 0;
-            padding: 4rem 1rem;
-            -webkit-font-smoothing: antialiased;
-        }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-family-base); font-size: 1rem; line-height: 1.7; background-color: var(--color-bg-white); color: var(--color-text-primary); margin: 0; padding: 4rem 1rem; -webkit-font-smoothing: antialiased; }
 
         /* 2. Typography & Hierarchy */
-        h1, h2, h3, h4 {
-            font-weight: 700;
-            line-height: 1.3;
-            margin-top: 0;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 900;
-            margin-bottom: 0.5rem;
-        }
-
-        h2 {
-            font-size: 2rem;
-            margin-bottom: 0.75rem;
-        }
-
-        h3 {
-            font-size: 1.5rem;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid var(--color-border);
-            padding-bottom: 0.5rem;
-        }
-        
-        h3:first-of-type {
-            margin-top: 0;
-        }
-        
-        h4 {
-            font-size: 1.2rem;
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
-        }
-
-        p {
-            margin-top: 0;
-            margin-bottom: 1rem;
-        }
-        
-        strong, b {
-           font-weight: 700;
-           color: var(--color-text-primary);
-        }
-        
-        pre {
-            font-family: Consolas, 'Courier New', monospace;
-            background-color: #e9ecef;
-            padding: 1em;
-            border-radius: 4px;
-            font-size: 90%;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
+        h1, h2, h3, h4, h5 { font-weight: 700; line-height: 1.3; margin-top: 0; }
+        h1 { font-size: 2.5rem; font-weight: 900; margin-bottom: 0.5rem; }
+        h2 { font-size: 2rem; margin-bottom: 0.75rem; }
+        h3 { font-size: 1.5rem; margin-top: 2rem; margin-bottom: 1rem; border-bottom: 1px solid var(--color-border); padding-bottom: 0.5rem; }
+        h3:first-of-type { margin-top: 0; }
+        h4 { font-size: 1.2rem; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        p { margin-top: 0; margin-bottom: 1rem; }
+        strong, b { font-weight: 700; color: var(--color-text-primary); }
+        pre { font-family: Consolas, 'Courier New', monospace; background-color: #e9ecef; padding: 1em; border-radius: 4px; font-size: 90%; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
 
         /* 3. Component Library & Structure */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .header, .section-title {
-            text-align: center;
-            margin: 4rem auto 3rem auto;
-        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header, .section-title { text-align: center; margin: 4rem auto 3rem auto; }
+        .header { margin-top: 0; margin-bottom: 2rem; }
+        .header p { font-size: 1.125rem; color: var(--color-text-secondary); max-width: 800px; margin: 0 auto; }
+        .card { background-color: var(--color-bg-white); border: 1px solid var(--color-border); border-radius: 0.75rem; padding: 2rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02); transition: transform 0.3s ease, box-shadow 0.3s ease; margin-bottom: 1.5rem; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.07); }
+        .vectorization-group { border: 1px solid var(--color-border); border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 2.5rem; }
+        .vectorization-group > h2 { font-size: 1.75rem; padding-bottom: 1rem; border-bottom: 2px solid var(--color-border); margin-bottom: 1.5rem; text-align: center; }
+        .vectorization-group.highlight-orange > h2 { border-color: var(--color-highlight-orange-border); }
+        /* ▼▼▼ [수정된 부분] 설명 텍스트 왼쪽 정렬 ▼▼▼ */
+        .vectorization-group > p { margin-bottom: 1.5rem; text-align: left; font-size: 1.1rem; }
+        .model-compare-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: start; }
+        @media (min-width: 992px) { .model-compare-grid { grid-template-columns: 1fr 1fr; } }
+        .model-detail-card { background-color: var(--color-bg-white); border: 1px solid var(--color-border); border-radius: 0.5rem; padding: 1.5rem; margin-top: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.01); }
+        .model-detail-card h3 { margin-top: 0; border-bottom: none; padding-bottom: 0; font-size: 1.3rem; color: var(--color-text-primary); }
+        .model-detail-card:first-of-type { margin-top: 0; }
+        aside { background-color: var(--color-bg-white); border-left: 4px solid #ced4da; padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 0.25rem 0.25rem 0; font-size: 0.95rem; }
+        .highlight-gray { background-color: var(--color-bg-subtle); }
+        .highlight-orange { background-color: var(--color-highlight-orange-bg); border-color: var(--color-highlight-orange-border); }
+        /* ▼▼▼ [수정된 부분] 정리표 카드 색상 ▼▼▼ */
+        .highlight-purple { background-color: var(--color-highlight-purple-bg); border-color: var(--color-highlight-purple-border); }
         
-        .header {
-            margin-top: 0;
-            margin-bottom: 2rem;
-        }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+        th, td { padding: 1rem; border-bottom: 1px solid var(--color-border); text-align: left; vertical-align: middle; }
+        thead th { background-color: var(--color-bg-subtle); font-weight: 700; }
+        tbody tr:last-child th, tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover { background-color: #fdfdfd; }
+        td:first-child { font-weight: 700; }
 
-        .header p {
-            font-size: 1.125rem;
-            color: var(--color-text-secondary);
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        /* Base Card Style */
-        .card {
-            background-color: var(--color-bg-white);
-            border: 1px solid var(--color-border);
-            border-radius: 0.75rem;
-            padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            margin-bottom: 1.5rem; /* 모든 카드에 하단 여백 추가 */
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.07);
-        }
-
-        /* Grouping cards for Sparse/Dense */
-        .vectorization-group {
-            border: 1px solid var(--color-border);
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .vectorization-group.highlight-gray {
-            background-color: var(--color-bg-subtle);
-        }
-        .vectorization-group.highlight-orange {
-            background-color: var(--color-highlight-orange-bg);
-            border-color: var(--color-highlight-orange-border);
-        }
-        
-        .vectorization-group > h2 {
-            font-size: 1.75rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--color-border);
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-        .vectorization-group.highlight-orange > h2 {
-            border-color: var(--color-highlight-orange-border);
-        }
-
-        .vectorization-group > p {
-            margin-bottom: 1.5rem;
-            text-align: center;
-            font-size: 1.1rem;
-        }
-
-        .model-compare-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-            align-items: start;
-        }
-
-        @media (min-width: 992px) {
-            .model-compare-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        
-        /* Specific card styles for individual models */
-        .model-detail-card {
-            background-color: var(--color-bg-white); /* 개별 카드는 흰색 배경 */
-            border: 1px solid var(--color-border);
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            margin-top: 1.5rem; /* 각 카드 사이 간격 */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.01);
-        }
-        .model-detail-card h3 {
-            margin-top: 0;
-            border-bottom: none;
-            padding-bottom: 0;
-            font-size: 1.3rem;
-            color: var(--color-text-primary);
-        }
-        .model-detail-card:first-of-type {
-            margin-top: 0; /* 첫 번째 개별 카드는 상단 마진 없음 */
-        }
-
-
-        /* Nested Aside Block */
-        aside {
-            background-color: var(--color-bg-subtle);
-            border-left: 4px solid var(--color-border);
-            padding: 1rem 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 0 0.25rem 0.25rem 0;
-            font-size: 0.95rem;
-        }
-        
-        aside p:last-child, aside ul:last-child {
-            margin-bottom: 0;
-        }
-
-        /* ▼▼▼ [추가된 부분] Table Styles ▼▼▼ */
-        .table-container {
-            overflow-x: auto; /* 작은 화면에서 테이블 스크롤 가능 */
-            margin-top: 2rem; /* 표 위 공간 확보 */
-        }
-        hr {
-            border: none;
-            border-top: 1px solid var(--color-border);
-            margin: 3rem auto;
-            width: 80%; /* 구분선 너비 */
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.95rem;
-        }
-        th, td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--color-border);
-            text-align: left;
-            vertical-align: middle;
-        }
-        thead th {
-            background-color: var(--color-bg-subtle);
-            font-weight: 700;
-        }
-        tbody tr:last-child th,
-        tbody tr:last-child td {
-            border-bottom: none;
-        }
-        tbody tr:hover {
-            background-color: #fdfdfd;
-        }
-        td:first-child {
-            font-weight: 700;
-        }
-        /* ▲▲▲ [추가된 부분] Table Styles ▲▲▲ */
-
-        /* 4. Interactivity (Scroll Animation) */
-        .fade-in-up {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-
-        .fade-in-up.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .fade-in-up { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+        .fade-in-up.visible { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 <body>
@@ -274,11 +84,11 @@
         <div class="model-compare-grid">
             <div class="vectorization-group highlight-gray fade-in-up">
                 <h2>1. 단순 벡터화(Sparse, 희소)</h2>
-                <p>이 방식들은 단어의 의미를 파악하는 것이 아니라, <br>단순히 <strong>통계적 정보</strong>(등장 유무, 횟수 등)를 숫자로 나타내는 데 중점을 둡니다.</p>
+                <p>이 방식들은 단어의 의미를 파악하는 것이 아니라, 단순히 <strong>통계적 정보</strong>(등장 유무, 횟수 등)를 숫자로 나타내는 데 중점을 둡니다.</p>
                 
                 <article class="model-detail-card fade-in-up">
                     <h3>1. 원-핫 인코딩 (One-Hot Encoding)</h3>
-                    <p>전체 단어장에서 각 단어에 고유한 번호를 부여하고,<br><strong>해당 번호의 위치만 1로, 나머지는 모두 0으로</strong> 표시하는 방식입니다.</p>
+                    <p>전체 단어장에서 각 단어에 고유한 번호를 부여하고, <strong>해당 번호의 위치만 1로, 나머지는 모두 0으로</strong> 표시하는 방식입니다.</p>
                     <aside>
                         <h4>예시</h4>
                         <pre>단어장 : {나는: 0, 소년: 1, 소녀: 2, 이다: 3}
@@ -289,7 +99,7 @@
                 
                 <article class="model-detail-card fade-in-up">
                     <h3>2. Bag-of-Words (BoW)</h3>
-                    <p>단어들의 순서는 무시하고, 각 단어가 문장(또는 문서)에 몇 번 등장했는지<br> 횟수를 세어 벡터로 만듭니다.</p>
+                    <p>단어들의 순서는 무시하고, 각 단어가 문장(또는 문서)에 몇 번 등장했는지 횟수를 세어 벡터로 만듭니다.</p>
                     <aside>
                         <h4>예시</h4>
                         <pre>단어장 : {사과, 바나나, 맛있다, 정말}
@@ -300,7 +110,7 @@
                 
                 <article class="model-detail-card fade-in-up">
                     <h3>3. TF-IDF</h3>
-                    <p>BoW처럼 단어 횟수를 세지만, 모든 문서에 <br>흔하게 등장하는 단어(ex: a, the, 은, 는)에는 낮은 가중치를,<br> 특정 문서에만 자주 등장하는 중요한 단어에는 높은 가중치를 부여합니다.</p>
+                    <p>BoW처럼 단어 횟수를 세지만, 모든 문서에 흔하게 등장하는 단어(ex: a, the, 은, 는)에는 낮은 가중치를, 특정 문서에만 자주 등장하는 중요한 단어에는 높은 가중치를 부여합니다.</p>
                     <aside>
                         <h4>예시</h4>
                         <p><strong>문서 A :</strong> "AI 모델은 딥러닝 기술을 활용한다. 이 AI 모델은..." (AI, 모델, 딥러닝 단어 등장)</p>
@@ -319,21 +129,21 @@
                     <p>어떤 문장에 쓰이든, 단어 하나는 언제나 동일한 의미의 벡터값을 가집니다.</p>
                     <aside>
                         <h4>특징</h4>
-                        <p>단어의 의미를 벡터 공간의 특정 <strong>'좌표'에 고정</strong>시킵니다.<br>의미가 비슷한 단어들은 벡터 공간에서 서로 가까운 위치에 존재하게 됩니다.</p>
+                        <p>단어의 의미를 벡터 공간의 특정 <strong>'좌표'에 고정</strong>시킵니다. 의미가 비슷한 단어들은 벡터 공간에서 서로 가까운 위치에 존재하게 됩니다.</p>
                         <h4>대표 모델 : Word2Vec, GloVe, FastText</h4>
                         <h4>예시</h4>
-                        <p><strong>의미 관계 유추 :</strong><br> 벡터 간의 수학적 연산으로 단어의 관계를 추론할 수 있습니다.</p>
+                        <p><strong>의미 관계 유추 :</strong> 벡터 간의 수학적 연산으로 단어의 관계를 추론할 수 있습니다.</p>
                         <pre>vector('왕') - vector('남자') + vector('여자') ≈ vector('여왕')</pre>
-                        <p><strong>유사도 계산 :</strong><br> 노트북 벡터는 컴퓨터, PC 벡터와는 가깝게, 바나나 벡터와는 멀게 계산됩니다.</p>
+                        <p><strong>유사도 계산 :</strong> 노트북 벡터는 컴퓨터, PC 벡터와는 가깝게, 바나나 벡터와는 멀게 계산됩니다.</p>
                     </aside>
                 </article>
                 
                 <article class="model-detail-card fade-in-up">
-                    <h3>2. 동적 / 문맥적 임베딩<br> (Dynamic / Contextual Embedding) 🌊</h3>
-                    <p>같은 단어라도 문맥에 따라 여러 의미를 가질 수 있다는 점을 반영하여,<br> 문장에 따라 벡터값이 동적으로 변합니다.</p>
+                    <h3>2. 동적 / 문맥적 임베딩 (Dynamic / Contextual Embedding) 🌊</h3>
+                    <p>같은 단어라도 문맥에 따라 여러 의미를 가질 수 있다는 점을 반영하여, 문장에 따라 벡터값이 동적으로 변합니다.</p>
                     <aside>
                         <h4>특징</h4>
-                        <p>문장 전체의 의미를 파악하여 단어의 벡터를 생성합니다.<br> <strong>다의어(여러 의미를 가진 단어)</strong> 문제를 해결하는 데 매우 효과적입니다.</p>
+                        <p>문장 전체의 의미를 파악하여 단어의 벡터를 생성합니다. <strong>다의어(여러 의미를 가진 단어)</strong> 문제를 해결하는 데 매우 효과적입니다.</p>
                         <h4>대표 모델 : BERT, GPT, ELMo</h4>
                         <h4>예시 : '사과'라는 단어</h4>
                         <p><strong>문장 1 : "점심으로 맛있는 사과를 먹었다."</strong><br>이때 '사과' 벡터는 과일, 음식, 빨갛다 같은 단어들의 벡터와 가깝게 생성됩니다.</p>
@@ -343,11 +153,11 @@
             </div>
         </div>
         
-        <hr class="fade-in-up"> <div class="section-title fade-in-up">
+        <div class="section-title fade-in-up">
             <h2>한눈에 보는 정리표</h2>
         </div>
         
-        <div class="card fade-in-up table-container">
+        <div class="card fade-in-up table-container highlight-purple">
             <table>
                 <thead>
                     <tr>
@@ -394,7 +204,7 @@
                 </tbody>
             </table>
         </div>
-        </main>
+    </main>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -408,9 +218,7 @@
                             observer.unobserve(entry.target);
                         }
                     });
-                }, {
-                    threshold: 0.1
-                });
+                }, { threshold: 0.1 });
 
                 animatedElements.forEach(el => {
                     observer.observe(el);
