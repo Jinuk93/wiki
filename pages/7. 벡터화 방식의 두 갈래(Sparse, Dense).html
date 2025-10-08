@@ -14,9 +14,9 @@
             --color-text-secondary: #6c757d;
             --color-border: #dee2e6;
             --color-bg-white: #ffffff;
-            --color-bg-subtle: #f8f9fa;
-            --color-highlight-orange-bg: #fff8f0;
-            --color-highlight-orange-border: #ffeedb;
+            --color-bg-subtle: #f0f0f0; /* 단순 벡터화 배경색 살짝 진하게 */
+            --color-highlight-orange-bg: #ffe8d4; /* 워드 임베딩 배경색 살짝 진하게 */
+            --color-highlight-orange-border: #ffcf9f; /* 워드 임베딩 보더색 살짝 진하게 */
             --font-family-base: 'Noto Sans KR', sans-serif;
         }
 
@@ -123,6 +123,7 @@
             padding: 2rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 1.5rem; /* 모든 카드에 하단 여백 추가 */
         }
 
         .card:hover {
@@ -130,7 +131,39 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.07);
         }
 
-        /* Component Variations */
+        /* Grouping cards for Sparse/Dense */
+        .vectorization-group {
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .vectorization-group.highlight-gray {
+            background-color: var(--color-bg-subtle);
+        }
+        .vectorization-group.highlight-orange {
+            background-color: var(--color-highlight-orange-bg);
+            border-color: var(--color-highlight-orange-border);
+        }
+        
+        .vectorization-group > h2 {
+            font-size: 1.75rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--color-border);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .vectorization-group.highlight-orange > h2 {
+            border-color: var(--color-highlight-orange-border);
+        }
+
+        .vectorization-group > p {
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
         .model-compare-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -144,15 +177,26 @@
             }
         }
         
-        .model-card > h2 {
-            font-size: 1.75rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--color-border);
+        /* Specific card styles for individual models */
+        .model-detail-card {
+            background-color: var(--color-bg-white); /* 개별 카드는 흰색 배경 */
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem; /* 각 카드 사이 간격 */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.01);
         }
-        
-        .model-card > p {
-            min-height: 50px;
+        .model-detail-card h3 {
+            margin-top: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+            font-size: 1.3rem;
+            color: var(--color-text-primary);
         }
+        .model-detail-card:first-of-type {
+            margin-top: 0; /* 첫 번째 개별 카드는 상단 마진 없음 */
+        }
+
 
         /* Nested Aside Block */
         aside {
@@ -164,18 +208,20 @@
             font-size: 0.95rem;
         }
         
-        /* Highlighting Styles */
-        .highlight-gray {
-            background-color: var(--color-bg-subtle);
-        }
-        .highlight-orange {
-            background-color: var(--color-highlight-orange-bg);
-            border-color: var(--color-highlight-orange-border);
+        aside p:last-child, aside ul:last-child {
+            margin-bottom: 0;
         }
 
         /* ▼▼▼ [추가된 부분] Table Styles ▼▼▼ */
         .table-container {
             overflow-x: auto; /* 작은 화면에서 테이블 스크롤 가능 */
+            margin-top: 2rem; /* 표 위 공간 확보 */
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--color-border);
+            margin: 3rem auto;
+            width: 80%; /* 구분선 너비 */
         }
         table {
             width: 100%;
@@ -221,16 +267,16 @@
 
     <main class="container">
         <header class="header fade-in-up">
-            <h1>단어 벡터화의 두 가지 길(Sparse, Dense)</h1>
+            <h1>단어 벡터화의 두 가지 길<br>(Sparse, Dense)</h1>
             <p>'단어를 숫자로 바꾸는 기술(벡터화)'은 크게 두 가지 방식으로 나뉩니다.</p>
         </header>
 
         <div class="model-compare-grid">
-            <article class="model-card card highlight-gray fade-in-up">
+            <div class="vectorization-group highlight-gray fade-in-up">
                 <h2>1. 단순 벡터화(Sparse, 희소)</h2>
                 <p>이 방식들은 단어의 의미를 파악하는 것이 아니라, <br>단순히 <strong>통계적 정보</strong>(등장 유무, 횟수 등)를 숫자로 나타내는 데 중점을 둡니다.</p>
                 
-                <section>
+                <article class="model-detail-card fade-in-up">
                     <h3>1. 원-핫 인코딩 (One-Hot Encoding)</h3>
                     <p>전체 단어장에서 각 단어에 고유한 번호를 부여하고,<br><strong>해당 번호의 위치만 1로, 나머지는 모두 0으로</strong> 표시하는 방식입니다.</p>
                     <aside>
@@ -239,9 +285,9 @@
 소년 → [0, 1, 0, 0]
 소녀 → [0, 0, 1, 0]</pre>
                     </aside>
-                </section>
+                </article>
                 
-                <section>
+                <article class="model-detail-card fade-in-up">
                     <h3>2. Bag-of-Words (BoW)</h3>
                     <p>단어들의 순서는 무시하고, 각 단어가 문장(또는 문서)에 몇 번 등장했는지<br> 횟수를 세어 벡터로 만듭니다.</p>
                     <aside>
@@ -250,9 +296,9 @@
 문장 : "사과는 맛있다. 정말 맛있다."
 결과 벡터 → [1, 0, 2, 1] (사과 1번, 바나나 0번, 맛있다 2번, 정말 1번)</pre>
                     </aside>
-                </section>
+                </article>
                 
-                <section>
+                <article class="model-detail-card fade-in-up">
                     <h3>3. TF-IDF</h3>
                     <p>BoW처럼 단어 횟수를 세지만, 모든 문서에 <br>흔하게 등장하는 단어(ex: a, the, 은, 는)에는 낮은 가중치를,<br> 특정 문서에만 자주 등장하는 중요한 단어에는 높은 가중치를 부여합니다.</p>
                     <aside>
@@ -261,14 +307,14 @@
                         <p><strong>문서 B :</strong> "오늘의 날씨는 맑다. 이 날씨는..." (날씨 단어 등장)</p>
                         <p><strong>AI, 모델, 딥러닝</strong>은 IT 관련 문서 전반에서는 자주 나오지만, 문서 A 내에서 특히 더 중요하므로 높은 TF-IDF 점수를 받습니다.<br> "은, 는, 이" 같은 조사는 모든 문서에 흔하므로 매우 낮은 TF-IDF 점수를 받습니다.</p>
                     </aside>
-                </section>
-            </article>
+                </article>
+            </div>
 
-            <article class="model-card card highlight-orange fade-in-up">
+            <div class="vectorization-group highlight-orange fade-in-up">
                 <h2>2. Word Embedding(Dense, 밀집)</h2>
                 <p>단어의 의미와 관계를 벡터 안에 직접 녹여내는 기술입니다.<br> 의미가 비슷한 단어는 벡터 값도 비슷해집니다.</p>
                 
-                <section>
+                <article class="model-detail-card fade-in-up">
                     <h3>1. 정적 임베딩 (Static Embedding) 🧊</h3>
                     <p>어떤 문장에 쓰이든, 단어 하나는 언제나 동일한 의미의 벡터값을 가집니다.</p>
                     <aside>
@@ -280,9 +326,9 @@
                         <pre>vector('왕') - vector('남자') + vector('여자') ≈ vector('여왕')</pre>
                         <p><strong>유사도 계산 :</strong><br> 노트북 벡터는 컴퓨터, PC 벡터와는 가깝게, 바나나 벡터와는 멀게 계산됩니다.</p>
                     </aside>
-                </section>
+                </article>
                 
-                <section>
+                <article class="model-detail-card fade-in-up">
                     <h3>2. 동적 / 문맥적 임베딩<br> (Dynamic / Contextual Embedding) 🌊</h3>
                     <p>같은 단어라도 문맥에 따라 여러 의미를 가질 수 있다는 점을 반영하여,<br> 문장에 따라 벡터값이 동적으로 변합니다.</p>
                     <aside>
@@ -293,11 +339,11 @@
                         <p><strong>문장 1 : "점심으로 맛있는 사과를 먹었다."</strong><br>이때 '사과' 벡터는 과일, 음식, 빨갛다 같은 단어들의 벡터와 가깝게 생성됩니다.</p>
                         <p><strong>문장 2 : "실수에 대해 진심으로 사과했다."</strong><br>이때 '사과' 벡터는 미안함, 용서, 후회 같은 단어들의 벡터와 가깝게, 완전히 다른 값으로 생성됩니다.</p>
                     </aside>
-                </section>
-            </article>
+                </article>
+            </div>
         </div>
-
-        <div class="section-title fade-in-up">
+        
+        <hr class="fade-in-up"> <div class="section-title fade-in-up">
             <h2>한눈에 보는 정리표</h2>
         </div>
         

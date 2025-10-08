@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -14,7 +14,9 @@
             --color-text-secondary: #6c757d;
             --color-border: #dee2e6;
             --color-bg-white: #ffffff;
-            --color-bg-subtle: #f8f9fa;
+            /* ▼▼▼ [수정된 부분] 회색을 두 가지 톤으로 분리 ▼▼▼ */
+            --color-bg-subtle-light: #f8f9fa; /* 더 연한 회색 (표 컬럼용) */
+            --color-bg-subtle-dark: #f1f3f5;  /* 살짝 더 진한 회색 (카드 배경용) */
             --font-family-base: 'Noto Sans KR', sans-serif;
         }
 
@@ -84,12 +86,13 @@
         }
 
         .content-block {
-            background-color: var(--color-bg-white);
             border: 1px solid var(--color-border);
             border-radius: 0.75rem;
             padding: 2rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+             /* ▼▼▼ [수정된 부분] 카드 배경색을 더 진한 회색으로 변경 ▼▼▼ */
+            background-color: var(--color-bg-subtle-dark);
         }
 
         .content-block:hover {
@@ -98,40 +101,39 @@
         }
         
         .table-container {
-            overflow-x: auto; /* 작은 화면에서 테이블 스크롤 가능 */
+            overflow-x: auto; 
         }
         table {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.95rem;
             margin-top: 1rem;
+            background-color: var(--color-bg-white); 
         }
         th, td {
             padding: 1rem;
-            border-bottom: 1px solid var(--color-border);
+            border: 1px solid var(--color-border);
             text-align: left;
             vertical-align: middle;
-            white-space: nowrap;
-        }
-        td:nth-child(4) { /* 설명 컬럼 */
             white-space: normal;
-            min-width: 300px;
         }
+        
         thead th {
-            background-color: var(--color-bg-subtle);
+            /* ▼▼▼ [수정된 부분] 표 컬럼은 더 연한 회색으로 유지 ▼▼▼ */
+            background-color: var(--color-bg-subtle-light);
             font-weight: 700;
-            white-space: nowrap;
         }
-        tbody tr:last-child th,
-        tbody tr:last-child td {
-            border-bottom: none;
-        }
+        
         tbody tr:hover {
             background-color: #fdfdfd;
         }
-        td:first-child {
+
+        .category-cell {
+            /* ▼▼▼ [수정된 부분] 대분류 셀도 더 연한 회색으로 유지 ▼▼▼ */
+            background-color: var(--color-bg-subtle-light);
             font-weight: 700;
         }
+
 
         /* 4. Interactivity (Scroll Animation) */
         .fade-in-up {
@@ -163,60 +165,52 @@
                             <th>소분류</th>
                             <th>주요 기법</th>
                             <th>설명</th>
-                            <th>활용도</th>
                             <th>대표 라이브러리</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td rowspan="3">단어 내부 분절</td>
+                            <td class="category-cell" rowspan="3">단어 내부 분절</td>
                             <td><strong>서브워드(Subword)</strong></td>
-                            <td>WordPiece, BPE</td>
-                            <td>자주 등장하는 글자 묶음으로 단어를 분해해 OOV 문제를 해결</td>
-                            <td>🟢 현업 표준</td>
+                            <td><strong>WordPiece, BPE</strong></td>
+                            <td>자주 등장하는 글자 묶음으로 단어를 분해해 OOV 문제를 해결.</td>
                             <td>HF Transformers</td>
                         </tr>
                         <tr>
                             <td></td>
-                            <td>Byte-level BPE</td>
-                            <td>바이트 단위로 처리해 모든 문자(이모지 등)에 강건</td>
-                            <td>🟢 현업 표준</td>
+                            <td><strong>Byte-level BPE</strong></td>
+                            <td>바이트 단위로 처리해 모든 문자(이모지 등)에 강건.</td>
                             <td>tiktoken (GPT)</td>
                         </tr>
                         <tr>
                             <td></td>
                             <td>SentencePiece</td>
-                            <td>특정 도메인 데이터로 토크나이저를 쉽게 재학습 가능</td>
-                            <td>🟡 여전히 유용</td>
+                            <td>특정 도메인 데이터로 토크나이저를 쉽게 재학습 가능.</td>
                             <td>sentencepiece</td>
                         </tr>
                         <tr>
-                            <td rowspan="4">의미 단위 분절</td>
+                            <td class="category-cell" rowspan="4">의미 단위 분절</td>
                             <td><strong>형태소(Semantic Unit)</strong></td>
                             <td>MeCab, Okt</td>
-                            <td>한국어의 조사/어미를 분해해 의미 단위를 보존</td>
-                            <td>🟡 여전히 유용</td>
+                            <td>한국어의 조사/어미를 분해해 의미 단위를 보존.</td>
                             <td>KoNLPy, khaiii</td>
                         </tr>
                         <tr>
                             <td>단어/공백</td>
                             <td>단어 분절</td>
-                            <td>공백/구두점 기준으로 간단히 토큰화, 빠르고 직관적</td>
-                            <td>🟡 여전히 유용</td>
+                            <td>공백/구두점 기준으로 간단히 토큰화, 빠르고 직관적.</td>
                             <td>NLTK, spaCy</td>
                         </tr>
                         <tr>
                             <td>문자/음절</td>
                             <td>char n-gram</td>
-                            <td>한 글자 단위로 토큰화해 오탈자/신조어에 강함</td>
-                            <td>🟠 틈새/보완</td>
+                            <td>한 글자 단위로 토큰화해 오탈자/신조어에 강함.</td>
                             <td>scikit-learn</td>
                         </tr>
                         <tr>
                             <td>문장/문단</td>
-                            <td>Sentence Split</td>
-                            <td>RAG/검색을 위해 문장 → 문단 단위로 잘라 인덱싱</td>
-                            <td>🔵 RAG 필수</td>
+                            <td><strong>Sentence Split</strong></td>
+                            <td>RAG/검색을 위해 문장 → 문단 단위로 잘라 인덱싱.</td>
                             <td>pysbd, langchain</td>
                         </tr>
                     </tbody>
@@ -238,47 +232,41 @@
                             <th>소분류</th>
                             <th>주요 기법</th>
                             <th>설명</th>
-                            <th>활용도</th>
                             <th>대표 라이브러리</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td rowspan="2">단순 카운팅 (Counting)</td>
+                            <td class="category-cell" rowspan="2">단순 카운팅 (Counting)</td>
                             <td>존재 유무</td>
                             <td>One-hot Encoding</td>
                             <td>단어의 존재 여부를 0과 1로만 표기. 개념 학습에 좋음.</td>
-                            <td>🔴 레거시/교육용</td>
                             <td>scikit-learn</td>
                         </tr>
                         <tr>
                             <td>등장 빈도</td>
                             <td>BoW</td>
-                            <td>단어 순서를 무시하고 단어 출현 빈도로 문서를 표현</td>
-                            <td>🟡 여전히 유용</td>
+                            <td>단어 순서를 무시하고 단어 출현 빈도로 문서를 표현.</td>
                             <td>scikit-learn</td>
                         </tr>
                         <tr>
-                            <td rowspan="2">가중치 부여 (Weighting)</td>
+                            <td class="category-cell" rowspan="2">가중치 부여 (Weighting)</td>
                             <td>중요도</td>
                             <td>TF-IDF</td>
                             <td>흔한 단어 가중치는 낮추고, 중요한 단어는 부각. 강력한 베이스라인.</td>
-                            <td>🟡 여전히 유용</td>
                             <td>scikit-learn</td>
                         </tr>
                         <tr>
                             <td>검색 최적화</td>
-                            <td>BM25</td>
+                            <td><strong>BM25</strong></td>
                             <td>TF-IDF 확장형. 키워드 검색/RAG 리트리벌의 사실상 표준.</td>
-                            <td>🔵 RAG 필수</td>
                             <td>rank-bm25</td>
                         </tr>
                         <tr>
-                            <td>효율성 중심</td>
+                            <td class="category-cell">효율성 중심</td>
                             <td>해싱</td>
                             <td>HashingVectorizer</td>
                             <td>해시 함수로 고정 차원에 매핑. 메모리/속도 효율적.</td>
-                            <td>🟠 틈새/보완</td>
                             <td>scikit-learn</td>
                         </tr>
                     </tbody>
@@ -300,60 +288,52 @@
                             <th>소분류</th>
                             <th>주요 기법</th>
                             <th>설명</th>
-                            <th>활용도</th>
                             <th>대표 라이브러리</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td rowspan="3">고정 임베딩 (Static)</td>
+                            <td class="category-cell" rowspan="3">고정 임베딩 (Static)</td>
                             <td>단어 단위</td>
                             <td>Word2Vec, GloVe</td>
                             <td>단어의 의미를 고정된 벡터로 표현. 문맥 변화는 반영 불가.</td>
-                            <td>🟡 여전히 유용</td>
                             <td>Gensim</td>
                         </tr>
                         <tr>
                             <td>서브워드</td>
                             <td>fastText</td>
                             <td>단어 <strong>내부(subword)</strong>를 학습해 OOV(신조어 등)에 강함.</td>
-                            <td>🟡 여전히 유용</td>
                             <td>fastText, Gensim</td>
                         </tr>
                         <tr>
                             <td>문서 단위</td>
                             <td>Doc2Vec</td>
                             <td>문서 ID를 함께 학습하여 문서 전체 벡터를 획득.</td>
-                            <td>🔴 레거시/교육용</td>
                             <td>Gensim</td>
                         </tr>
                         <tr>
-                            <td rowspan="4">문맥 임베딩 (Contextual)</td>
+                            <td class="category-cell" rowspan="4">문맥 임베딩 (Contextual)</td>
                             <td>단어 단위</td>
-                            <td>BERT, RoBERTa</td>
-                            <td>문맥에 따라 단어의 벡터가 동적으로 변함 (분류, QA, NER)</td>
-                            <td>🟢 현업 표준</td>
+                            <td><strong>BERT, RoBERTa</strong></td>
+                            <td>문맥에 따라 단어의 벡터가 동적으로 변함 (분류, QA, NER).</td>
                             <td>HF Transformers</td>
                         </tr>
                         <tr>
                             <td>(Bi-directional)</td>
                             <td>ELMo</td>
-                            <td>양방향 LSTM 기반의 초기 문맥 임베딩 모델 (역사적 의미)</td>
-                            <td>🔴 레거시/교육용</td>
+                            <td>양방향 LSTM 기반의 초기 문맥 임베딩 모델 (역사적 의미).</td>
                             <td>AllenNLP</td>
                         </tr>
                         <tr>
                             <td>문장/문서</td>
-                            <td>Sentence-BERT, e5</td>
-                            <td>문장 전체의 의미를 하나의 벡터로 직접 임베딩 (RAG 검색)</td>
-                            <td>🟢 현업 표준</td>
+                            <td><strong>Sentence-BERT, e5</strong></td>
+                            <td>문장 전체의 의미를 하나의 벡터로 직접 임베딩 (RAG 검색).</td>
                             <td>sentence-transformers</td>
                         </tr>
                         <tr>
                             <td>다국어</td>
                             <td>LaBSE, mSBERT</td>
-                            <td>언어가 달라도 같은 의미라면 가까운 벡터로 매핑</td>
-                            <td>🟡 여전히 유용</td>
+                            <td>언어가 달라도 같은 의미라면 가까운 벡터로 매핑.</td>
                             <td>TFHub, HF</td>
                         </tr>
                     </tbody>

@@ -99,7 +99,6 @@
             margin-top: 0;
         }
 
-        /* Base Card Style */
         .card {
             background-color: var(--color-bg-white);
             border: 1px solid var(--color-border);
@@ -110,13 +109,11 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        /* Card Hover Effect */
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.07);
         }
 
-        /* Component Variations */
         .steps-grid .card {
             padding: 2.5rem;
         }
@@ -153,7 +150,6 @@
             text-shadow: 1px 1px 0px rgba(255, 0, 85, 0.5), -1px -1px 0px rgba(0, 229, 255, 0.5);
         }
         
-        /* Nested Aside Block */
         aside {
             background-color: var(--color-bg-subtle);
             border-left: 4px solid var(--color-border);
@@ -163,15 +159,15 @@
             font-size: 0.95rem;
         }
         
-        aside p:last-child, aside ul:last-child {
+        aside p:last-child, aside ul:last-child, .card ol:last-child {
             margin-bottom: 0;
         }
 
-        aside ul {
+        aside ul, .card ol {
             padding-left: 20px;
         }
         
-        aside li {
+        aside li, .card li {
             margin-bottom: 0.5rem;
         }
 
@@ -181,7 +177,6 @@
             margin-top: 1rem;
         }
         
-        /* 4. Interactivity (Scroll Animation) */
         .fade-in-up {
             opacity: 0;
             transform: translateY(30px);
@@ -290,7 +285,7 @@
                 <p>여러 개의 데이터 샘플(벡터)을 하나의 미니배치(행렬/텐서)로 묶어서 전달하면, GPU는 병렬 처리를 통해 훨씬 빠른 속도로 연산을 수행할 수 있습니다.
 
                 <p><strong>2. 학습 안정성 (Training Stability) :</strong></p>
-                <p></p>모델은 데이터의 예측 오차를 기반으로<br> 가중치를 얼마나 수정할지(그래디언트, Gradient)를 계산하며 학습합니다.</p>
+                <p>모델은 데이터의 예측 오차를 기반으로<br> 가중치를 얼마나 수정할지(그래디언트, Gradient)를 계산하며 학습합니다.</p>
                 <ul>
                     <li><strong>데이터 1개만 사용</strong><br>: 1개의 데이터로 계산된 기울기는 불안정하고 노이즈가 심해, 학습 방향이 크게 흔들릴 수 있습니다.</li>
                     <li><strong>전체 데이터 사용</strong><br>: 전체 데이터로 계산된 기울기는 가장 정확하지만, 데이터가 클 경우 많은 시간과 메모리가 소요됩니다.</li>
@@ -299,7 +294,32 @@
             </aside>
         </section>
 
-    </main>
+        <div class="section-title fade-in-up">
+            <h2>전체 프로세스와 미니배치의 역할</h2>
+        </div>
+
+        <section class="content-block card fade-in-up">
+            <h3>자연어 처리 기본 파이프라인</h3>
+            <p>미니배치가 전체 과정에서 어디에 위치하는지 큰 그림으로 이해해 봅시다.</p>
+            <ol>
+                <li><strong>데이터 수집 (Data Collection)</strong><br>모델 학습에 필요한 텍스트 데이터(뉴스 기사, 상품평, 챗봇 대화 등)를 수집합니다.</li>
+                <li><strong>텍스트 전처리 (Text Preprocessing)</strong><br>수집한 텍스트에서 불필요한 기호, 오탈자 등을 제거하고 정제합니다.</li>
+                <li><strong>벡터화 (Vectorization)</strong><br>정제된 텍스트를 토큰화하고, <b>인덱싱</b>과 <b>패딩</b> 과정을 거쳐 모델이 이해할 수 있는<br> 숫자 벡터/텐서로 변환합니다.</li>
+                <li><strong>모델 학습 (Model Training)</strong><br>변환된 숫자 데이터를 모델에 입력하여 가중치(Weight)를 업데이트하며 학습을 진행합니다.
+                    <aside>
+                        <h4>⭐ 미니배치의 위치와 역할</h4>
+                        <p>바로 이 <strong>4. 모델 학습 단계</strong>에서 미니배치가 핵심적인 역할을 합니다.</p>
+                        <ul>
+                            <li><strong>어디서 (Where) :</strong><br> 모델 학습(Training) 루프의 가장 핵심부에서 사용됩니다.</li>
+                            <li><strong>어떻게 (How) :</strong><br> 전체 데이터셋을 GPU가 한 번에 처리할 수 있는 작은 묶음(미니배치 텐서)으로 나누어, 모델에 순서대로 주입합니다. <b>모델은 미니배치 하나를 처리할 때마다 가중치를 한 번씩 업데이트합니다.</b></li>
+                            <li><strong>왜 (Why) :</strong><br> 앞서 설명한 <strong>계산 효율성</strong>(GPU 병렬 처리 극대화)과 <strong>학습 안정성</strong>(안정적인 가중치 업데이트)이라는 두 마리 토끼를 모두 잡기 위함입니다.</li>
+                        </ul>
+                    </aside>
+                </li>
+                <li><strong>모델 평가 및 배포 (Evaluation & Deployment)</strong><br>학습된 모델의 성능을 평가하고, 실제 서비스에 적용합니다.</li>
+            </ol>
+        </section>
+        </main>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
