@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RNN Explained: Final Layout</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #ffffff; 
+            color: #212529;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        /* --- 카드 바깥의 메인 헤더 --- */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .page-header p {
+            font-size: 1.1rem;
+            color: #495057;
+            text-align: left; /* 첫 문단 왼쪽 정렬 */
+        }
+
+
+        /* --- 구분선 --- */
+        hr.section-divider {
+            border: none;
+            border-top: 1px solid #dee2e6;
+            margin: 4rem auto;
+        }
+
+        /* --- 대제목 (카드 바깥) --- */
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 0 1rem 0;
+        }
+        
+        .section-title p { /* '학습 과정' 밑의 설명 */
+             font-size: 1.1rem;
+             color: #495057;
+        }
+
+        /* --- 카드 스타일 --- */
+        .card {
+            background-color: #f8f9fa; 
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .card h4 {
+            font-size: 1.15rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #343a40;
+        }
+
+        .card p {
+            margin-top: 0;
+            font-size: 1rem;
+        }
+        
+        .card strong, .card b {
+            font-weight: 700;
+            color: #094074;
+        }
+        
+        .card img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 2rem auto 1rem;
+            border-radius: 8px;
+            background-color: #ffffff;
+            padding: 0.5rem;
+            border: 1px solid #dee2e6;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <header class="page-header">
+        <h2>RNN(Recurrent Neural Network)이란?</h2>
+        <p>
+        <b>순환 신경망(RNN, Recurrent Neural Network)</b>은 인공 신경망의 한 종류로, 내부에 <b>순환(Recurrent)</b>하는 구조를 사용하여 <b>순서가 있는 데이터(Sequential Data)</b>를 처리하는 데 특화된 모델입니다.
+        <br>여기서 <b>'순환'</b>이란, 각 단계의 계산 결과가 단순히 출력으로 끝나는 것이 아니라, 다음 단계의 입력으로 다시 사용되는 <b>되먹임(loop)</b> 구조를 의미합니다.
+        이 순환 구조를 통해 <b>'과거를 기억하는'</b> 아이디어가 구현됩니다. RNN은 <b>은닉 상태(Hidden State)</b>라는 내부적인 <b>'기억 장치'</b>를 가집니다.<br> 매 순간, 모델은 <b>'새로운 입력'</b>과 <b>'이전까지의 기억(은닉 상태)'</b>을 함께 받아 새로운 기억을 만듭니다.<br> 이 새로운 기억이 다음 순간으로 계속 전달되며 정보가 누적됩니다.
+        </p>
+    </header>
+    <div class="card">
+        <h3>RNN의 구조와 동작 원리 : 하나의 셀, 하나의 규칙</h3>
+        <p>RNN의 모든 동작은 <strong>하나의 RNN 셀(Cell)</strong>과 <strong>하나의 규칙서(가중치)</strong>를 반복적으로 사용합니다.</p>
+    </div>
+
+    <div class="card">
+        <h3>RNN 셀(Cell)의 구조</h3>
+        <img src="../assets/RNN.png" alt="RNN Cell Unfolding Diagram">
+        <p>하나의 RNN 셀은 특정 시점 t에서 다음과 같은 입출력 구조를 가집니다.</p>
+        <p>
+            <strong>Input Layer (입력)</strong><br>
+            - 현재 정보 (xt) : 해당 시점의 새로운 데이터<br>
+            - 과거 기억 (ht−1) : 바로 직전 시점까지의 정보를 요약한 은닉 상태
+        </p>
+        <p>
+            <strong>Hidden Layer</strong><br>
+            - 새로운 기억 (ht) : 현재 정보와 과거 기억을 종합하여 업데이트된 새로운 은닉 상태 (다음 시점으로 전달됨)
+        </p>
+        <p>
+            <strong>Output Layer (출력)</strong><br>
+            - 현재 결과 (ot) : 해당 시점에서 내놓는 예측값
+        </p>
+     </div>
+
+    <div class="card">
+        <h3>💡 최초의 기억은 어떻게?</h3>
+        <p>첫 번째 RNN 셀에는 전달받을 과거 기억(h0)이 없습니다.<br> 따라서 이 값은 보통 모든 값이 <strong>‘0’인 '제로 벡터(Zero Vector)'나 아주 작은 랜덤 값</strong>으로<br> 직접 초기화해서 사용합니다.</p>
+
+        <h3>💡 시퀀스 언롤링 (Sequence Unrolling)</h3>
+        <p>실제로는 이 하나의 RNN 셀을 시퀀스의 길이만큼 복제하여<br> 시간 축에 따라 길게 펼쳐놓은 형태로 생각해야 합니다. 
+        이를 <strong>'시퀀스 언롤링'</strong>이라고 합니다.<br>위 셀(Cell)의 구조 이미지에서 화살표 우측의 이미지가 <b>언롤링(Unrolling)된 RNN의 모습</b>입니다.
+        <br> 언롤링은 각 시점별 정보의 흐름을 명확히 보여주며, 이후 설명할 학습 과정(BPTT)을 위해 필수적입니다.</p>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="section-title">
+        <h2>RNN의 학습 과정 : 순전파부터 역전파까지 ⚙️</h2>
+        <p>RNN의 학습은 언롤링된 네트워크 위에서 <strong>순전파 → 손실 계산 → 역전파(BPTT)</strong> 의 과정을 거칩니다.</p> </div>
+
+    <div class="card">
+        <h3>1. 순전파 (Forward Pass)</h3>
+        <p>입력 시퀀스를 모델에 흘려보내며 각 시점의 기억(은닉 상태)과 예측값(출력)을 차례대로 계산하는 단계입니다.</p>
+        <p><strong>은닉 상태 계산</strong><br> : "<strong>현재 입력(xt)"</strong>과 "이전 은닉 상태(ht−1)"를 각각의 가중치와 곱한 뒤 합쳐,<br> 새로운 은닉 상태(ht)를 만듭니다.</p>
+        <p><strong>출력 계산</strong><br> : 계산된 <strong>"은닉 상태(ht)"</strong>를 다시 가중치와 곱해 최종 예측값(yt)으로 변환합니다.</p>
+    </div>
+    
+    <div class="card">
+        <h3>2. 손실 계산 (Loss Calculation)</h3>
+        <p>순전파를 통해 얻은 <b>예측값(yt)이 실제 정답과 얼마나 다른지(오차)를 계산</b>하는 단계입니다.<br>
+        각 시점의 오차(ℓt)를 모두 합산하여 전체 시퀀스에 대한 <strong>총손실(L)</strong>을 구합니다.<br> 이 <strong>총손실(L)</strong>이 바로 다음에 이어질 역전파 단계의 출발점이 됩니다.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. BPTT (Backpropagation Through Time)</h3>
+        <p>계산된 <strong>총손실(L)</strong>을 마지막 시점부터 첫 시점까지 시간의 역순으로 전파하며,<br> 모든 시점에서 <strong>공유되는 가중치(Wxh,Whh,Why)</strong>를 얼마나 수정해야 할지 기울기를 계산하는 알고리즘입니다.<br> 
+        BPTT를 통해 RNN은 전체 시퀀스의 시간적 의존성을 반영하여 학습할 수 있습니다.<br> 
+        학습의 마지막 단계에서는 BPTT로 모은 기울기 정보를 <strong>옵티마이저(Optimizer, 예: Adam, SGD)</strong>에 전달하여 최종적으로 가중치를 업데이트합니다.<br>이 전체 과정(순전파~업데이트)을 여러 번 반복하며 모델의 성능을 점차 개선시킵니다.</p>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="section-title">
+        <h2>RNN의 한계와 극복 방안 🚀</h2>
+        <p>기본적인 RNN은 구조적 한계로 인해 몇 가지 중요한 문제점을 가집니다.</p>
+    </div>
+
+    <div class="card">
+        <h3>1. 장기 의존성 문제 (Long-term Dependency)</h3>
+        <p>가장 치명적인 문제로, 시퀀스가 길어질수록 <b>초반부의 중요한 정보가 뒤쪽까지 제대로 전달되지 못하고</b><br> 기억에서 사라지는 현상입니다. 이는 아래 설명할 기울기 문제 때문에 발생합니다.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. 기울기 소실 / 폭주 (Vanishing / Exploding Gradient)</h3>
+        <p>BPTT 과정에서 동일한 가중치가 반복적으로 곱해지면서, <br><b>기울기가 0에 가깝게 사라지거나(소실) 무한대로 커져버리는(폭주) 현상</b>이 발생합니다.
+        <br>이로 인해 학습이 멈추거나 불안정해집니다.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. 병렬 연산의 어려움</h3>
+        <p>RNN은 이전 시점의 계산이 끝나야 다음 시점의 계산을 시작할 수 있는 순차적인 구조입니다.
+        <br>이 때문에 여러 계산을 동시에 처리하는 병렬 연산이 어려워 학습 속도가 느릴 수 있습니다.</p>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="section-title">
+        <h2>✅ 해결 방안</h2>
+    </div>
+
+    <div class="card">
+        <h3>게이트 RNN (LSTM · GRU) ✨</h3>
+        <p>정보의 흐름을 통제하는 <strong>'게이트(Gate)'</strong>를 내부에 두어, <br><b>중요한 정보는 오래 보존하고 불필요한 정보는 걸러내어</b><br>장기 의존성 문제를 해결하는 가장 근본적인 해결책입니다.</p>
+    </div>
+
+    <div class="card">
+        <h3>기울기 클리핑 (Gradient Clipping)</h3>
+        <p>기울기가 일정 임계값을 넘으면 강제로 잘라내어 기울기 폭주를 막는 기술적 방법입니다.</p>
+    </div>
+
+    <div class="card">
+        <h3>Truncated BPTT</h3>
+        <p>역전파의 길이를 일정 수준으로 제한하여 너무 먼 과거까지 기울기가 전파되지 않도록 하는 방법입니다.</p>
+    </div>
+</div>
+</body>
+</html>
