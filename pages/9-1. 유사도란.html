@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유사도 (Similarity) 개념 정리</title>
+    <script>
+        // MathJax 설정
+        MathJax = {
+          tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+          },
+          svg: {
+            fontCache: 'global'
+          }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #ffffff;
+            color: #212529;
+            line-height: 1.7;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #000;
+        }
+        
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            text-align: center;
+            border-top: 1px solid #dee2e6;
+            padding-top: 40px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #343a40;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #343a40;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        strong, b {
+            font-weight: 700;
+            color: #000;
+        }
+        
+        .metric-card {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .sub-card {
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .formula {
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            background-color: #fff;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+
+        table.example-table {
+            width: 100%;
+            text-align: center;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table.example-table th, table.example-table td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+        }
+        table.example-table th {
+            background-color: #e9ecef;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>📏 유사도 (Similarity)란?</h1>
+        </header>
+
+        <p><strong>유사도(Similarity)</strong>는 두 데이터 객체가 얼마나 서로 비슷한지를 나타내는 척도입니다.<br> 0과 1 사이의 값으로 표현되는 경우가 많으며, 값이 1에 가까울수록 두 데이터가 매우 비슷하다는 의미입니다.</p>
+        <p>유사도는 추천 시스템, 텍스트 마이닝, 이미지 검색 등 다양한 분야에서 사용됩니다.<br> 예를 들어, 두 사용자가 구매한 상품 목록이 얼마나 비슷한지 계산하여 상품을 추천해주거나, 두 문서의 단어 분포를 비교하여 같은 주제의 문서인지 판별하는 데 활용됩니다.</p>
+
+        <h2>대표적인 유사도 측정 방법</h2>
+
+        <div class="metric-card">
+            <h3>1. 코사인 유사도 (Cosine Similarity)</h3>
+            <p><strong>코사인 유사도</strong>는 두 벡터 사이의 <strong>방향</strong>이 얼마나 비슷한지를 측정합니다.<br> 벡터의 크기보다는 방향에 초점을 맞추기 때문에,<br> 
+            주로 문서나 텍스트 데이터의 유사도를 계산하는 데 널리 사용됩니다.</p>
+            <ul>
+                <li><strong>핵심 개념 :</strong><br> 두 벡터가 이루는 각도의 코사인 값.<br> 두 벡터의 방향이 완전히 같으면 1, 90°의 각을 이루면 0, 완전히 반대 방향이면 -1의 값을 가집니다.</li>
+                <li><strong>계산 :</strong><br> 두 벡터의 내적을 각각의 크기(노름)의 곱으로 나눕니다.</li>
+            </ul>
+            <div class="formula">
+                $$ \text{Cosine Similarity} = \frac{A \cdot B}{\|A\| \|B\|} $$
+            </div>
+            <p><strong>예시</strong> <br>"나는 사과가 좋다"와 "나는 사과가 정말 좋다"라는 두 문장은 단어의 개수(벡터의 크기)는 다르지만, 
+            <br>'사과'와 '좋다'는 방향성이 같으므로 코사인 유사도가 높게 나옵니다.</p>
+        </div>
+
+        <div class="metric-card">
+            <h3>2. 자카드 유사도 (Jaccard Similarity)</h3>
+            <p><strong>자카드 유사도</strong>는 두 집합이 얼마나 많은 요소를 공유하는지를 측정합니다.<br> 주로 집합 데이터 간의 유사성을 비교하는 데 사용되며, 결과는 0과 1 사이의 값을 가집니다.</p>
+            <strong>핵심 개념 :</strong> 두 집합의 교집합(공통된 원소)의 크기를 합집합(전체 원소)의 크기로 나눈 값입니다.
+            <div class="formula">
+                $$ \text{Jaccard Similarity} = \frac{|A \cap B|}{|A \cup B|} $$
+            </div>
+            <p><strong>예시</strong></p>
+            <ul>
+                <li>A의 장바구니: {사과, 바나나, 우유}</li>
+                <li>B의 장바구니: {사과, 빵, 우유}</li>
+                <li>교집합(공통 상품): {사과, 우유} (2개)</li>
+                <li>합집합(전체 상품): {사과, 바나나, 우유, 빵} (4개)</li>
+                <li>자카드 유사도 = 2 / 4 = 0.5</li>
+            </ul>
+        </div>
+
+        <div class="metric-card">
+            <h3>3. 유클리드 거리 (Euclidean Distance)와 유사도</h3>
+            <p><strong>유클리드 거리</strong>는 두 점 사이의 <strong>직선 거리</strong>를 측정하는 가장 일반적인 방법입니다.<br> 거리가 가까울수록 두 데이터가 비슷하다고 판단할 수 있으므로, 유사도를 계산하는 데 활용될 수 있습니다.</p>
+            <ul>
+                <li><strong>핵심 개념 :</strong><br> 좌표 공간상에서 두 점을 잇는 가장 짧은 거리</li>
+                <li><strong>계산 :</strong><br> 각 차원별 차이의 제곱을 모두 더한 후 제곱근을 씌웁니다.</li>
+            </ul>
+            <div class="formula">
+                $$ d = \sqrt{\sum_{i=1}^{n} (q_i - p_i)^2} $$
+            </div>
+            <ul>
+                <li><strong>유사도로의 변환 :</strong><br> 유클리드 거리는 값이 작을수록 유사하므로, 보통 <code>1 / (1 + 거리)</code> 와 같은 방식으로 변환하여 0과 1 사이의 유사도 값으로 사용합니다. 거리가 0이면 유사도는 1이 됩니다.</li>
+            </ul>
+            <p><strong>예시</strong><br> 사용자의 평점 데이터를 좌표평면의 점으로 보고,<br> 두 사용자 간의 거리를 계산하여 취향이 비슷한 사용자를 찾는 데 사용할 수 있습니다.</p>
+        </div>
+
+        <h2>문장 유사도 분석: 실제 계산 예시 ✍️</h2>
+        <div class="metric-card">
+            <h3>1단계: 문장을 벡터로 변환 (Bag-of-Words)</h3>
+            <p>먼저 각 문장에 특정 단어가 몇 번 나타나는지를 세어 숫자 벡터로 만듭니다. 여기서 단어 주머니(Vocabulary)는 <strong>{love, apple, delicious, ...}</strong> 라고 가정합니다.</p>
+            <table class="example-table">
+                <thead>
+                    <tr>
+                        <th>문장</th>
+                        <th>내용</th>
+                        <th>벡터 (Vector)</th>
+                        <th>크기 (Magnitude)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>I <strong>love</strong> <strong>apple</strong>.</td>
+                        <td>[1, 1, 0, ...]</td>
+                        <td>$$ \sqrt{1^2 + 1^2} = \sqrt{2} $$</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><strong>Apple</strong> is <strong>delicious</strong> which I <strong>love</strong> too.</td>
+                        <td>[1, 1, 1, ...]</td>
+                        <td>$$ \sqrt{1^2 + 1^2 + 1^2} = \sqrt{3} $$</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>I want a <strong>delicious</strong> food, but not an <strong>apple</strong>.</td>
+                        <td>[0, 1, 1, ...]</td>
+                        <td>$$ \sqrt{0^2 + 1^2 + 1^2} = \sqrt{2} $$</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Deep learning is difficult.</td>
+                        <td>[0, 0, 0, ...]</td>
+                        <td>$$ \sqrt{0} = 0 $$</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="metric-card">
+            <h3>2단계: 코사인 유사도 계산</h3>
+            <p>벡터화된 문장들을 바탕으로 코사인 유사도 공식을 적용하여 실제 유사도 점수를 계산합니다.</p>
+            
+            <h4><strong>[1, 2]: 1번 문장 vs 2번 문장</strong></h4>
+            <ul>
+                <li><strong>분자 (내적):</strong> (1 * 1) + (1 * 1) + (0 * 1) = 2</li>
+                <li><strong>분모 (크기의 곱):</strong> $$ \sqrt{2} \times \sqrt{3} = \sqrt{6} $$</li>
+            </ul>
+            <div class="formula">
+                $$ \cos(\theta) = \frac{2}{\sqrt{6}} \approx 0.816 $$
+            </div>
+            <p>➡️ <strong>결론:</strong> 점수가 1에 가까워 매우 유사하다고 판단합니다.</p>
+            <hr>
+
+            <h4><strong>[2, 4]: 2번 문장 vs 4번 문장</strong></h4>
+            <ul>
+                <li><strong>분자 (내적):</strong> (1 * 0) + (1 * 0) + (1 * 0) = 0</li>
+                <li><strong>분모 (크기의 곱):</strong> $$ \sqrt{3} \times 0 = 0 $$</li>
+            </ul>
+            <div class="formula">
+                $$ \cos(\theta) = \frac{0}{\sqrt{3}} = 0 $$
+            </div>
+            <p>➡️ <strong>결론:</strong> 점수가 0이므로 전혀 유사하지 않다고 판단합니다.</p>
+            <hr>
+
+            <h4><strong>[1, 3]: 1번 문장 vs 3번 문장</strong></h4>
+            <ul>
+                <li><strong>분자 (내적):</strong> (1 * 0) + (1 * 1) + (0 * 1) = 1</li>
+                <li><strong>분모 (크기의 곱):</strong> $$ \sqrt{2} \times \sqrt{2} = 2 $$</li>
+            </ul>
+            <div class="formula">
+                $$ \cos(\theta) = \frac{1}{2} = 0.5 $$
+            </div>
+            <p>➡️ <strong>결론:</strong> 'apple' 단어만 겹쳐 0.5의 유사도를 가집니다. 어느 정도 관련은 있지만, [1, 2] 경우보다는 유사도가 낮다고 해석할 수 있습니다.</p>
+        </div>
+
+        <h2>또 다른 거리 척도 : 레벤슈타인 거리 📝</h2>
+        <div class="metric-card">
+            <h3>4. 레벤슈타인 거리 (Levenshtein Distance)</h3>
+            <p><strong>레벤슈타인 거리</strong>는 두 문자열(단어 또는 문장)이 얼마나 다른지를 
+                측정하는 '편집 거리(Edit Distance)'의 한 종류입니다. 이 값은 유사도가 아니라 <b>'거리'</b>이므로, 
+                <b>값이 작을수록 두 문자열이 더 비슷하다는 의미입니다.</b></p>
+            <ul>
+                <li><strong>핵심 개념 :</strong><br> 
+                    문자열 A를 문자열 B로 바꾸기 위해 필요한 <b>최소한의 편집 횟수</b>를 계산합니다.</li>
+                <li><strong>세 가지 연산</strong>
+                    <ul>
+                        <li>✍️ <strong>삽입 (Insertion) :</strong> 문자를 추가하는 연산</li>
+                        <li>🗑️ <strong>삭제 (Deletion) :</strong> 문자를 제거하는 연산</li>
+                        <li>↔️ <strong>변경 (Substitution) :</strong> 한 문자를 다른 문자로 바꾸는 연산</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <div class="sub-card">
+                <h4>"가나다"와 "가다라" 사이의 거리 계산</h4>
+                <ol>
+                    <li>"가**나**다"에서 '나'를 '다'로 <strong>변경</strong>합니다. → "가**다**다" (비용: 1)</li>
+                    <li>"가다**다**"에서 마지막 '다'를 '라'로 <strong>변경</strong>합니다. → "가다**라**" (비용: 1)</li>
+                </ol>
+            </div>
+            <p>➡️ <strong>결론 :</strong> 총 2번의 '변경' 연산이 필요했으므로, "가나다"와 "가다라"의 레벤슈타인 거리는 <strong>2</strong>입니다.</p>
+            
+            <h2>어디에 사용될까요? 🧐</h2>
+            <div class="image-container" style="text-align: center">
+                <p>레벤슈타인 거리는 다양한 곳에서 활용됩니다.</p>
+            </div>
+            <div class="sub-card">
+                <ul>
+                    <li><strong>철자 교정기 :</strong><br> 'aple'을 입력했을 때 거리가 1인 'apple'을 추천합니다.</li>
+                    <li><strong>검색 엔진 :</strong><br> 오타를 입력해도 "이것을 찾으셨나요?"라며 비슷한 단어를 제안합니다.</li>
+                    <li><strong>DNA 염기서열 분석 :</strong><br> 두 DNA 시퀀스가 얼마나 유사한지 비교하는 데 사용됩니다.</li>
+                </ul>
+            </div>
+            <div>
+            <h3>출처 및 참고 자료 📖</h3>
+            <a href="https://www.youtube.com/watch?v=9ea7Ja52ezQ" target="_blank">메타코드M : 딥러닝 자연어처리 유사도 분석을 18분만에 정리해드립니다</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
