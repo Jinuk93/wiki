@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seq2seq(Sequence-to-Sequence) 모델 분석</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap');
+
+        :root {
+            --primary-text: #212529;
+            --secondary-text: #6c757d;
+            --border-color: #dee2e6;
+            --background-light: #ffffff;
+            --inset-bg: #f8f9fa;
+            --step-icon-bg: #2c3e50;
+            --step-icon-text: #ffffff;
+
+            /* Pastel Colors */
+            --pastel-blue-bg: #eefbff;
+            --pastel-blue-border: #c7eef5;
+            --pastel-green-bg: #f0fff4;
+            --pastel-green-border: #cce8d0;
+            --pastel-yellow-bg: #fffbeb;
+            --pastel-yellow-border: #f5e8c7;
+            --pastel-purple-bg: #f3f0ff;
+            --pastel-purple-border: #dcd6ff;
+            --pastel-crimson-bg: #fff5f5;
+            --pastel-crimson-border: #ffd0d0;
+            --pastel-deep-yellow-bg: #fff8e1;
+            --pastel-deep-yellow-border: #ffecb3;
+            --pastel-cyan-bg: #e0f7fa;
+            --pastel-cyan-border: #b2ebf2;
+            --pastel-pink-bg: #fce4ec;
+            --pastel-pink-border: #f8bbd0;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: var(--background-light);
+            color: var(--primary-text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header, .section-title {
+            text-align: center;
+            margin-bottom: 25px;
+            margin-top: 50px;
+        }
+        
+        .header {
+            margin-top: 0;
+            margin-bottom: 50px;
+        }
+
+        h1 { font-size: 2.5rem; font-weight: 900; margin-bottom: 0.5rem; }
+        h2 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; }
+        h4 { font-size: 1.2rem; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; }
+
+        .header p, .standalone-p {
+            font-size: 1.1rem;
+            color: var(--secondary-text);
+            max-width: 100%;
+            margin: 1rem auto;
+            text-align: center;
+            /* 기존 카드 스타일 제거 및 간격 유지 */
+            border: none;
+            background-color: transparent;
+            padding: 0;
+        }
+        
+        p { margin-top: 0; margin-bottom: 1rem; }
+        strong, b { font-weight: 700; color: var(--primary-text); }
+        hr { border: none; height: 1px; background-color: var(--border-color); margin: 80px 0; }
+
+        /* Card Styles */
+        .content-block, .step-card, .model-card {
+            background-color: var(--background-light);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: left;
+            transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+            opacity: 0;
+            transform: translateY(20px);
+            margin-top: 25px;
+        }
+        
+        .content-block.visible, .step-card.visible, .model-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .content-block:hover, .step-card:hover, .model-card:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transform: translateY(-5px);
+        }
+        
+        .sub-card {
+            background-color: var(--background-light); /* 흰색 배경 */
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            /* sub-card 내의 첫 h3/h4/p의 margin-top을 조절 */
+            & > h3:first-child, & > h4:first-child, & > p:first-child {
+                margin-top: 0;
+            }
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center; justify-content: center;
+            width: 40px; height: 40px;
+            background-color: var(--step-icon-bg);
+            color: var(--step-icon-text);
+            font-size: 1.5rem; font-weight: 700;
+            border-radius: 8px; margin-right: 15px;
+            text-shadow: 1px 1px 0px rgba(255,0,0,0.5), -1px -1px 0px rgba(0,255,255,0.5);
+            flex-shrink: 0;
+        }
+        
+        .item-label { display: block; font-weight: 700; margin-bottom: 0.5rem; }
+
+        /* Grid Layouts */
+        .steps-grid {
+            display: grid;
+            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+        
+        .usage-grid {
+            display: grid;
+            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        }
+
+        /* Highlight Colors */
+        .bg-pastel-blue { background-color: var(--pastel-blue-bg); border-color: var(--pastel-blue-border); }
+        .bg-pastel-green { background-color: var(--pastel-green-bg); border-color: var(--pastel-green-border); }
+        .bg-pastel-yellow { background-color: var(--pastel-yellow-bg); border-color: var(--pastel-yellow-border); }
+        .bg-pastel-purple { background-color: var(--pastel-purple-bg); border-color: var(--pastel-purple-border); }
+        .bg-pastel-crimson { background-color: var(--pastel-crimson-bg); border-color: var(--pastel-crimson-border); }
+        .bg-pastel-deep-yellow { background-color: var(--pastel-deep-yellow-bg); border-color: var(--pastel-deep-yellow-border); }
+        .bg-pastel-cyan { background-color: var(--pastel-cyan-bg); border-color: var(--pastel-cyan-border); }
+        .bg-pastel-pink { background-color: var(--pastel-pink-bg); border-color: var(--pastel-pink-border); }
+
+        /* Footer styling */
+        .footer-section {
+            text-align: center;
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border-color);
+        }
+        .footer-section h3 {
+            display: block;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: var(--primary-text);
+        }
+        .footer-section a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        .footer-section a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <header class="header">
+            <h1>Seq2seq(Sequence-to-Sequence)란?</h1>
+        </header>
+
+        <p class="standalone-p">Seq2seq(Sequence-to-Sequence)는하나의 시퀀스(Sequence)를 입력받아 
+        다른 시퀀스를 출력하는 딥러닝 모델 구조입니다. 이름 그대로 '시퀀스'를 '시퀀스'로 변환하는 역할을 하며, 
+        가장 큰 특징은 <b>입력과 출력의 길이가 달라도 된다는 점입니다.</b> 이는 기계 번역, 챗봇, 텍스트 요약 등 
+        다양한 자연어 처리(NLP) 문제에 혁신을 가져온 매우 중요한 모델입니다.</p>
+        
+        <div class="section-title">
+            <h2>🧠 핵심 원리 : 번역가처럼 생각하기</h2>
+        </div>
+
+        <p class="standalone-p">Seq2seq 모델을 <strong>'외국어 번역가'</strong>에 비유하면 쉽게 이해할 수 있습니다.</p>
+
+        <div class="steps-grid">
+            <div class="step-card bg-pastel-blue">
+                <h3>1️⃣ 듣기 (Encoding)</h3>
+                <p>번역가는 한국어 문장 전체를 끝까지 듣고 그 의미를 완벽하게 파악합니다.<br>문장의 일부만 듣고 바로 번역을 시작하지 않습니다.</p>
+            </div>
+            <div class="step-card bg-pastel-green">
+                <h3>2️⃣ 이해<br>(Context Vector)</h3>
+                <p>머릿속으로 방금 들은 한국어 문장의 핵심 의미를 하나의 '생각' 또는 '의미'로 압축하여 정리합니다.</p>
+            </div>
+            <div class="step-card bg-pastel-yellow">
+                <h3>3️⃣ 말하기<br>(Decoding)</h3>
+                <p>머릿속에 정리된 그 <strong>'의미'</strong>를 바탕으로, 영어로 된 새로운 문장을 단어 하나하나 차근차근 만들어냅니다.</p>
+            </div>
+        </div>
+        <p class="standalone-p" style="margin-top: 25px;">Seq2seq는 바로 이 과정을 흉내 낸 인코더-디코더(Encoder-Decoder) 구조를 가집니다.</p>
+
+        <div class="section-title">
+            <h2>Seq2seq의 핵심 구조 : 인코더-디코더</h2>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card bg-pastel-blue">
+                <h3>📥 인코더 (Encoder)</h3>
+                <div class="sub-card">
+                    <span class="item-label">역할:</span>
+                    <p>입력 문장을 읽고, 문장의 모든 정보를 압축하여 하나의 <strong>컨텍스트 벡터(Context Vector)</strong>로 만듭니다.</p>
+                </div>
+                <div class="sub-card">
+                    <span class="item-label">작동 방식:</span>
+                    <p>입력 문장의 단어들을 순서대로 RNN<strong>(주로 LSTM이나 GRU)에 입력</strong>합니다.<br> <strong>마지막 단어까지 처리하고 난 후의 최종 은닉 상태(Hidden State)가 바로 문장 전체의 의미를 압축한 '컨텍스트 벡터'</strong>가 됩니다.</p>
+                </div>
+                <div class="sub-card">
+                    <span class="item-label">예시:</span>
+                    <p>"나는 학생입니다" 라는 문장을 단어별로 읽어<br> [의미 요약]이라는 하나의 벡터로 압축합니다.</p>
+                </div>
+            </div>
+            <div class="step-card bg-pastel-purple">
+                <h3>📤 디코더 (Decoder)</h3>
+                <div class="sub-card">
+                    <span class="item-label">역할:</span>
+                    <p>인코더가 전달한 컨텍스트 벡터를 바탕으로, 출력 문장을 생성합니다.</p>
+                </div>
+                <div class="sub-card">
+                    <span class="item-label">작동 방식:</span>
+                    <p>인코더로부터 컨텍스트 벡터를 전달받습니다.<br> 
+                    문장의 시작을 알리는 &lt;start&gt; 토큰을 입력으로 받아 첫 번째 단어("I")를 예측합니다. 
+                    <br>예측된 "I"를 다음 시점의 입력으로 사용하여 두 번째 단어("am")를 예측합니다. 
+                    <br>이 과정을 반복하다가 문장의 끝을 의미하는 &lt;end&gt; 토큰이 나올 때까지 단어를 순차적으로 생성합니다.</p>
+                </div>
+                <div class="sub-card">
+                    <span class="item-label">예시:</span>
+                    <p>[의미 요약] 벡터를 보고<br> "I", "am", "a", "student" 라는 단어를<br> 차례대로 생성합니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="section-title">
+            <h2>Seq2seq의 한계와 발전 : Attention 메커니즘</h2>
+        </div>
+        <p class="standalone-p">기본적인 Seq2seq 모델은 한 가지 명확한 한계를 가집니다.<br> 바로 인코더가 문장의 <b>모든 정보를 하나의 고정된 크기의 컨텍스트 벡터에 억지로 구겨 넣어야 한다는 점입니다.</b></p>
+
+        <div class="content-block bg-pastel-crimson">
+            <div class="sub-card">
+                <h3>❗ 정보 병목 현상 (Information Bottleneck)</h3>
+                <p>입력 문장이 길어질수록, 초반부의 중요한 정보들이 컨텍스트 벡터에 제대로 담기지 못하고 소실되는 문제가 발생합니다.</b> 마치 긴 이야기를 듣고 앞부분을 잊어버리는 것과 같습니다.</p>
+            </div>
+        </div>
+        
+        <p class="standalone-p">이 문제를 해결하기 위해 어텐션(Attention) 메커니즘이 등장했습니다.</p>
+
+        <div class="section-title">
+            <h2>✨ 어텐션(Attention) 메커니즘이란?</h2>
+        </div>
+        <section class="content-block bg-pastel-deep-yellow">
+            <div class="sub-card">
+                <p>디코더가 각 단어를 생성할 때마다,인코더가 만들었던 입력 문장의 <b>모든 부분(모든 은닉 상태)을 다시 참고하는 기술입니다.</b> 
+                번역가가 번역할 단어에 맞춰 원문의 특정 단어에 더 집중해서 보는 것과 같습니다.</p>
+                <p><span class="item-label">작동 방식:</span>
+                디코더는 출력 단어와 가장 관련이 높은 입력 단어에 '<strong>집중(Attention)</strong>'하여, 
+                해당 부분의 정보를 더 많이 활용합니다. 
+                <br>이를 통해 긴 문장에서도 정보 손실 없이 훨씬 더 정확한 결과물을 만들어낼 수 있습니다.</p>
+            </div>
+        </section>
+
+        <div class="section-title">
+            <h2>어디에 사용될까요? 🗣️</h2>
+        </div>
+        <div class="usage-grid">
+            <div class="step-card bg-pastel-blue">
+                <div class="sub-card">
+                    <h3>1️⃣ 기계 번역</h3>
+                    <p>"나는 학생입니다" ➡️ "I am a student"</p>
+                </div>
+            </div>
+            <div class="step-card bg-pastel-green">
+                <div class="sub-card">
+                    <h3>2️⃣ 챗봇</h3>
+                    <p>"오늘 날씨 어때?" ➡️ <br>"오늘 서울의 날씨는 맑고 최고 기온은 25도입니다."</p>
+                </div>
+            </div>
+            <div class="step-card bg-pastel-yellow">
+                <div class="sub-card">
+                    <h3>3️⃣ 텍스트 요약</h3>
+                    <p>[긴 뉴스 기사] ➡️ [핵심 내용 3줄 요약]</p>
+                </div>
+            </div>
+            <div class="step-card bg-pastel-purple">
+                <div class="sub-card">
+                    <h3>4️⃣ 음성 인식</h3>
+                    <p>[음성 파형 데이터] ➡️ "안녕하세요"</p>
+                </div>
+            </div>
+        </div>
+        
+        <hr>
+
+        <div class="section-title">
+            <h2>Seq2seq 전체과정 ✨</h2>
+        </div>
+
+        <div class="content-block bg-pastel-cyan">
+            <h3><span class="step-number">1</span>인코더 (Encoder) : 문장을 읽고 의미를 압축하는 단계</h3>
+            <p>인코더의 목표는 문장 "I am a student"를 읽고,<br> 그 의미를 담은 단 하나의 <strong>컨텍스트 벡터(Context Vector)</strong>로 압축하는 것입니다.</p>
+            <div class="sub-card">
+                <h4>1. 텍스트 준비 (Text Preprocessing)</h4>
+                <div class="sub-card">
+                    <p><strong>토큰화</strong> :<br> 문장을 최소 단위(토큰)인 단어로 나눕니다.<br>"I am a student" ➡️ ['I', 'am', 'a', 'student']</p>
+                    <p><strong>특수 토큰 추가</strong> :<br> 문장의 시작과 끝을 알리는 &lt;SOS&gt;(Start), &lt;EOS&gt;(End) 토큰을 추가합니다.<br><strong>['&lt;SOS&gt;',</strong> 'I', 'am', 'a', 'student', '<strong>&lt;EOS&gt;']</strong></p>
+                    <p><strong>정수 인코딩</strong> :<br> 각 단어를 컴퓨터가 처리할 수 있도록 미리 만들어둔
+                    단어 사전(Vocabulary)을 참조하여<br> 고유한 번호(정수)로 바꿉니다.➡️[0, 5, 12, 8, 3, 1]</p>
+                </div>
+            </div>
+            <div class="sub-card">
+                <h4>2. 임베딩 (Embedding)</h4>
+                <div class="sub-card">
+                    <p>각 정수를 Word2Vec 등과 같은 기법으로 학습된 고차원의 의미 벡터(임베딩 벡터)로 변환합니다.<br>이 과정을 통해 각 단어는 의미를 가진 숫자들의 배열이 됩니다.<br>[0, 5, ...] ➡️ [ [0.1, 0.4...], [0.9, 0.2...], ...]</p>
+                    <p>이제 문장은 컴퓨터가 연산할 수 있는 <strong>벡터들의 시퀀스(행렬)</strong>가 되었습니다.</p>
+                </div>
+            </div>
+            <div class="sub-card">
+                <h4>3. RNN 처리 및 의미 압축</h4>
+                <div class="sub-card">
+                    <p>인코더의 RNN(주로 LSTM)이 단어 벡터들을 순서대로 하나씩 처리합니다.<br>
+                    첫 번째 RNN 셀은 &lt;SOS&gt; 벡터를 입력받아 은닉 상태(h0)를 계산합니다.<br>
+                    두 번째 RNN 셀은 'I' 벡터와 바로 이전 단계의 은닉 상태(h0)를 함께 입력받아 새로운 은닉 상태(h1)를 만듭니다.<br>
+                    이 과정이 마지막 &lt;EOS&gt; 토큰까지 반복되며 문맥 정보가 은닉 상태에 계속 누적됩니다.<br>
+                    마지막 토큰까지 처리한 후의 최종 은닉 상태가 바로 컨텍스트 벡터입니다.<br>
+                    이 벡터 하나에 "I am a student"의 문맥적 의미가 모두 응축됩니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-block bg-pastel-pink">
+            <h3><span class="step-number">2</span>디코더 (Decoder) : 의미를 바탕으로 새 문장을 생성하는 단계</h3>
+            <p>디코더는 인코더가 만든 컨텍스트 벡터를 바탕으로 "나는 학생입니다"라는 문장을 한 단어씩 생성합니다.</p>
+            <div class="sub-card">
+                <h4>1. 초기화</h4>
+                <div class="sub-card">
+                    디코더 RNN의 첫 번째 은닉 상태는 인코더의 최종 결과물인 컨텍스트 벡터로 설정됩니다.<br> 즉, "I am a student"의 의미를 품고 번역을 시작합니다.
+                </div>
+            </div>
+            <div class="sub-card">
+                <h4>2. 첫 단어 생성</h4>
+                <div class="sub-card">
+                    <p>디코더의 첫 입력으로 문장의 시작을 알리는 &lt;SOS&gt; 토큰의 임베딩 벡터가 들어갑니다.<br>
+                    디코더의 RNN 셀은 &lt;SOS&gt; 벡터와 컨텍스트 벡터(초기 은닉 상태)를 처리하여 출력 벡터를 생성합니다.<br></p>
+                    <p><strong>Softmax 적용</strong> :<br> 이 출력 벡터는 Softmax 함수를 통과하며 한국어 단어 사전에 있는 모든 단어에 대한 확률 분포로 변환됩니다.
+                    <br>(예: { "나는": 0.92, "너는": 0.01, ... })<br>
+                    <strong>단어 선택</strong> :<br> 가장 확률이 높은 <strong>"나는"</strong>이 첫 번째 결과 단어로 선택됩니다.</p>
+                </div>
+            </div>
+            <div class="sub-card">
+                <h4>3. 다음 단어 생성 (자기회귀, Autoregressive)</h4>
+                <div class="sub-card">
+                    <p><strong>핵심 원리</strong> :<br>방금 생성된 단어 <strong>"나는"</strong>의 임베딩 벡터가 다음 RNN 셀의 입력으로 들어갑니다.</p>
+                    <p>RNN 셀은 "나는" 벡터와 이전 단계의 은닉 상태를 입력받아 새로운 출력 벡터를 만듭니다.<br>
+                    이 벡터가 다시 Softmax 함수를 통과하여 다음 단어의 확률을 계산합니다. 
+                    <br>(예: { "학생입니다": 0.89, "선생님": 0.02, ... })<br>
+                    <p>가장 확률이 높은 <strong>"학생입니다"</strong>가 두 번째 결과 단어로 선택됩니다.</p>
+                </div>
+            </div>
+            <div class="sub-card">
+                <h4>4. 종료</h4>
+                <div class="sub-card">
+                    <p>다시 "학생입니다"의 임베딩 벡터가 다음 입력으로 들어갑니다.<br>
+                    RNN과 Softmax를 거쳐, 이제는 문장의 끝을 알리는 &lt;EOS&gt; 토큰의 확률이 가장 높게 계산됩니다.<br>
+                    디코더가 &lt;EOS&gt;를 출력하면, 문장 생성이 종료됩니다.</p>
+                </div>          
+            </div>
+            <br>
+            <p>이처럼 임베딩은 단어를 기계가 이해하는 벡터로 바꾸는 과정이며,<br>
+            Softmax는 모델의 숫자 출력을 우리가 아는 단어에 대한 확률로 바꿔주는 필수적인 과정입니다.<br>
+            또한, 디코더가 자신의 이전 출력값을 다음 입력으로 계속 사용하는 <strong>자기회귀 방식(Autoregressive)</strong>이
+            <br>Seq2seq 모델의 핵심적인 작동 원리입니다.</p>
+        </div>
+        <div class="footer-section">
+            <h3>출처 및 참고 자료 📖</h3>
+            <a href="https://www.youtube.com/watch?v=qwfLTwesx6k" target="_blank">신박AI : Seq2seq 모델을 소개합니다</a>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const animatedElements = document.querySelectorAll('.content-block, .step-card, .model-card, .sub-card');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1 // 뷰포트의 10%가 보이면 애니메이션 시작
+            });
+
+            animatedElements.forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+
+</body>
+</html>
