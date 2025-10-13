@@ -33,6 +33,12 @@
             --pastel-cyan-border: #b2ebf2;
             --pastel-pink-bg: #fce4ec;
             --pastel-pink-border: #f8bbd0;
+
+            /* Custom colors for Encoder/Decoder cards based on image */
+            --custom-encoder-blue-bg: #e0f0f8; /* 이미지 파란색과 유사하게 조정 */
+            --custom-encoder-blue-border: #b3d9f2;
+            --custom-decoder-green-bg: #e6f5e6; /* 이미지 초록색과 유사하게 조정 */
+            --custom-decoder-green-border: #c2e6c2;
         }
 
         body {
@@ -146,11 +152,11 @@
         
         /* Image Style */
         .card-image {
-            max-width: 100%; /* 이미지가 카드 너비를 초과하지 않도록 설정 */
+            max-width: 100%;
             height: auto;
             border-radius: 8px;
             display: block;
-            margin: 10px auto 20px auto; /* 중앙 정렬 */
+            margin: 10px auto 20px auto;
         }
 
         /* Highlight Colors */
@@ -162,6 +168,11 @@
         .bg-pastel-deep-yellow { background-color: var(--pastel-deep-yellow-bg); border-color: var(--pastel-deep-yellow-border); }
         .bg-pastel-cyan { background-color: var(--pastel-cyan-bg); border-color: var(--pastel-cyan-border); }
         .bg-pastel-pink { background-color: var(--pastel-pink-bg); border-color: var(--pastel-pink-border); }
+
+        /* Custom Encoder/Decoder card colors */
+        .bg-custom-encoder-blue { background-color: var(--custom-encoder-blue-bg); border-color: var(--custom-encoder-blue-border); }
+        .bg-custom-decoder-green { background-color: var(--custom-decoder-green-bg); border-color: var(--custom-decoder-green-border); }
+
 
         /* Footer styling */
         .footer-section {
@@ -229,7 +240,7 @@
         </section>
 
         <div class="steps-grid">
-            <div class="step-card bg-pastel-blue">
+            <div class="step-card bg-custom-encoder-blue">
                 <h3>📥 인코더 (Encoder)</h3>
                 <div class="sub-card">
                     <span class="item-label">역할:</span>
@@ -244,7 +255,7 @@
                     <p>"나는 학생입니다" 라는 문장을 단어별로 읽어<br> [의미 요약]이라는 하나의 벡터로 압축합니다.</p>
                 </div>
             </div>
-            <div class="step-card bg-pastel-purple">
+            <div class="step-card bg-custom-decoder-green">
                 <h3>📤 디코더 (Decoder)</h3>
                 <div class="sub-card">
                     <span class="item-label">역할:</span>

@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attention 심층 분석 : Seq2seq 모델의 한계부터 Transformer까지</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 1. Core Design Philosophy & Technical Specifications */
+        :root {
+            --primary-text: #212529;
+            --border-color: #dee2e6;
+            --background-white: #ffffff;
+            --icon-bg: #2c3e50;
+            --icon-text: #ffffff;
+            --h1-size: 2.5rem;
+            --h2-size: 2rem;
+            --h3-size: 1.5rem;
+            --h4-size: 1.2rem;
+            --p-size: 1rem;
+            
+            /* 새로운 색상 팔레트 */
+            --dark-gray: #343a40; /* 진한 그레이 */
+            --light-gray: #f8f9fa; /* 연한 그레이 */
+            --dark-navy: #001f3f; /* 진한 네이비 */
+            --light-orange: #ffe0b2; /* 연한 오렌지 */
+            --medium-orange: #ffcc80; /* 중간 오렌지 */
+            --dark-orange: #ff9800; /* 진한 오렌지 */
+            --deep-blue: #2c3e50; /* 진한 블루 (이전 icon-bg와 유사) */
+            --light-blue-bg: #e3f2fd; /* 연한 블루 배경 (새로운 3번 섹션) */
+            --dark-blue-bg: #bbdefb; /* 진한 블루 배경 */
+            --light-purple: #e1bee7; /* 연한 퍼플 */
+            --medium-purple: #ce93d8; /* 중간 퍼플 */
+            --light-pink: #f8bbd0; /* 연한 핑크 */
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: var(--background-white);
+            color: var(--primary-text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* 2. Typography & Structural Elements */
+        h1, h2, h3, h4, p {
+            margin: 0 0 1rem 0;
+        }
+
+        h1 { font-size: var(--h1-size); font-weight: 700; margin-bottom: 2rem; }
+        h2.section-title { font-size: var(--h2-size); font-weight: 700; text-align: center; margin-top: 4rem; margin-bottom: 2rem; }
+        h3.card-title { font-size: var(--h3-size); font-weight: 500; }
+        h4.card-title { font-size: var(--h4-size); font-weight: 500; margin-bottom: 0.75rem; color: #34495e; }
+        p, ul, ol, table { font-size: var(--p-size); }
+
+        .standalone-p {
+            max-width: 900px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        /* 3. Card & Layout Styles */
+        .content-block, .step-card {
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+            color: var(--background-white); /* 외부 카드 텍스트 색상을 흰색으로 */
+        }
+        .content-block .sub-card, .step-card .sub-card {
+            color: var(--primary-text); /* 내부 카드 텍스트 색상 원래대로 */
+        }
+
+        .card-hover-effect:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        }
+
+        .sub-card {
+            background-color: var(--background-white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: left;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem; /* For spacing when nested */
+        }
+
+        /* 4. Component Styles */
+        .item-label {
+            font-weight: 700;
+            color: var(--icon-bg);
+        }
+        
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            background-color: var(--icon-bg);
+            color: var(--icon-text);
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 8px;
+            margin-right: 1rem;
+            float: left;
+        }
+        
+        .card-content {
+            overflow: hidden;
+        }
+
+        blockquote {
+            border-left: 4px solid var(--medium-purple); /* 연한 퍼플 계열 */
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            background-color: #f8f9fa;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 500;
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #e9ecef;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-size: 90%;
+        }
+
+        ul, ol {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+        .gif-animation {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+
+        /* 5. Custom Color Palette Classes */
+        .bg-dark-gray { background-color: var(--dark-gray); }
+        .bg-dark-navy { background-color: var(--dark-navy); }
+        .bg-light-orange { background-color: var(--light-orange); }
+        .bg-light-gray { background-color: var(--light-gray); }
+        .bg-medium-orange { background-color: var(--medium-orange); }
+        .bg-dark-orange { background-color: var(--dark-orange); }
+        .bg-deep-blue { background-color: var(--deep-blue); }
+        .bg-light-blue-bg { background-color: var(--light-blue-bg); }
+        .bg-dark-blue-bg { background-color: var(--dark-blue-bg); }
+        .bg-light-purple { background-color: var(--light-purple); }
+        .bg-medium-purple { background-color: var(--medium-purple); }
+        .bg-light-pink { background-color: var(--light-pink); }
+        
+
+        /* 6. Interactivity & Animation */
+        .hidden-card {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .visible-card {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .footer-section {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: var(--icon-bg);
+        }
+        .footer-section a {
+            color: var(--deep-blue);
+            text-decoration: none;
+            font-weight: 500;
+            display: block; /* 링크마다 새 줄에 표시 */
+            margin-bottom: 0.5rem; /* 링크 간 간격 */
+        }
+        .footer-section a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+
+    <main class="container">
+        <h1 style="text-align: center;">Attention 심층 분석 :<br> Seq2seq 모델의 한계부터 Transformer까지</h1>
+
+        <section id="intro">
+            <h2 class="section-title">1. Attention의 등장 배경 : Seq2seq 모델의 한계</h2>
+            <p class="standalone-p">
+                기존의 RNN(Recurrent Neural Network) 기반 <strong>Seq2seq (Sequence-to-Sequence)</strong> 모델은 인코더(Encoder)가 입력 시퀀스 전체를 하나의 고정된 크기의 벡터, 즉 <strong>컨텍스트 벡터 (Context Vector)</strong>로 압축하는 구조를 가집니다. <br>디코더(Decoder)는 오직 이 컨텍스트 벡터에만 의존하여 출력 시퀀스를 생성해야 했습니다.
+                <br><br>
+                이러한 구조는 다음과 같은 명백한 한계를 가집니다.
+            </p>
+            <div class="content-block bg-dark-gray hidden-card card-hover-effect">
+                <div class="sub-card">
+                    <ul>
+                        <li><strong>정보 병목 현상 (Information Bottleneck) :</strong><br> 입력 시퀀스의 길이가 길어질수록, <br> 
+                        <b>모든 정보를 하나의 고정된 크기의 벡터에 압축하는 과정에서 정보 손실이 필연적으로 발생합니다.</b> 
+                        <br>특히 시퀀스 앞부분의 정보가 뒤로 갈수록 희석되는 문제가 있었습니다.</li>
+                        <li><strong>고정된 표현의 한계 :</strong><br> 디코더는 <b>매 타임스텝(단어 생성 시점)마다 동일한 컨텍스트 벡터를 참조해야 합니다.</b> 
+                        <br>이는 각 타임스텝에서 필요한 정보가 다름에도 불구하고, 문맥에 따른 동적인 정보 활용이 불가능함을 의미합니다.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="core-concept">
+            <h2 class="section-title">2. Attention의 핵심 개념</h2>
+            <div class="content-block bg-dark-navy hidden-card card-hover-effect">
+                <div class="sub-card">
+                    <p>
+                        <strong>어텐션(Attention)</strong> 메커니즘은 위와 같은 Seq2seq의 한계를 극복하기 위해 제안되었습니다. 
+                        <br>핵심 아이디어는 <strong>디코더가 출력 단어를 예측하는 매 시점마다, 인코더의 전체 입력 시퀀스를 다시 한번 참고</strong>하되, 
+                        <br>현재 예측에 가장 관련이 높은 특정 부분에 <b>'집중(Attention)'</b>하여 정보를 활용하는 것입니다.
+                    </p>
+                    <p>
+                        이를 통해 고정된 컨텍스트 벡터가 아닌, 
+                        <br>매번 새롭게 계산되는 <strong>동적 컨텍스트 벡터(Dynamic Context Vector)</strong>를 생성하여 정보 병목 현상을 해결합니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="attention-operation">
+            <h2 class="section-title">3. Attention 메커니즘 동작</h2>
+            <div class="content-block bg-light-blue-bg hidden-card card-hover-effect">
+                <div class="sub-card">
+                    <img src="../assets/attention_animation.gif" alt="Attention 메커니즘 동작 애니메이션" class="gif-animation">
+                    <br>
+                    <img src="../assets/attention_static.png" alt="Attention 메커니즘 동작 정적 이미지" class="gif-animation" style="width: 100%; height: auto;">
+                </div>
+            </div>
+        </section>
+
+        <section id="components">
+            <h2 class="section-title">4. Attention의 핵심 구성 요소 : Query, Key, Value</h2>
+            <div class="content-block bg-dark-gray hidden-card card-hover-effect">
+                <div class="steps-grid">
+                    <div class="step-card bg-light-orange hidden-card card-hover-effect">
+                        <div class="sub-card">
+                            <h4 class="card-title"><b>Query (Q)</b></h4>
+                            <p>현재 <b>디코더의 (은닉)상태</b>를 나타내는 벡터입니다. 출력 시퀀스의 특정 위치에서 
+                            <br>"어떤 정보가 필요한가?"를 질의하는 역할을 합니다. 
+                            <br>(주로 디코더의 은닉 상태 벡터 <code>s_t</code>가 사용됩니다.)</p>
+                        </div>
+                    </div>
+                    <div class="step-card bg-light-orange hidden-card card-hover-effect">
+                        <div class="sub-card">
+                            <h4 class="card-title"><b>Key (K)</b></h4>
+                            <p><b>인코더의 모든 시점의 은닉 상태 벡터들로,</b>
+                            <br>Query와 연관성을 계산하기 위한 '색인' 역할을 합니다. 각 Key는 특정 입력 단어의 정보를 담고 있습니다.</p>
+                        </div>
+                    </div>
+                    <div class="step-card bg-light-orange hidden-card card-hover-effect">
+                        <div class="sub-card">
+                            <h4 class="card-title"><b>Value (V)</b></h4>
+                            <p>Key와 1:1로 매핑되는 벡터로, Key와 마찬가지로 
+                            <b>인코더의 모든 시점의 은닉 상태 벡터들입니다.</b> Key를 통해 연관성이 결정되면, 
+                            <b>실제 디코더에 전달되는 '실질적인 내용'입니다.</b></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-block bg-light-gray hidden-card card-hover-effect" style="margin-top: 1.5rem; margin-bottom: 0;">
+                    <div class="sub-card">
+                        <blockquote>
+                            <h4 class="card-title"><b>심화 지식 : Key와 Value를 분리하는 이유</b></h4>
+                            <p>많은 경우 Key와 Value는 인코더의 동일한 은닉 상태 벡터를 사용합니다.
+                            <br>하지만 개념적으로 이 둘을 분리함으로써 유연성을 확보할 수 있습니다.
+                            <br><b>Key는 Query</b>와의 <b>유사도 계산</b>이라는 특정 목적에, 
+                            <br><b>Value</b>는 <b>정보의 가중합</b>이라는 다른 목적에 사용될 수 있도록 설계된 것입니다. 
+                            <br>이는 이후 Multi-Head Attention에서 더욱 중요해집니다.</p>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="process">
+            <h2 class="section-title">5. Attention의 전체 작동 과정</h2>
+            <p class="standalone-p" style="text-align: center;"><b>"Thank you"를 "고마워"로 번역</b>하는 과정을 통해 어텐션의 연산 흐름을 단계별로 살펴보겠습니다.</p>
+            <div class="content-block bg-deep-blue hidden-card card-hover-effect">
+                <div class="content-block bg-dark-blue-bg hidden-card card-hover-effect">
+                    <div class="sub-card">
+                        <h4 class="card-title"><span class="step-number">1</span><b> 1단계: 인코더 - Key와 Value 준비</b></h4>
+                        <div class="card-content">
+                            <ul>
+                                <li>인코더는 입력 문장 "Thank", "you", <code>&lt;eos&gt;</code>를 순서대로 입력받아 
+                                <br>각 시점에서의 은닉 상태 벡터 <code>h_thank</code>, <code>h_you</code>, <code>h_eos</code>를 계산합니다.</li>
+                                <li>기존 Seq2seq와 달리, 마지막 은닉 상태만 사용하는 것이 아니라 <strong>모든 시점의 은닉 상태 벡터들을 저장</strong>합니다.</li>
+                                <li>이 은닉 상태 벡터의 집합이 <strong>Keys (K)</strong>이자 <strong>Values (V)</strong>가 됩니다.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-block bg-dark-blue-bg hidden-card card-hover-effect">
+                    <div class="sub-card">
+                        <h4 class="card-title"><span class="step-number">2</span><b> 2단계: 디코더 - 동적 컨텍스트 벡터 생성 및 단어 예측</b></h4>
+                        <div class="card-content">
+                            <p>디코더가 첫 번째 단어 "고마워"를 생성하는 과정입니다.</p>
+                            <ol>
+                                <li><strong>Query 생성 </strong><br>: 첫 번째 단어를 예측하기 위한 디코더의 현재 은닉 상태 <code>s_0</code>가 <strong>Query (Q)</strong>가 됩니다.</li>
+                                <li><strong>어텐션 스코어(Attention Score) 계산</strong><br>: Query <code>s_0</code>를 모든 Key 벡터들과 비교하여 유사도 점수를 계산합니다.</li>
+                                <li><strong>어텐션 가중치(Attention Weights) 계산</strong><br>: 계산된 스코어들에 <strong>소프트맥스(Softmax) 함수</strong>를 적용하여 합이 1인 확률 분포, 
+                                <br>즉 어텐션 가중치(<code>α</code>)를 얻습니다.</li>
+                                <li><strong>컨텍스트 벡터(Context Vector) 생성</strong><br>: 계산된 어텐션 가중치를 각 <strong>Value 벡터에 곱한 후 모두 더합니다 (가중합, Weighted Sum)</strong>. 
+                                <br>이를 통해 현재 타임스텝만을 위한 맞춤형 컨텍스트 벡터 <code>c_0</code>가 생성됩니다.</li>
+                                <li><strong>최종 단어 생성</strong><br>: 디코더는 이렇게 생성된 컨텍스트 벡터 <code>c_0</code>와 자신의 은닉 상태 <code>s_0</code>를 결합하여 
+                                <br>최종적으로 "고마워"라는 단어를 예측합니다.</li>
+                            </ol>
+                            <p>이후, 다음 단어(<code>&lt;eos&gt;</code>)를 예측할 때도 디코더의 다음 은닉 상태 <code>s_1</code>이 새로운 Query가 되어 위 2~5번 과정을 반복합니다. 
+                            <b>이처럼 매번 Query에 따라 새로운 컨텍스트 벡터를 동적으로 계산하는 것이 어텐션의 핵심입니다.</b></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="training">
+            <h2 class="section-title">6. 손실(Loss)과 학습 기법 : 교사 강요 (Teacher Forcing)</h2>
+            <div class="content-block bg-medium-orange hidden-card card-hover-effect">
+                <div class="content-block bg-light-orange hidden-card card-hover-effect">
+                    <div class="sub-card">
+                        <h4 class="card-title"><b>6-1. 손실 (Loss)</b></h4>
+                        <p><strong>손실(Loss)</strong>은 모델의 예측값(prediction)과 실제 정답(ground truth) 사이의 불일치 정도를 정량화한 지표입니다. 기계 번역에서는 주로 <strong>크로스 엔트로피 손실(Cross-Entropy Loss)</strong>이 사용됩니다. 모델은 예측된 단어의 확률 분포와 실제 정답 단어(one-hot vector) 간의 차이를 계산하고, 이 손실 값을 최소화하는 방향으로 내부 파라미터(가중치)를 업데이트하며 학습을 진행합니다.</p>
+                    </div>
+                </div>
+                <div class="content-block bg-light-orange hidden-card card-hover-effect">
+                    <div class="sub-card">
+                        <h4 class="card-title"><b>6-2. 교사 강요 (Teacher Forcing)</b></h4>
+                        <p><strong>교사 강요(Teacher Forcing)</strong>는 Seq2seq 모델의 효율적인 훈련을 위한 기법입니다. 
+                        <br>디코더가 다음 단어를 예측할 때, 이전 타임스텝에서 모델 자신이 예측한 단어를 입력으로 사용하는 대신, 
+                        <br><strong>실제 정답 단어(ground truth)</strong>를 입력으로 사용합니다.</p>
+                        <ul>
+                            <li><span class="item-label">목적 :</span><br> 훈련 초기에 모델이 잘못된 단어를 예측했을 경우, 그 오류가 다음 예측에 연쇄적으로 영향을 미치는 <strong>오류 전파(Error Propagation)</strong> 문제를 방지하기 위함입니다.</li>
+                            <li><span class="item-label">효과 :</span><br> 실제 정답을 입력으로 제공함으로써, 모델은 각 타임스텝에서 독립적으로 올바른 문맥을 학습할 수 있습니다. 이는 학습 속도를 높이고 훈련 과정을 안정화하는 데 크게 기여합니다.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="evolution">
+            <h2 class="section-title">7. Attention의 종류와 발전</h2>
+            <div class="content-block bg-light-pink hidden-card card-hover-effect">
+                <div class="sub-card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>구분</th>
+                                <th>바다나우/루옹 어텐션 (Cross-Attention)</th>
+                                <th>셀프 어텐션 (Self-Attention)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>목적</strong></td>
+                                <td>입력-출력 시퀀스 간의 연관성 파악<br>(e.g., 번역)</td>
+                                <td>단일 시퀀스 내 단어 간의 문맥적/구문적 관계 파악</td>
+                            </tr>
+                            <tr>
+                                <td><strong>참조 대상</strong></td>
+                                <td>디코더 ↔ 인코더 (서로 다른 두 시퀀스)</td>
+                                <td>입력 시퀀스 ↔ 자기 자신 (동일한 하나의 시퀀스)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Q, K, V 출처</strong></td>
+                                <td><strong>Q :</strong> 디코더의 은닉 상태<br><strong>K, V:</strong> 인코더의 모든 은닉 상태</td>
+                                <td><strong>Q, K, V :</strong> 모두 동일한 입력 시퀀스로부터 생성</td>
+                            </tr>
+                            <tr>
+                                <td><strong>주요 사용 모델</strong></td>
+                                <td>RNN 기반 Seq2seq 모델</td>
+                                <td><strong>트랜스포머 (Transformer)</strong> 계열 모델<br>(BERT, GPT 등)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     <ul>
+                        <li><strong>Bahdanau Attention (Additive) </strong><br>: 스코어 계산에 작은 신경망을 사용하는 <b>덧셈(additive)</b> 방식
+                        <br>디코더의 <em>이전</em> 은닉 상태(<code>s<sub>t-1</sub></code>)를 Query로 사용합니다.</li>
+                        <li><strong>Luong Attention (Multiplicative) </strong><br>: 스코어 계산에 내적(dot-product) 등 <b>곱셈(multiplicative)</b> 방식을 사용 
+                        <br>디코더의 <em>현재</em> 은닉 상태(<code>s<sub>t</sub></code>)를 Query로 사용하여 더 간단하고 효율적입니다.</li>
+                        <li><strong>Self-Attention </strong><br>: <strong>트랜스포머(Transformer)</strong> 아키텍처의 핵심 구성 요소
+                        <br>하나의 문장 내에서 단어들끼리 서로 Q, K, V 역할을 수행하여 "그 동물은 피곤해서 길을 건너지 않았다. 
+                        <br>왜냐하면 <strong>그것</strong>은 지쳤기 때문이다."와 같은 문장에서 '그것'이 '동물'을 지칭함을 파악하는 등<br>
+                        문장 내부의 의존 관계(dependency)를 학습합니다.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="transformer">
+            <h2 class="section-title">8. Transformer : Attention is All You Need</h2>
+            <div class="content-block bg-light-purple hidden-card card-hover-effect">
+                <div class="sub-card">
+                    <p>
+                        <strong>트랜스포머(Transformer)</strong>는 RNN의 순차적 연산 구조를 완전히 배제하고, 
+                        <br>오직 <strong>셀프 어텐션</strong>만으로 인코더와 디코더를 구성한 혁신적인 모델입니다.
+                    </p>
+                    <ul>
+                        <li><strong>핵심 변화 </strong><br>: RNN의 재귀적인(recurrent) 구조가 사라짐으로써 
+                        <br>문장의 모든 단어를 한 번에 병렬적으로 처리할 수 있게 되었습니다.</li>
+                        <li><strong>장점 </strong><br>: 병렬 연산을 통해 학습 속도가 비약적으로 향상되었고, GPU 활용을 극대화할 수 있게 되었습니다. 또한, 셀프 어텐션을 통해 문장 내의 장거리 의존 관계(long-range dependency)를 RNN보다 효과적으로 포착할 수 있습니다.</li>
+                        <li><strong>영향 </strong><br>: 트랜스포머의 등장은 현대 자연어 처리(NLP) 분야의 패러다임을 바꾸었으며, 
+                        <br>BERT, GPT 등 대부분의 SOTA(State-of-the-art) 모델의 기반이 되었습니다.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>출처 및 참고 자료 📖</h3>
+                <a href="https://www.youtube.com/watch?v=cu8ysaaNAh0" target="_blank">1. 신박AI : Seq2seq+Attention 모델을 소개합니다</a>
+                <a href="https://www.youtube.com/watch?v=8E6-emm_QVg&list=PL_iJu012NOxd_lWvBM8RfXeB7nPYDwafn&index=7" target="_blank">2. 혁펜하임 : 어텐션 & 셀프-어텐션 가장 직관적인 설명</a>
+                <a href="https://modulabs.co.kr/blog/introducing-attention" target="_blank">3. 모두의연구소 : 어텐션 메커니즘 소개</a>
+            </div>
+        </section>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.hidden-card');
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible-card');
+                        entry.target.classList.remove('hidden-card');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            cards.forEach(card => {
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
