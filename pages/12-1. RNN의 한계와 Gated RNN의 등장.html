@@ -64,17 +64,16 @@
             margin-bottom: 0.5rem;
         }
 
-        h2, .section-title h3 {
+        h2 {
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
+        }
+        
+        .section-title h2 {
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        
-        .section-title h3 {
-            font-size: 1.5rem;
         }
 
         h3 {
@@ -91,22 +90,18 @@
             margin-top: 2rem;
             margin-bottom: 1rem;
         }
-        
-        h5 {
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
 
         .header p, .section-title p, .standalone-p {
             font-size: 1.1rem;
             color: var(--secondary-text);
-            max-width: 600px;
+            max-width: 700px; /* 너비 살짝 조정 */
             margin: 1rem auto;
             text-align: center;
         }
         
         .full-width-p {
              max-width: 100%;
+             text-align: left; /* 중앙 정렬 해제 */
         }
         
         p {
@@ -167,8 +162,6 @@
             font-weight: 700;
             border-radius: 8px;
             margin-right: 15px;
-            position: relative;
-            text-shadow: 1px 1px 0px rgba(255,0,0,0.5), -1px -1px 0px rgba(0,255,255,0.5);
             flex-shrink: 0;
         }
 
@@ -259,7 +252,7 @@
             <h2><span class="step-number">1</span>RNN의 한계점 : Exploding / Vanishing Gradient</h2>
         </div>
         <section class="content-block">
-            <p>RNN은 순서가 있는 데이터를 처리하기 위해 <strong>이전 시점의 정보(hidden state)를 다음 시점으로 계속 넘겨줍니다.<br> 이 과정에서 똑같은 가중치 행렬(W,W_hh)</strong>을 계속해서 곱하게 됩니다.</p>
+            <p>RNN은 순서가 있는 데이터를 처리하기 위해 <strong>이전 시점의 정보(hidden state)를 다음 시점으로 계속 넘겨줍니다.<br> 이 과정에서 똑같은 가중치 행렬(W, W_hh)</strong>을 계속해서 곱하게 됩니다.</p>
             <h4>그러면 왜 문제가 생길까? - 반복되는 곱셈</h4>
             <p>RNN의 학습은 <strong>BPTT(Backpropagation Through Time)</strong>라는 방식을 사용하는데,<br> 이 과정에서 기울기(Gradient)를 계산할 때, <b>똑같은 가중치 행렬 W가 시퀀스의 길이만큼 반복적으로 곱해집니다.</b></p>
         </section>
@@ -275,14 +268,14 @@
                     <h4>"나는"을 읽습니다.</h4>
                     <p>뇌는 <strong>'나'</strong>라는 단어를 보고 '아, 주어가 나왔구나'라고 판단합니다.<br>
                     (이때 뇌가 사용한 판단 규칙을 <strong>W</strong>라고 해볼게요.)<br>
-                    머릿속에는 <strong>'주어’ = ‘나'</strong>라는 정보가 저장됩니다. (이것이 Hidden State 입니다)</p>
+                    머릿속에는 <strong>'주어 = ‘나'</strong>라는 정보가 저장됩니다. (이것이 Hidden State 입니다)</p>
                 </aside>
                 <aside>
                     <h4><strong>“어제”</strong>를 읽습니다.</h4>
                     <p>뇌는 <strong>'어제'</strong>라는 단어를 보고 '시간 정보구나'라고 판단합니다.<br>
                     이때, '어제'를 판단하기 위해 뇌가 갑자기 새로운 규칙을 만들지 않아요.<br>
                     '나는'을 읽을 때 썼던 것과 <strong>똑같은 언어 처리 규칙(W)</strong>을 사용합니다.<br>
-                    그리고 이 <strong>규칙(W)</strong>을 통해, <strong>'어제'</strong>라는 새 정보와 머릿속에 있던 <strong>'주어’ = ‘나'</strong>라는 기존 정보를 조합해서<br> '아, 내가 어제 한 일이구나'라고 이해를 업데이트합니다.</p>
+                    그리고 이 <strong>규칙(W)</strong>을 통해, <strong>'어제'</strong>라는 새 정보와 머릿속에 있던 <strong>'주어 = ‘나'</strong>라는 기존 정보를 조합해서<br> '아, 내가 어제 한 일이구나'라고 이해를 업데이트합니다.</p>
                 </aside>
                 <aside>
                     <h4>"학교에"를 읽습니다.</h4>
@@ -298,16 +291,16 @@
                  <h3>💣 곱해지는 값이 1보다 크다면?</h3>
                  <p style="font-weight: 700; color: var(--primary-text);">(Exploding Gradient)</p>
                  <aside>
-                    예를 들어, 1.2를 계속 곱하면<br> (1.2 → 1.44 → 1.728...) 값이 기하급수적으로<br> 커져서 <b>무한대(inf, ∞)로 발산합니다.</b>
-                    <p>이처럼 기울기 값이 비정상적으로 커지면<br> 가중치가 너무 크게 업데이트되어 <br><b>학습이 불안정해지고 모델이 수렴하지 못하는 문제</b>가 발생합니다.</p>
+                    예를 들어, 1.2를 계속 곱하면 (1.2 → 1.44 → 1.728...) 값이 기하급수적으로 커져서 <b>무한대(inf, ∞)로 발산합니다.</b>
+                    <p>이처럼 기울기 값이 비정상적으로 커지면 가중치가 너무 크게 업데이트되어 <b>학습이 불안정해지고 모델이 수렴하지 못하는 문제</b>가 발생합니다.</p>
                 </aside>
             </div>
              <div class="step-card highlight-blue-pale">
                  <h3>📉 곱해지는 값이 1보다 작다면?</h3>
                  <p style="font-weight: 700; color: var(--primary-text);">(Vanishing Gradient)</p>
                  <aside>
-                    반대로 0.8을 계속 곱하면<br> (0.8 → 0.64 → 0.512...) 값이<br> <b>순식간에 0에 가까워집니다.</b>
-                    <p>이것이 바로 <b>장기 의존성 문제</b>의 핵심 원인입니다. 기울기 값이 0으로 사라져 버리면,<br> 시퀀스의 앞부분에 있는 중요한 정보가 뒤쪽까지 전달되지 못하고, 모델은 먼 과거의 정보를 학습할 수 없게 됩니다.</p>
+                    반대로 0.8을 계속 곱하면 (0.8 → 0.64 → 0.512...) 값이 <b>순식간에 0에 가까워집니다.</b>
+                    <p>이것이 바로 <b>장기 의존성 문제</b>의 핵심 원인입니다. 기울기 값이 0으로 사라져 버리면, 시퀀스의 앞부분에 있는 중요한 정보가 뒤쪽까지 전달되지 못하고, 모델은 먼 과거의 정보를 학습할 수 없게 됩니다.</p>
                 </aside>
             </div>
         </div>
@@ -317,7 +310,7 @@
         </div>
         <p class="standalone-p">결론적으로, <strong>"RNN은 구조적으로 동일한 가중치를 계속 곱하기 때문에, 
          시퀀스가 길어질수록 기울기가 폭발하거나(Exploding) 사라져서(Vanishing) 제대로 된 학습이 어렵다"</strong>라는
-         RNN의 고질적인 문제점을 지적하고 있는 것입니다.<br><br>그리고 바로 이 문제를 해결하기 위해,<br> 정보를 무작정 곱하는 대신 <strong>'게이트(Gate)'</strong>라는 장치를 이용해 정보의 흐름을 조절하는LSTM과 GRU가 등장하게 된 것이죠. 😊</p>
+         RNN의 고질적인 문제점을 지적하고 있는 것입니다.<br><br>그리고 바로 이 문제를 해결하기 위해,<br> 정보를 무작정 곱하는 대신 <strong>'게이트(Gate)'</strong>라는 장치를 이용해 정보의 흐름을 조절하는 LSTM과 GRU가 등장하게 된 것이죠. 😊</p>
 
         <hr class="section-divider">
 
@@ -343,27 +336,29 @@
             <h3>두 종류의 기억 : 장기 기억과 단기 기억</h3>
             <p>LSTM 셀 안에는 두 가지 종류의 '기억'이 있습니다.</p>
             <aside>
-                <h3><p><strong>✅ 셀 상태 (Cell State, Ct) : 메모장의 본문 (장기 기억)</strong></p></h3>
-                이것이 바로 LSTM의 가장 중요한 혁신입니다.<br> 
-                셀 상태는 정보가 전체 문장을 따라 거의 변하지 않고 쭉 흘러갈 수 있도록 하는'정보 고속도로' 역할을 합니다.<br> 
-                마치 메모장의 <strong>'본문’</strong>처럼, 문장의 주어나 전체적인 맥락과 같이 정말 중요한 핵심 정보들이 여기에 기록되고 오랫동안 보존됩니다.
+                <h3><strong>✅ 셀 상태 (Cell State, Ct) : 메모장의 본문 (장기 기억)</strong></h3>
+                <p>이것이 바로 LSTM의 가장 중요한 혁신입니다.<br> 
+                셀 상태는 정보가 전체 문장을 따라 거의 변하지 않고 쭉 흘러갈 수 있도록 하는 '정보 고속도로' 역할을 합니다.<br> 
+                마치 메모장의 <strong>'본문’</strong>처럼, 문장의 주어나 전체적인 맥락과 같이 정말 중요한 핵심 정보들이 여기에 기록되고 오랫동안 보존됩니다.</p>
             </aside>
             <aside>
-                <h3><p><strong>✅ 은닉 상태 (Hidden State, ht) : 포스트잇 요약본 (단기 기억)</strong></p></h3>
-                메모장 본문(셀 상태)의 방대한 정보와 현재 들어온 정보를 바탕으로, <strong>'지금 당장 필요한 내용만 요약'</strong>한 포스트잇과 같습니다.
-                이 요약본은 두 가지 중요한 역할을 합니다.
-                <p>해당 시점의 <strong>예측 결과(예: 다음 단어)</strong>를 <strong>출력(Output)</strong>하는 데 사용됩니다.<br>
-                다음 시점의 셀로 전달되어, 다음 단어를 판단하는 데 필요한 단기적인 문맥을 제공합니다.</p>
+                <h3><strong>✅ 은닉 상태 (Hidden State, ht) : 포스트잇 요약본 (단기 기억)</strong></h3>
+                <p>메모장 본문(셀 상태)의 방대한 정보와 현재 들어온 정보를 바탕으로, <strong>'지금 당장 필요한 내용만 요약'</strong>한 포스트잇과 같습니다.
+                이 요약본은 두 가지 중요한 역할을 합니다.</p>
+                <p>1. 해당 시점의 <strong>예측 결과(예: 다음 단어)</strong>를 <strong>출력(Output)</strong>하는 데 사용됩니다.<br>
+                2. 다음 시점의 셀로 전달되어, 다음 단어를 판단하는 데 필요한 단기적인 문맥을 제공합니다.</p>
             </aside>
 
             <h3>메모장 관리법 : 셀 상태는 어떻게 업데이트 되는가?</h3>
-            <p>셀 상태는 단순히 게이트들의 정보를 섞는 것이 아니라,<br>
+            <p>셀 상태는 단순히 게이트들의 정보를 섞는 것이 아니라,
             <b>'이전 메모를 바탕으로 지우고 새로 쓰는' 과정을 통해 만들어집니다.</b> 이 과정은 두 단계로 이루어집니다.</p>
              <aside>
-                <h4>1. 지우기 (Forget) 🗑️</h4> 먼저, 어제까지 쓴 메모(이전 셀 상태, Ct−1)를 가져옵니다.<br> 그리고 <strong>망각 게이트(Forget Gate)</strong>라는 지우개를 사용해 <strong>"이 정보는 이제 덜 중요하니 지우자"</strong>라고 판단되는 부분을 지웁니다.
-                <h4>2. 더하기 (Input) ✍️</h4>그 다음, <strong>입력 게이트(Input Gate)</strong>라는 펜을 사용해<br> <strong>"이건 새로 들어온 중요한 정보니까 추가로 적자"</strong>라고 판단되는 내용을 빈 공간에 새로 써넣습니다.
+                <h4>1. 지우기 (Forget) 🗑️</h4> 
+                <p>먼저, 어제까지 쓴 메모(이전 셀 상태, C<sub>t−1</sub>)를 가져옵니다.<br> 그리고 <strong>망각 게이트(Forget Gate)</strong>라는 지우개를 사용해 <strong>"이 정보는 이제 덜 중요하니 지우자"</strong>라고 판단되는 부분을 지웁니다.</p>
+                <h4>2. 더하기 (Input) ✍️</h4>
+                <p>그 다음, <strong>입력 게이트(Input Gate)</strong>라는 펜을 사용해 <strong>"이건 새로 들어온 중요한 정보니까 추가로 적자"</strong>라고 판단되는 내용을 빈 공간에 새로 써넣습니다.</p>
             </aside>
-            <p>결론적으로, <strong>현재의 셀 상태(Ct)</strong>란 <strong>과거의 기억(Ct−1)</strong>에서 잊을 부분은 잊고(Forget),<br>새로운 정보를 선별하여 더한(Input) 최종 결과물인 것입니다.</p>
+            <p>결론적으로, <strong>현재의 셀 상태(C<sub>t</sub>)</strong>란 <strong>과거의 기억(C<sub>t−1</sub>)</strong>에서 잊을 부분은 잊고(Forget), 새로운 정보를 선별하여 더한(Input) 최종 결과물인 것입니다.</p>
         </section>
 
         <div class="section-title">
@@ -371,12 +366,11 @@
         </div>
         <section class="model-card highlight-orange">
             <aside>
-                <p>셀 상태가 '정보 고속도로'처럼 작동하며 기울기 소실 문제를 해결할 수 있는 근본적인 이유<br> 바로 <strong>Constant Error Carousel (CEC)</strong>라는 메커니즘 덕분입니다.</p>
+                <p>셀 상태가 '정보 고속도로'처럼 작동하며 기울기 소실 문제를 해결할 수 있는 근본적인 이유, 바로 <strong>Constant Error Carousel (CEC)</strong>라는 메커니즘 덕분입니다.</p>
                 <p>앞서 RNN이 가중치를 계속 <strong>'곱해서'</strong> 기울기 소실 문제가 생긴다고 했죠? 
-                <br>CEC는 이 문제를 정면으로 해결합니다.<br>핵심은 셀 상태가 업데이트될 때 '곱셈'이 아닌 <strong>'덧셈'</strong>을 기본 연산으로 사용한다는 점입니다.</p>
-                <p><code>Ct = (Forget Gate * Ct-1) + (Input Gate * New Info)</code></p>
-                <p>이 <b>덧셈</b> 구조 덕분에, 역전파 시 기울기(오차)가 곱셈으로 인해 급격히 작아지는 현상을 막고<br> 
-                먼 과거까지 거의 그대로(<strong>Constant</strong>) 전달될 수 있습니다. 
+                <br>CEC는 이 문제를 정면으로 해결합니다. 핵심은 셀 상태가 업데이트될 때 '곱셈'이 아닌 <strong>'덧셈'</strong>을 기본 연산으로 사용한다는 점입니다.</p>
+                <p><code>C_t = (Forget_Gate * C_{t-1}) + (Input_Gate * New_Info)</code></p>
+                <p>이 <b>덧셈</b> 구조 덕분에, 역전파 시 기울기(오차)가 곱셈으로 인해 급격히 작아지는 현상을 막고 먼 과거까지 거의 그대로(<strong>Constant</strong>) 전달될 수 있습니다. 
                 <br><b>Carousel</b>'은 정보가 회전목마처럼 사라지지 않고 계속 순환하며 흐를 수 있다는 것을 비유합니다. 
                 <br>이것이 LSTM이 장기 의존성을 학습할 수 있는 비결입니다.</p>
             </aside>
@@ -389,20 +383,19 @@
             <div class="model-card highlight-red-pale">
                 <h3>1. 망각 게이트 (Forget Gate)</h3>
                  <aside>
-                    과거의 어떤 정보를 잊어버릴지 결정합니다.<br>시그모이드 함수를 사용하여 0(모두 잊기)과 1(모두 기억) 사이의 값을 출력하여<br> 
-                    이전 셀 상태에서 버릴 정보를 정합니다.
+                    <p>과거의 어떤 정보를 잊어버릴지 결정합니다.<br>시그모이드 함수를 사용하여 0(모두 잊기)과 1(모두 기억) 사이의 값을 출력하여 이전 셀 상태에서 버릴 정보를 정합니다.</p>
                 </aside>
             </div>
             <div class="model-card highlight-yellow-pale">
                 <h3>2. 입력 게이트 (Input Gate)</h3>
                 <aside>
-                    현재 입력된 정보 중 어떤 것을 셀 상태에 저장할지 결정합니다.<br>시그모이드 함수로 어떤 값을 업데이트할지 정하고, 하이퍼볼릭 탄젠트(tanh) 함수로 새로운 후보 값 벡터를 만들어 셀 상태에 더할 정보를 생성합니다.
+                    <p>현재 입력된 정보 중 어떤 것을 셀 상태에 저장할지 결정합니다.<br>시그모이드 함수로 어떤 값을 업데이트할지 정하고, 하이퍼볼릭 탄젠트(tanh) 함수로 새로운 후보 값 벡터를 만들어 셀 상태에 더할 정보를 생성합니다.</p>
                 </aside>
             </div>
              <div class="model-card highlight-green-pale">
                 <h3>3. 출력 게이트 (Output Gate)</h3>
                 <aside>
-                    셀 상태를 바탕으로 어떤 값을 출력할지 결정합니다. 시그모이드 함수로 셀 상태의 어느 부분을 출력할지 정하고,셀 상태를 tanh 함수에 통과시킨 값과 곱하여 최종 출력을 만듭니다.
+                    <p>셀 상태를 바탕으로 어떤 값을 출력할지 결정합니다. 시그모이드 함수로 셀 상태의 어느 부분을 출력할지 정하고, 셀 상태를 tanh 함수에 통과시킨 값과 곱하여 최종 출력을 만듭니다.</p>
                 </aside>
             </div>
         </div>
@@ -426,18 +419,18 @@
              <div class="model-card highlight-teal-pale">
                 <h3>1. 리셋 게이트 (Reset Gate)</h3>
                 <aside>
-                    과거의 정보와 현재 정보를 어떻게 조합할지 결정합니다.<br> 
+                    <p>과거의 정보와 현재 정보를 어떻게 조합할지 결정합니다.<br> 
                     이 게이트가 닫히면(0에 가까운 값), 과거의 정보를 무시하고 현재 정보에 더 집중하게 됩니다.<br>
-                    문장의 주제가 완전히 바뀌는 지점에서,리셋 게이트는 이전 주제와 관련된 과거 정보를 초기화하는 역할을 합니다.
+                    문장의 주제가 완전히 바뀌는 지점에서, 리셋 게이트는 이전 주제와 관련된 과거 정보를 초기화하는 역할을 합니다.</p>
                 </aside>
              </div>
              <div class="model-card highlight-blue-pale">
                 <h3>2. 업데이트 게이트 (Update Gate)</h3>
                 <aside>
-                    과거 정보를 얼마나 유지하고, 현재 정보를 얼마나 새로 추가할지 결정합니다.<br> 
+                    <p>과거 정보를 얼마나 유지하고, 현재 정보를 얼마나 새로 추가할지 결정합니다.<br> 
                     LSTM의 망각 게이트와 입력 게이트를 합쳐놓은 것과 유사한 역할을 합니다.<br> 
                     업데이트 게이트는 이전 문맥을 얼마나 기억할지(예: 이야기의 주인공)와 새로운 정보(예: 주인공의 새로운 행동)를<br> 
-                    얼마나 반영할지 그 비율을 조절합니다.
+                    얼마나 반영할지 그 비율을 조절합니다.</p>
                 </aside>
              </div>
         </div>
@@ -447,9 +440,9 @@
         </div>
         <section class="model-card">
             <aside>
-               GRU에는 LSTM처럼 분리된 <b>셀 상태(Cell State)</b>는 없습니다.<br>
+               <p>GRU에는 LSTM처럼 분리된 <b>셀 상태(Cell State)</b>는 없습니다.<br>
                대신 은닉 상태(Hidden State) 하나가 그 두 가지 역할을 모두 수행합니다.<br>
-               LSTM의 핵심이던 셀 상태와 은닉 상태를 <b>하나의 은닉 상태(Hidden State)</b>로 통합하였습니다.
+               LSTM의 핵심이던 셀 상태와 은닉 상태를 <b>하나의 은닉 상태(Hidden State)</b>로 통합하였습니다.</p>
             </aside>
         </section>
 
