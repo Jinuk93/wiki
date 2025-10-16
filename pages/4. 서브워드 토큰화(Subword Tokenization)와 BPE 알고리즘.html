@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>서브워드 토큰과 BPE 알고리즘의 모든 것</title>
+    <title>토큰화(Tokenization) 심층 분석</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
@@ -202,11 +202,11 @@
 
     <main class="container">
         <header class="header fade-in-up">
-            <h1>서브워드 토큰(Subword Token)이란? 🧱</h1>
+            <h1>토큰화(Tokenization) 심층 분석</h1>
         </header>
 
         <section class="content-block card fade-in-up">
-            <p>서브워드 토큰은 단어를 구성하는 <strong>의미 있는 더 작은 단위(조각)</strong>입니다.<br> 단어를 쪼갤 수 없는 최소 단위가 아닌, 레고 블록처럼 더 작은 조각들의 조합으로 보는 것이 좋습니다.</p>
+            <p><b>토큰화(Tokenization)</b>는 텍스트를 AI 모델이 처리할 수 있는 의미 있는 작은 단위인 <b>토큰(token)</b>으로 나누는 과정입니다. 단순히 띄어쓰기로 나누는 것을 넘어, 현대 NLP에서는 OOV 문제를 해결하는 <b>서브워드(Subword)</b> 방식이 표준으로 사용됩니다.</p>
             <aside>
                 <p>자주 쓰는 단어 (love) → <strong>하나의 토큰 (love)</strong><br>
                 복잡한 단어 (lovingly) → <strong>여러 토큰의 조합 (love + ##ing + ##ly)</strong></p>
@@ -214,7 +214,7 @@
         </section>
 
         <div class="section-title fade-in-up">
-            <h2>왜 서브워드 토큰이 필요한가요? 🤔</h2>
+            <h2>단어 토큰화의 한계와 서브워드의 등장</h2>
         </div>
         
         <section class="content-block card fade-in-up">
@@ -223,7 +223,7 @@
                 <p><strong>문제점 :</strong><br>
                 모델이 <strong>'먹다'</strong>는 알지만 '먹었다'는 모를 경우, '먹었다'를 의미 없는 기호(<code>&lt;UNK&gt;</code>)로 처리해 버립니다.<br> 핵심 의미('먹다')를 알면서도 정보를 놓치는 것이죠. 이는 특히 조사, 어미 활용이 다양한 한국어에서 더 큰 문제였습니다.</p>
                 <p><strong>해결책 :</strong><br>
-                서브워드는 <strong>'먹었다'</strong>를 아는 조각인 먹 + ##었 + <strong>##다</strong>로 분리합니다.<br> 덕분에 모델은 처음 보는 단어라도 의미를 유추할 수 있게 됩니다.</p>
+                서브워드는 <strong>'먹었다'</strong>를 아는 조각인 <strong>먹 + ##었 + ##다</strong>로 분리합니다.<br> 덕분에 모델은 처음 보는 단어라도 의미를 유추할 수 있게 됩니다.</p>
             </aside>
         </section>
 
@@ -280,7 +280,7 @@
         </div>
         
         <div class="section-title fade-in-up">
-            <h2>장점과 단점 : 트레이드오프 ⚖️</h2>
+            <h2>장점과 단점</h2>
         </div>
 
         <section class="model-compare-grid">

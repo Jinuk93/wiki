@@ -113,15 +113,12 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.07);
         }
-
-        .steps-grid .card {
-            padding: 2.5rem;
-        }
         
         .step-card {
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
+            padding: 2.5rem;
         }
         
         @media (min-width: 768px) {
@@ -170,12 +167,6 @@
         aside li, .card li {
             margin-bottom: 0.5rem;
         }
-
-        .conclusion-item {
-            border-top: 1px solid var(--color-border);
-            padding-top: 1rem;
-            margin-top: 1rem;
-        }
         
         .fade-in-up {
             opacity: 0;
@@ -201,122 +192,80 @@
             <p>이 둘 사이의 간극을 메우는 기술이 바로 미니배치 생성 과정입니다.<br> 이 과정은 크게 두 단계의 문제를 해결하는 과정으로 나눌 수 있습니다.</p>
         </section>
 
-        <div class="steps-grid">
-            <article class="step-card card fade-in-up">
-                <div class="step-number">1</div>
-                <div class="step-card-content">
-                    <h3>1단계 : 글자를 숫자로 바꾸기 (Indexing)</h3>
-                    <p>가장 먼저 해결할 문제는 <strong>"글자를 어떻게 숫자로 바꾸는가?"</strong>입니다.<br> GPU는 '사과'라는 글자를 직접 이해하지 못합니다.<br> 그래서 우리는 일종의 '단어-숫자 번역사전(Vocabulary)'을 만듭니다.</p>
-                    <aside>
-                        <h4>1. 단어장 생성</h4>
-                        <p>텍스트에 있는 모든 고유 단어(토큰)를 모아 번호표를 붙여줍니다.</p>
-                        <pre><strong>{'<pad>': 0, '나': 1, '는': 2, '사과': 3, '를': 4, ...}</strong></pre>
-                        <h4>2. 인덱싱(Indexing)</h4>
-                        <p>이 단어장을 기준으로 문장을 숫자들의 나열(리스트)로 바꿉니다.</p>
-                        <pre><strong>['나', '는', '사과', '를'] → [1, 2, 3, 4]</strong></pre>
-                    </aside>
-                    <p>이 과정을 통해, 수만 개의 0과 하나의 1로 이루어진 거대한 원-핫 벡터를 통째로 저장하는 대신,'1'이 위치한 단 하나의 '인덱스'만 기억하게 됩니다.<br> 덕분에 메모리 문제가 해결되고 텍스트는 훨씬 효율적인 숫자 데이터로 압축됩니다.</p>
-                </div>
-            </article>
-
-            <article class="step-card card fade-in-up">
-                <div class="step-number">2</div>
-                <div class="step-card-content">
-                    <h3>2단계 : 길이를 통일하기 (Padding)</h3>
-                    <p>이제 모든 문장이 숫자 리스트로 바뀌었지만, 아직 문제가 남아있습니다.<br> 바로 <strong>"문장마다 길이가 다르다"</strong>는 모양 문제입니다.</p>
-                    <aside>
-                        <pre>[1, 2, 3, 4] (길이 4)
-[1, 5, 6] (길이 3)</pre>
-                    </aside>
-                    <p>길이가 다른 숫자 리스트들은 반듯한 직사각형 형태로 쌓을 수 없습니다. 마치 높이가 다른 책들을 쌓으면 삐뚤빼뚤해지는 것과 같죠. GPU는 이렇게 모양이 제각각인 데이터를 한 번에 처리하지 못합니다.</p>
-                    <p>이때 사용하는 기술이 바로 <strong>패딩(Padding)</strong>입니다.</p>
-                    
-                    <h4>패딩(Padding)이란?</h4>
-                    <p>한 묶음(미니배치) 내에서 가장 긴 문장을 기준으로,<br> 나머지 짧은 문장들의 뒷부분을 의미 없는 <strong>특별 토큰인 &lt;pad&gt;의 인덱스(여기서는 0)</strong>로 채워<br> 길이를 똑같이 맞추는 작업입니다.</p>
-                    <aside>
-                        <p><strong>적용 예시 (가장 긴 문장 길이 = 4)</strong></p>
-                        <pre>[1, 2, 3, 4] (길이 4) → [1, 2, 3, 4] (변화 없음)
-[1, 5, 6] (길이 3) → [1, 5, 6, <strong>0</strong>] (길이가 4로 맞춰짐)</pre>
-                    </aside>
-                    <p>이제 길이가 제각각이던 숫자 리스트들이 모두 같은 길이를 가진 숫자 리스트로 바뀌었습니다.</p>
-                </div>
-            </article>
-
-            <article class="step-card card fade-in-up">
-                <div class="step-number">3</div>
-                <div class="step-card-content">
-                    <h3>3단계 : 완벽한 숫자 블록, 텐서(Tensor)의 완성</h3>
-                    <p>드디어 마지막 단계입니다. 패딩 덕분에 우리는 이제 길이가 똑같이 맞춰진 여러 개의 숫자 리스트를 갖게 되었습니다. 이제 이 리스트들을 차곡차곡 쌓기만 하면 됩니다.</p>
-                    <aside>
-                        <pre>[1, 2, 3, 4]
-[1, 5, 6, 0]
-[7, 8, 3, 0]
-... (이하 32개 문장)</pre>
-                    </aside>
-                    <p>이렇게 반듯하게 쌓인 숫자들의 <strong>2차원 행렬(Grid)</strong>이<br> GPU가 원하는 최종 데이터 형태인 <strong>텐서(Tensor)</strong>입니다.</p>
-                    
-                    <h4>텐서(Tensor)란?</h4>
-                    <p>AI 모델링에서 사용되는 다차원 숫자 배열을 의미합니다.<br> 지금 우리가 만든 것은 (미니배치 크기 × 문장 길이) 형태의 2차원 텐서입니다. (예: 32 × 4)</p>
-                </div>
-            </article>
-        </div>
-
-        <section class="content-block card fade-in-up">
-            <h3>결론</h3>
-            <aside>
-                 <p>결론적으로 패딩은 제각각의 길이로 벡터화된 길이에 ‘0’으로 채워줌으로서,<br> GPU에서 처리할 수 있는 균일한 모양의 텐서로 만들어 <strong>‘하나의 미니배치(Minibatch)’</strong>가 만들게 됩니다.</p>
-            </aside>
-            <div class="conclusion-item">
-                <p><strong>미니배치</strong> <br> : 학습 과정에서의 역할을 부르는 이름 (예: 32개의 문장 묶음)</p>
-                <p><strong>텐서</strong><br>: 그 데이터 묶음의 실제 <strong>모양(shape)</strong>을 부르는 이름 (예: [32, 100] 모양의 숫자 행렬)</p>
+        <article class="step-card card fade-in-up">
+            <div class="step-number">1</div>
+            <div class="step-card-content">
+                <h3>1단계 : 텍스트를 숫자 리스트로 변환</h3>
+                <p>가장 먼저 해결할 문제는 <strong>"글자를 어떻게 숫자로 바꾸는가?"</strong>입니다. GPU는 '사과'라는 글자를 직접 이해하지 못하므로, 우리는 일종의 '단어-숫자 번역사전(Vocabulary)'을 만듭니다.</p>
+                <aside>
+                    <h4>1. 단어장 생성</h4>
+                    <p>텍스트에 있는 모든 고유 단어(토큰)를 모아 번호표를 붙여줍니다.</p>
+                    <pre><strong>{'<pad>': 0, '나': 1, '는': 2, '사과': 3, '를': 4, ...}</strong></pre>
+                    <h4>2. 인덱싱(Indexing)</h4>
+                    <p>이 단어장을 기준으로 문장을 숫자들의 나열(리스트)로 바꿉니다.</p>
+                    <pre><strong>['나', '는', '사과', '를'] → [1, 2, 3, 4]</strong></pre>
+                </aside>
+                <p>이 과정을 통해 텍스트는 훨씬 효율적인 숫자 데이터로 압축됩니다.</p>
             </div>
-        </section>
-        
+        </article>
+
+        <article class="step-card card fade-in-up">
+            <div class="step-number">2</div>
+            <div class="step-card-content">
+                <h3>2단계 : 길이를 통일하여 텐서(Tensor)로 결합</h3>
+                <p>이제 모든 문장이 숫자 리스트로 바뀌었지만, 아직 <strong>"문장마다 길이가 다르다"</strong>는 문제가 남아있습니다. 길이가 다른 리스트들은 GPU가 한 번에 처리할 수 있는 반듯한 직사각형 형태로 쌓을 수 없습니다.</p>
+                <aside>
+                    <pre>[1, 2, 3, 4] (길이 4)
+[1, 5, 6]   (길이 3)</pre>
+                </aside>
+                <p>이때 사용하는 기술이 바로 <strong>패딩(Padding)</strong>입니다.<br> 한 묶음(미니배치) 내에서 가장 긴 문장을 기준으로, 나머지 짧은 문장들의 뒷부분을 의미 없는 <strong>특별 토큰 <code>&lt;pad&gt;</code>의 인덱스(0)</strong>로 채워 길이를 똑같이 맞춥니다.</p>
+                <aside>
+                    <p><strong>패딩 적용 후</strong></p>
+                    <pre>[1, 2, 3, 4]
+[1, 5, 6, <strong>0</strong>]</pre>
+                </aside>
+                <p>이제 길이가 같아진 숫자 리스트들을 차곡차곡 쌓으면,<br> GPU가 원하는 최종 데이터 형태인 <strong>텐서(Tensor)</strong>, 즉 <strong>미니배치</strong>가 완성됩니다.</p>
+            </div>
+        </article>
+
         <div class="section-title fade-in-up">
-            <h2>미니배치 살펴보기</h2>
+            <h2>왜 미니배치를 사용하는가?</h2>
         </div>
 
         <section class="content-block card fade-in-up">
-            <p>미니배치(Minibatch)는 전체 학습 데이터셋을 여러 개의 작은 묶음으로 나눈 것입니다.<br> 학습 시에 데이터 전체가 아닌, 이 미니배치 단위로 데이터를 입력받아 가중치를 업데이트합니다.</p>
-            <h4>미니배치의 역할과 목적</h4>
-            <p>미니배치를 사용하는 이유는 크게 계산 효율성과 학습 안정성 두 가지입니다.</p>
+            <p>미니배치(Minibatch)는 전체 학습 데이터셋을 여러 개의 작은 묶음으로 나눈 것입니다.<br> 이렇게 데이터를 쪼개서 사용하는 이유는 크게 <strong>계산 효율성</strong>과 <strong>학습 안정성</strong> 두 가지입니다.</p>
             <aside>
-                <p><strong>1. 계산 효율성 (Computational Efficiency) :</strong></p>
-                <p>여러 개의 데이터 샘플(벡터)을 하나의 미니배치(행렬/텐서)로 묶어서 전달하면, GPU는 병렬 처리를 통해 훨씬 빠른 속도로 연산을 수행할 수 있습니다.
+                <p><strong>1. 계산 효율성 (Computational Efficiency)</strong></p>
+                <p>여러 개의 데이터 샘플(벡터)을 하나의 미니배치(행렬/텐서)로 묶어서 전달하면, GPU는 병렬 처리를 통해 훨씬 빠른 속도로 연산을 수행할 수 있습니다.</p>
 
-                <p><strong>2. 학습 안정성 (Training Stability) :</strong></p>
-                <p>모델은 데이터의 예측 오차를 기반으로<br> 가중치를 얼마나 수정할지(그래디언트, Gradient)를 계산하며 학습합니다.</p>
+                <p style="margin-top:1.5rem;"><strong>2. 학습 안정성 (Training Stability)</strong></p>
+                <p>모델은 데이터의 예측 오차(그래디언트)를 기반으로 학습합니다. 미니배치는 이 오차 계산에서 다음과 같은 장점을 가집니다.</p>
                 <ul>
-                    <li><strong>데이터 1개만 사용</strong><br>: 1개의 데이터로 계산된 기울기는 불안정하고 노이즈가 심해, 학습 방향이 크게 흔들릴 수 있습니다.</li>
-                    <li><strong>전체 데이터 사용</strong><br>: 전체 데이터로 계산된 기울기는 가장 정확하지만, 데이터가 클 경우 많은 시간과 메모리가 소요됩니다.</li>
-                    <li><strong>미니배치 사용</strong><br>: 전체 데이터의 기울기에 대한 좋은 근사치(approximation) 역할로서,<br>전체 데이터 사용 보다 속도가 훨씬 빠릅니다. 이는 모델이 효율적으로 최적의 가중치를 찾습니다.</li>
+                    <li><strong>데이터 1개만 사용</strong><br>: 기울기가 불안정하고 노이즈가 심해, 학습 방향이 크게 흔들릴 수 있습니다.</li>
+                    <li><strong>전체 데이터 사용</strong><br>: 기울기는 가장 정확하지만, 계산에 많은 시간과 메모리가 소요됩니다.</li>
+                    <li><strong>미니배치 사용</strong><br>: 전체 데이터 기울기에 대한 <b>효율적인 근사치(approximation)</b> 역할을 합니다.<br> 빠른 속도와 안정적인 학습 방향이라는 두 마리 토끼를 모두 잡는 가장 현실적인 방법입니다.</li>
                 </ul>
             </aside>
         </section>
 
         <div class="section-title fade-in-up">
-            <h2>전체 프로세스와 미니배치의 역할</h2>
+            <h2>전체 프로세스 요약</h2>
         </div>
 
         <section class="content-block card fade-in-up">
             <h3>자연어 처리 기본 파이프라인</h3>
             <p>미니배치가 전체 과정에서 어디에 위치하는지 큰 그림으로 이해해 봅시다.</p>
             <ol>
-                <li><strong>데이터 수집 (Data Collection)</strong><br>모델 학습에 필요한 텍스트 데이터(뉴스 기사, 상품평, 챗봇 대화 등)를 수집합니다.</li>
-                <li><strong>텍스트 전처리 (Text Preprocessing)</strong><br>수집한 텍스트에서 불필요한 기호, 오탈자 등을 제거하고 정제합니다.</li>
-                <li><strong>벡터화 (Vectorization)</strong><br>정제된 텍스트를 토큰화하고, <b>인덱싱</b>과 <b>패딩</b> 과정을 거쳐 모델이 이해할 수 있는<br> 숫자 벡터/텐서로 변환합니다.</li>
-                <li><strong>모델 학습 (Model Training)</strong><br>변환된 숫자 데이터를 모델에 입력하여 가중치(Weight)를 업데이트하며 학습을 진행합니다.
+                <li><strong>데이터 수집</strong><br> : 모델 학습에 필요한 텍스트 데이터를 수집합니다.</li>
+                <li><strong>텍스트 전처리</strong><br> : 수집한 텍스트에서 불필요한 기호, 오탈자 등을 제거하고 정제합니다.</li>
+                <li><strong>벡터화 (Vectorization)</strong><br> : 정제된 텍스트를 토큰화하고, <b>인덱싱</b>과 <b>패딩</b> 과정을 거쳐 모델이 이해할 수 있는 숫자 텐서로 변환합니다.</li>
+                <li><strong>모델 학습 (Model Training)</strong><br> : 벡터화된 데이터를 모델에 입력하여 가중치를 업데이트하며 학습을 진행합니다.
                     <aside>
-                        <h4>⭐ 미니배치의 위치와 역할</h4>
-                        <p>바로 이 <strong>4. 모델 학습 단계</strong>에서 미니배치가 핵심적인 역할을 합니다.</p>
-                        <ul>
-                            <li><strong>어디서 (Where) :</strong><br> 모델 학습(Training) 루프의 가장 핵심부에서 사용됩니다.</li>
-                            <li><strong>어떻게 (How) :</strong><br> 전체 데이터셋을 GPU가 한 번에 처리할 수 있는 작은 묶음(미니배치 텐서)으로 나누어, 모델에 순서대로 주입합니다. <b>모델은 미니배치 하나를 처리할 때마다 가중치를 한 번씩 업데이트합니다.</b></li>
-                            <li><strong>왜 (Why) :</strong><br> 앞서 설명한 <strong>계산 효율성</strong>(GPU 병렬 처리 극대화)과 <strong>학습 안정성</strong>(안정적인 가중치 업데이트)이라는 두 마리 토끼를 모두 잡기 위함입니다.</li>
-                        </ul>
+                        <h4>⭐ 미니배치의 역할</h4>
+                        <p>바로 이 <strong>4. 모델 학습 단계</strong>에서, 전체 데이터셋을 GPU가 한 번에 처리할 수 있는 작은 묶음,<br> 즉 <b>미니배치</b>로 나누어 모델에 순서대로 주입합니다. <br><b>모델은 미니배치 하나를 처리할 때마다 가중치를 한 번씩 업데이트합니다.</b></p>
                     </aside>
                 </li>
-                <li><strong>모델 평가 및 배포 (Evaluation & Deployment)</strong><br>학습된 모델의 성능을 평가하고, 실제 서비스에 적용합니다.</li>
+                <li><strong>모델 평가 및 배포</strong><br> : 학습된 모델의 성능을 평가하고, 실제 서비스에 적용합니다.</li>
             </ol>
         </section>
         </main>

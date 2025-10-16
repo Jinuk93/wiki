@@ -16,6 +16,7 @@
             --color-bg-white: #ffffff;
             --color-bg-subtle: #f8f9fa;
             --color-step-icon-bg: #2c3e50;
+            --color-bg-navy-light: #f5f7fa; /* Deeply Nested Card Color */
             --font-family-base: 'Noto Sans KR', sans-serif;
         }
 
@@ -37,7 +38,7 @@
         .header { text-align: center; margin: 0 auto 3rem auto; }
         .header p { font-size: 1.125rem; color: var(--color-text-secondary); max-width: 800px; margin: 0 auto; }
         
-        .task-card { background-color: var(--color-bg-white); border: 1px solid var(--color-border); border-radius: 0.75rem; padding: 2.5rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02); transition: transform 0.3s ease, box-shadow 0.3s ease; margin-bottom: 2.5rem; }
+        .task-card { background-color: var(--color-bg-subtle); border: 1px solid var(--color-border); border-radius: 0.75rem; padding: 2.5rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02); transition: transform 0.3s ease, box-shadow 0.3s ease; margin-bottom: 2.5rem; }
         .task-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.07); }
         .task-card > h2 { font-size: 1.75rem; text-align: center; border-bottom: 2px solid var(--color-border); padding-bottom: 1rem; margin-bottom: 1.5rem; }
         
@@ -53,22 +54,23 @@
         .sub-task h4 { font-size: 1.2rem; margin-bottom: 0.5rem; border: none; padding: 0;}
         .sub-task p { font-size: 0.95rem; color: var(--color-text-secondary); margin-bottom: 0; }
         
-        aside { background-color: var(--color-bg-subtle); border-left: 4px solid var(--color-border); padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 0.25rem 0.25rem 0; font-size: 0.95rem; }
+        /* Deeply Nested Card Style */
+        aside { background-color: var(--color-bg-navy-light); padding: 1rem 1.5rem; margin: 1.5rem 0 0 0; border-radius: 0.25rem; font-size: 0.95rem; border: 1px solid var(--color-border); }
+        aside p { margin-bottom: 0.5rem; }
+        aside p:last-child { margin-bottom: 0; }
         
-        .fade-in-up { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
-        .fade-in-up.visible { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 <body>
 
     <main class="container">
-        <header class="header fade-in-up">
+        <header class="header">
             <h1>주요 NLP Task</h1>
             <p>자연어 처리 기술은 문장을 이해하고 생성하는 방식을 바탕으로 다양한 Task로 응용됩니다.</p>
         </header>
 
-        <article class="task-card fade-in-up" style="background-color: #f0f8ff;">
-            <h2>1. 기계 번역 (Machine Translation) 🤖</h2>
+        <article class="task-card">
+            <h2>1. 기계 번역 (Machine Translation)</h2>
             <p>하나의 언어로 된 문장(Source)을 다른 언어의 문장(Target)으로 <strong>자동 번역</strong>하는 기술입니다.<br><strong>인코더-디코더</strong> 구조가 대표적이며, 문장의 의미를 이해하고 새로운 문장을 <strong>생성</strong>하는 능력이 모두 필요합니다.</p>
 
             <div class="steps-grid">
@@ -76,11 +78,11 @@
                     <div class="step-number">1</div>
                     <div class="step-content">
                         <h3>입력 처리 (인코더)</h3>
-                        <p>영어 문장 <strong>"I love a dog"</strong>이 토큰화 및 임베딩을 거쳐,<br> 문장 전체의 의미를 압축한 <strong>문맥 벡터(Context Vector)</strong>로 변환됩니다.</p>
+                        <p>영어 문장 <strong>"I love a dog"</strong>이 토큰화 및 임베딩을 거쳐,<br>문장 전체의 의미를 압축한 <strong>문맥 벡터(Context Vector)</strong>로 변환됩니다.</p>
                         <aside>
-                            <p><strong>1. 토큰화 :</strong> "I love a dog ." → ['i', 'love', 'a', 'dog', '.']</p>
-                            <p><strong>2. 임베딩 :</strong> ['i',...] → [[0.1, ...], [0.5, ...], ...]</p>
-                            <p><strong>3. 문맥 벡터 생성 :</strong> [0.823, -0.156, 0.991, ...]</p>
+                            <p><strong>1. 토큰화</strong><br>"I love a dog ." → ['i', 'love', 'a', 'dog', '.']</p>
+                            <p><strong>2. 임베딩</strong><br>['i',...] → [[0.1, ...], [0.5, ...], ...]</p>
+                            <p><strong>3. 문맥 벡터 생성</strong><br>[0.823, -0.156, 0.991, ...]</p>
                         </aside>
                     </div>
                 </div>
@@ -88,15 +90,15 @@
                     <div class="step-number">2</div>
                     <div class="step-content">
                         <h3>의미 번역 (디코더)</h3>
-                        <p>디코더는 '문맥 벡터'를 참고하여, 다음에 올 한국어 단어를 순서대로 예측합니다.</p>
-                        <aside><p>(번역 시작) → '나' 예측 → '나는' 예측 → '나는 개' 예측 ... → (번역 종료) 예측</p></aside>
+                        <p>디코더는 '문맥 벡터'를 참고하여,<br>다음에 올 한국어 단어를 순서대로 예측합니다.</p>
+                        <aside><p>(번역 시작) → '나' 예측 → '나는' 예측 → ... → (번역 종료) 예측</p></aside>
                     </div>
                 </div>
                 <div class="step-card">
                     <div class="step-number">3</div>
                     <div class="step-content">
                         <h3>출력 생성</h3>
-                        <p>생성된 토큰들 <strong>['나', '는', '개', '를', '사랑', '해', '.']</strong>을 합쳐<br> <strong>"나는 개를 사랑해 ."</strong> 라는 최종 번역 결과를 완성합니다.</p>
+                        <p>생성된 토큰들 <strong>['나', '는', '개', '를', '사랑', '해', '.']</strong>을 합쳐<br><strong>"나는 개를 사랑해 ."</strong> 라는 최종 번역 결과를 완성합니다.</p>
                     </div>
                 </div>
             </div>
@@ -104,46 +106,46 @@
             <div class="sub-task-list">
                 <h3>세부 Task 예시</h3>
                 <div class="sub-task">
-                    <h4>신경망 기계 번역 (NMT) 🌐</h4>
-                    <p>딥러닝 모델로 문맥을 파악해 더 자연스러운 번역문을 생성합니다. (예: 구글 번역, 파파고)</p>
+                    <h4>신경망 기계 번역 (NMT)</h4>
+                    <p>딥러닝 모델로 문맥을 파악해 더 자연스러운 번역문을 생성합니다. (예<br>구글 번역, 파파고)</p>
                 </div>
                 <div class="sub-task">
-                    <h4>텍스트 요약 (Text Summarization) 📑</h4>
-                    <p>긴 문서를 짧은 요약문으로 번역하는 Task로 볼 수 있습니다. 문서의 핵심을 이해(인코더)하고 요약문을 생성(디코더)합니다.</p>
+                    <h4>텍스트 요약 (Text Summarization)</h4>
+                    <p>긴 문서를 짧은 요약문으로 번역하는 Task로 볼 수 있습니다.<br>문서의 핵심을 이해(인코더)하고 요약문을 생성(디코더)합니다.</p>
                 </div>
             </div>
         </article>
 
-        <article class="task-card fade-in-up" style="background-color: #f0fff4;">
-            <h2>2. 텍스트 분류 (Text Classification) 📊</h2>
-            <p>주어진 텍스트를 미리 정해진 여러 카테고리(Label) 중 <strong>하나로 자동 분류</strong>하는 기술입니다.<br> 문장 전체의 의미를 하나의 대표 벡터로 압축하고, 이 벡터를 이용해 어떤 카테고리에 속할지 <strong>판단</strong>하는 능력이 핵심입니다.</p>
+        <article class="task-card">
+            <h2>2. 텍스트 분류 (Text Classification)</h2>
+            <p>주어진 텍스트를 미리 정해진 여러 카테고리(Label) 중 <strong>하나로 자동 분류</strong>하는 기술입니다.<br>문장 전체의 의미를 하나의 대표 벡터로 압축하고, 이 벡터를 이용해 어떤 카테고리에 속할지 <strong>판단</strong>하는 능력이 핵심입니다.</p>
 
             <div class="steps-grid">
                 <div class="step-card">
                     <div class="step-number">1</div>
                     <div class="step-content">
                         <h3>입력 처리 (문장 의미 압축)</h3>
-                        <p>문장 <strong>"이 영화 정말 최고예요!"</strong>가 입력되면,<br> 문장 전체의 의미를 요약한 <strong>하나의 대표 벡터(Sentence Vector)</strong>를 생성합니다.</p>
+                        <p>문장 <strong>"이 영화 정말 최고예요!"</strong>가 입력되면,<br>문장 전체의 의미를 요약한 <strong>하나의 대표 벡터(Sentence Vector)</strong>를 생성합니다.</p>
                         <aside>
-                            <p><strong>1. 토큰화 :</strong> "이 영화..." → ['이', '영화', '정말', '최고', '예요', '!']</p>
-                            <p><strong>2. 임베딩 :</strong> ['이',...] → [[0.1, ...], [0.3, ...], ...]</p>
-                            <p><strong>3. 문장 벡터 생성 :</strong> [0.67, -0.12, 0.88, ...]</p>
+                            <p><strong>1. 토큰화</strong><br>"이 영화..." → ['이', '영화', '정말', '최고', '예요', '!']</p>
+                            <p><strong>2. 임베딩</strong><br>['이',...] → [[0.1, ...], [0.3, ...], ...]</p>
+                            <p><strong>3. 문장 벡터 생성</strong><br>[0.67, -0.12, 0.88, ...]</p>
                         </aside>
                     </div>
                 </div>
-                 <div class="step-card">
+                <div class="step-card">
                     <div class="step-number">2</div>
                     <div class="step-content">
                         <h3>감성 분류 (Classifier)</h3>
-                        <p>대표 벡터를 분류기(Classifier)에 전달하여, '긍정', '부정' 등 각 항목에 대한 확률 점수를 계산합니다.</p>
-                        <aside><p>[문장 벡터] → [분류기] → <strong>{'긍정': 0.95, '부정': 0.04, '중립': 0.01}</strong></p></aside>
+                        <p>대표 벡터를 분류기(Classifier)에 전달하여,<br>'긍정', '부정' 등 각 항목에 대한 확률 점수를 계산합니다.</p>
+                        <aside><p>[문장 벡터] → [분류기] → <strong>{'긍정' 0.95, '부정' 0.04, '중립' 0.01}</strong></p></aside>
                     </div>
                 </div>
-                 <div class="step-card">
+                <div class="step-card">
                     <div class="step-number">3</div>
                     <div class="step-content">
                         <h3>출력 생성</h3>
-                        <p>가장 높은 확률을 가진 <strong>'긍정'</strong>을 최종 결과로 선택합니다.<br> 모델은 '최고예요'가 '긍정'과 관련 깊다는 것을 학습된 <strong>가중치(Weight)</strong>를 통해 알고 있습니다.</p>
+                        <p>가장 높은 확률을 가진 <strong>'긍정'</strong>을 최종 결과로 선택합니다.<br>모델은 '최고예요'가 '긍정'과 관련 깊다는 것을 학습된 <strong>가중치(Weight)</strong>를 통해 알고 있습니다.</p>
                     </div>
                 </div>
             </div>
@@ -151,36 +153,36 @@
             <div class="sub-task-list">
                 <h3>세부 Task 예시</h3>
                 <div class="sub-task">
-                    <h4>감성 분석 (Sentiment Analysis) 🥰</h4>
-                    <p>텍스트에 담긴 감정을 '긍정', '부정', '중립' 중 하나로 분류합니다. (예: 영화/상품 리뷰 분석)</p>
+                    <h4>감성 분석 (Sentiment Analysis)</h4>
+                    <p>텍스트에 담긴 감정을 '긍정', '부정', '중립' 중 하나로 분류합니다. (예<br>영화/상품 리뷰 분석)</p>
                 </div>
                 <div class="sub-task">
-                    <h4>뉴스 기사 분류 📰</h4>
+                    <h4>뉴스 기사 분류</h4>
                     <p>뉴스 내용을 분석하여 '정치', '경제', '스포츠' 등 적절한 섹션으로 자동 배정합니다.</p>
                 </div>
                 <div class="sub-task">
-                    <h4>스팸 메일 필터링 🚫</h4>
+                    <h4>스팸 메일 필터링</h4>
                     <p>메일 내용을 분석하여 '스팸'인지 '정상' 메일인지 분류하는 고전적인 Task입니다.</p>
                 </div>
-                 <div class="sub-task">
-                    <h4>의도 분류 (Intent Classification) 💬</h4>
+                <div class="sub-task">
+                    <h4>의도 분류 (Intent Classification)</h4>
                     <p>사용자의 질문이 '날씨 문의', '음악 재생' 등 어떤 의도를 가졌는지 분류합니다. (챗봇의 핵심 기술)</p>
                 </div>
             </div>
         </article>
         
-        <article class="task-card fade-in-up" style="background-color: #fffbeb;">
-            <h2>3. 텍스트 생성 (Text Generation) ✍️</h2>
-            <p>특정 문맥(프롬프트)이 주어졌을 때, 다음에 이어질 가장 자연스러운 단어를 순서대로 예측하여<br> 새로운 문장을 <b>창작</b>하는 기술입니다. <b>디코더</b> 구조가 이 역할을 수행합니다.</p>
+        <article class="task-card">
+            <h2>3. 텍스트 생성 (Text Generation)</h2>
+            <p>특정 문맥(프롬프트)이 주어졌을 때, 다음에 이어질 가장 자연스러운 단어를 순서대로 예측하여<br>새로운 문장을 <b>창작</b>하는 기술입니다. <b>디코더</b> 구조가 이 역할을 수행합니다.</p>
             
             <div class="steps-grid">
                 <div class="step-card">
                     <div class="step-number">1</div>
                     <div class="step-content">
                         <h3>입력 처리 (문맥 이해)</h3>
-                        <p>시작 문장(프롬프트) <strong>"오늘 저녁 메뉴는"</strong>이 주어지면,<br> 모델은 이 문장을 벡터의 나열로 변환하여 초기 문맥을 파악합니다.</p>
+                        <p>시작 문장(프롬프트) <strong>"오늘 저녁 메뉴는"</strong>이 주어지면,<br>모델은 이 문장을 벡터의 나열로 변환하여 초기 문맥을 파악합니다.</p>
                         <aside>
-                            <p><strong>토큰화 & 임베딩 :</strong> "오늘 저녁 메뉴는" → [[0.2,...], [0.1,...], [0.8,...]]</p>
+                            <p><strong>토큰화 & 임베딩</strong><br>"오늘 저녁 메뉴는" → [[0.2,...], [0.1,...], [0.8,...]]</p>
                         </aside>
                     </div>
                 </div>
@@ -188,7 +190,7 @@
                     <div class="step-number">2</div>
                     <div class="step-content">
                         <h3>다음 단어 예측 (Generator)</h3>
-                        <p>모델은 현재까지의 문맥을 바탕으로 다음에 올 단어로 가장 확률이 높은 것을 예측하고,<br> 그 예측된 단어를 다시 문맥에 추가하는 과정을 반복합니다.</p>
+                        <p>모델은 현재까지의 문맥을 바탕으로 다음에 올 단어로 가장 확률이 높은 것을 예측하고,<br>그 예측된 단어를 다시 문맥에 추가하는 과정을 반복합니다.</p>
                         <aside>
                             <p>1. (오늘 저녁 메뉴는) → <strong>'김치찌개'</strong> 예측</p>
                             <p>2. (오늘 저녁 메뉴는 김치찌개) → <strong>'가'</strong> 예측</p>
@@ -200,7 +202,7 @@
                     <div class="step-number">3</div>
                     <div class="step-content">
                         <h3>출력 생성</h3>
-                        <p>'(생성 종료)' 토큰이 나올 때까지 단어 생성을 반복하고,<br> 생성된 토큰들을 합쳐 <strong>"오늘 저녁 메뉴는 김치찌개 가 어떨까?"</strong> 라는 새로운 문장을 완성합니다.</p>
+                        <p>'(생성 종료)' 토큰이 나올 때까지 단어 생성을 반복하고,<br>생성된 토큰들을 합쳐 <strong>"오늘 저녁 메뉴는 김치찌개 가 어떨까?"</strong> 라는 새로운 문장을 완성합니다.</p>
                     </div>
                 </div>
             </div>
@@ -208,45 +210,20 @@
             <div class="sub-task-list">
                 <h3>세부 Task 예시</h3>
                 <div class="sub-task">
-                    <h4>챗봇 및 대화형 AI 🤖</h4>
-                    <p>사용자의 이전 대화 내용을 문맥으로 삼아, 사람처럼 자연스러운 답변 문장을 생성합니다.</p>
+                    <h4>챗봇 및 대화형 AI</h4>
+                    <p>사용자의 이전 대화 내용을 문맥으로 삼아,<br>사람처럼 자연스러운 답변 문장을 생성합니다.</p>
                 </div>
                 <div class="sub-task">
-                    <h4>마케팅 카피라이팅 📝</h4>
-                    <p>제품의 핵심 키워드 몇 개를 입력하면, 그럴듯한 광고 문구나 제품 설명문을 자동으로 생성합니다.</p>
+                    <h4>마케팅 카피라이팅</h4>
+                    <p>제품의 핵심 키워드 몇 개를 입력하면,<br>그럴듯한 광고 문구나 제품 설명문을 자동으로 생성합니다.</p>
                 </div>
                 <div class="sub-task">
-                    <h4>코드 생성 (Code Generation) 💻</h4>
-                    <p>"파이썬으로 웹서버 만들기" 같은 주석이나 설명을 입력하면, 그에 맞는 프로그래밍 코드를 생성합니다.</p>
+                    <h4>코드 생성 (Code Generation)</h4>
+                    <p>"파이썬으로 웹서버 만들기" 같은 주석이나 설명을 입력하면,<br>그에 맞는 프로그래밍 코드를 생성합니다.</p>
                 </div>
             </div>
         </article>
     </main>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const animatedElements = document.querySelectorAll('.fade-in-up');
-
-            if ('IntersectionObserver' in window) {
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('visible');
-                            observer.unobserve(entry.target);
-                        }
-                    });
-                }, { threshold: 0.1 });
-
-                animatedElements.forEach(el => {
-                    observer.observe(el);
-                });
-            } else {
-                animatedElements.forEach(el => {
-                    el.classList.add('visible');
-                });
-            }
-        });
-    </script>
 
 </body>
 </html>

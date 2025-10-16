@@ -10,8 +10,8 @@
     body {
         font-family: 'Noto Sans KR', sans-serif;
         margin: 0;
-        background-color: #ffffff; /* Pure white background */
-        color: #212529; /* Primary Text Color */
+        background-color: #ffffff;
+        color: #212529;
         display: flex;
         justify-content: center;
         padding: 3rem 1rem;
@@ -23,7 +23,7 @@
     }
     
     .header, .section-title {
-        text-align: center; /* Centered top-level elements */
+        text-align: center;
     }
 
     .header h1 {
@@ -34,21 +34,20 @@
 
     .header > p {
         font-size: 1rem;
-        color: #6c757d; /* Secondary Text color */
+        color: #6c757d;
         margin: 0;
         line-height: 1.7;
     }
     
-    /* Emphasis with font-weight only */
     strong, b {
         font-weight: 700;
-        color: #212529; /* Black color for emphasis */
+        color: #212529;
     }
     
     hr {
         border: none;
         height: 1px;
-        background-color: #dee2e6; /* Borders & Dividers color */
+        background-color: #dee2e6;
         margin: 3rem 0;
     }
 
@@ -68,7 +67,7 @@
     .steps-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem; /* Card Grid Gap */
+        gap: 1.5rem;
         margin-top: 2rem;
     }
 
@@ -79,6 +78,8 @@
         padding: 1.5rem;
         text-align: left;
         transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
     }
 
     .step-header {
@@ -90,7 +91,7 @@
     .step-number {
         width: 36px;
         height: 36px;
-        background-color: #f1f3f5; /* Card Number Background */
+        background-color: #f1f3f5;
         border: 1px solid #dee2e6;
         border-radius: 50%;
         display: flex;
@@ -113,41 +114,105 @@
         margin-bottom: 1rem;
         font-size: 0.95rem;
     }
+    
+    .inner-card {
+        background-color: #ffffff;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 1rem;
+        flex-grow: 1; 
+    }
 
-    .step-card ul {
+    .inner-card ul {
         padding-left: 20px;
         line-height: 1.7;
         color: #495057;
-        font-size: 1rem;
+        font-size: 0.95rem; 
         margin: 0;
     }
 
-    .content-block {
-        padding: 1.5rem;
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-        text-align: left;
-        line-height: 1.8;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        margin-top: 2rem; /* Added margin for spacing */
+    /* --- New Goal & Usage Card Styles --- */
+    .card-grid-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-top: 2rem;
     }
     
-    .content-block ul, .content-block ol {
-        padding-left: 20px;
+    .single-card {
+        background-color: #ffffff;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 1.5rem;
+    }
+    
+    .single-card h4 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #212529;
+        margin-bottom: 0.75rem;
+    }
+
+    .single-card p {
+        font-size: 0.95rem;
+        line-height: 1.7;
+        color: #495057;
         margin: 0;
     }
     
-    /* 4. Highlighting Rule */
-    .highlight-green { background-color: #f0fff4; border-color: #d9f7e6; }
+    .single-card .example {
+        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+        font-size: 0.9rem;
+        color: #495057;
+        background-color: #f8f9fa;
+        padding: 0.5rem 0.75rem;
+        border-radius: 4px;
+        margin-top: 1rem;
+        display: inline-block;
+        width: 100%; /* Make example blocks consistent */
+        word-wrap: break-word;
+    }
+    
+    .usage-cards-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .usage-card {
+        background-color: #ffffff;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 1.5rem;
+    }
+    
+    .usage-card h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #000;
+        margin-bottom: 0.75rem;
+    }
+
+    .usage-card p {
+        font-size: 1rem;
+        line-height: 1.7;
+        color: #495057;
+    }
+    /* --- End of New Styles --- */
+
     .highlight-blue { background-color: #f0f8ff; border-color: #d9e8f7; }
     .highlight-yellow { background-color: #fffbeb; border-color: #fff1c2; }
     .highlight-purple { background-color: #f9f0ff; border-color: #eed9f7; }
     .highlight-orange { background-color: #fff8f0; border-color: #ffeedb; }
     .highlight-gray { background-color: #f8f9fa; border-color: #e9ecef; }
 
+    @media (max-width: 900px) {
+        .card-grid-container {
+            grid-template-columns: 1fr;
+        }
+    }
 
-    /* Responsive Layout */
     @media (max-width: 768px) {
         .steps-grid { grid-template-columns: 1fr; }
         .container { padding: 0 1rem; }
@@ -158,97 +223,113 @@
 <div class="container">
 <div class="header">
 <h1>Tokenization란?</h1>
-<p data-ke-size="size16"><b>토큰화(Tokenization)</b>는 텍스트를 AI 모델이 처리할 수 있는 의미 있는 <br />작은 단위인 <b>토큰(token)</b>으로 나누는 과정입니다. 마치 요리를 하기 위해 재료를 잘게 써는 것과 같습니다.</p>
+<p><b>토큰화(Tokenization)</b>는 텍스트를 AI 모델이 처리할 수 있는 의미 있는 <br>작은 단위인 <b>토큰(token)</b>으로 나누는 과정입니다. 마치 요리를 하기 위해 재료를 잘게 써는 것과 같습니다.</p>
 </div>
 <div class="section-title">
-<h2 data-ke-size="size26">Tokenization의 목표</h2>
-<p class="section-subtitle" data-ke-size="size16">토큰화의 진짜 목표는 단순히 텍스트를 나누는 것에서 그치지 않습니다. <br />최종 목표는 텍스트를 모델이 이해할 수 있는 숫자 시퀀스로 변환하는 것입니다.</p>
+<h2>Tokenization의 목표</h2>
+<p class="section-subtitle">토큰화의 진짜 목표는 단순히 텍스트를 나누는 것에서 그치지 않습니다. <br>최종 목표는 텍스트를 모델이 이해할 수 있는 숫자 시퀀스로 변환하는 것입니다.</p>
 </div>
 
-<div class="content-block" data-animation-target="">
-    <ul style="list-style-type: disc; margin: 0; padding-left: 20px;" data-ke-list-type="disc">
-        <li><b>단어장(Vocabulary) 생성<br /></b>: 텍스트를 토큰으로 나눈 뒤, 중복을 제거하여 모든 고유한 토큰의 집합인 단어장을 만듭니다.</li>
-        <li><b>정수 인코딩(Integer Encoding)<br /></b>: 단어장의 각 토큰에 고유한 번호(정수 ID)를 부여합니다.</li>
-        <li><b>벡터화(Vectorization)<br /></b>: 이 숫자들을 이용해 모델이 학습할 수 있는 벡터로 만듭니다.</li>
-    </ul>
+<div class="card-grid-container" data-animation-target="">
+    <div class="single-card highlight-gray">
+        <h4>1. 단어장 (Vocabulary) 생성</h4>
+        <p>텍스트를 토큰으로 나눈 뒤,<br> 중복을 제거하여 모든 고유한 토큰의 집합인 단어장을 만듭니다.</p>
+        <div class="example">{'I': 1, 'love': 2, 'studying': 3, 'NLP': 4}</div>
+    </div>
+    <div class="single-card highlight-gray">
+        <h4>2. 정수 인코딩<br> (Integer Encoding)</h4>
+        <p>단어장의 각 토큰에 고유한 번호<br>(정수 ID)를 부여합니다.</p>
+        <div class="example">['I', 'love', 'studying', 'NLP'] &rarr; [1, 2, 3, 4]</div>
+    </div>
+    <div class="single-card highlight-gray">
+        <h4>3. 벡터화 (Vectorization)</h4>
+        <p>이 숫자들을 모델이 학습할 수 있는 고차원의 벡터(dense vector)로 변환하는 마지막 단계입니다.</p>
+        <div class="example">3 &rarr; [0.12, -0.45, ..., 0.99]</div>
+    </div>
 </div>
 
-<div class="content-block highlight-gray" data-animation-target="">
-    <h3 style="margin: 0 0 1rem 0; font-size: 1.5rem;">예시: 텍스트 → 숫자 시퀀스</h3>
-    <ol style="margin: 0; padding-left: 20px;">
-        <li><b>토큰화 <br /></b>: ['I', 'love', 'studying', 'NLP']</li>
-        <li><b>단어장 생성 <br /></b>: {'I': 1, 'love': 2, 'studying': 3, 'NLP': 4}</li>
-        <li><b>정수 인코딩 <br /></b>: [1, 2, 3, 4]</li>
-    </ol>
-</div>
 <div class="section-title">
-<h2 data-ke-size="size26">Tokenization 종류</h2>
+<h2>Tokenization 종류</h2>
 </div>
 <div class="steps-grid">
 <div class="step-card highlight-blue" data-animation-target="">
 <div class="step-header">
 <div class="step-number">1</div>
-<h3 data-ke-size="size23">글자 토큰화 <br />(Character Tokenization)</h3>
+<h3>글자 토큰화 <br>(Character Tokenization)</h3>
 </div>
-<p>텍스트를 가장 기본적인 단위인 글자(character) 하나하나로 모두 분절하는 방식입니다.</p>
-<ul style="list-style-type: disc;" data-ke-list-type="disc">
-<li><b>작동 방식<br /></b>: Hello <b>&rarr; ['H', 'e', 'l', 'l', 'o']</b></li>
-<li><b>장점<br /></b>: OOV(처음 보는 단어) 문제가 전혀 발생하지 않고, 단어장의 크기가 매우 작습니다.</li>
-<li><b>단점<br /></b>: 단어 고유의 의미가 사라지고, 처리해야 할 데이터의 길이가 너무 길어져 모델이 문맥을 파악하기 어렵습니다.</li>
-</ul>
+<p>텍스트를 가장 기본적인 단위인 글자(character)<br> 하나하나 모두 분절하는 방식입니다.</p>
+<div class="inner-card">
+    <ul>
+        <li><b>작동 방식</b><br>Hello &rarr; <b>['H', 'e', 'l', 'l', 'o']</b></li>
+        <li><b>장점</b><br>OOV(처음 보는 단어) 문제가 전혀 발생하지 않고,<br> 단어장의 크기가 매우 작습니다.</li>
+        <li><b>단점</b><br>단어 고유의 의미가 사라지고,<br> 처리해야 할 시퀀스 길이가 너무 길어져<br> 모델이 문맥을 파악하기 어렵습니다.</li>
+    </ul>
+</div>
 </div>
 <div class="step-card highlight-yellow" data-animation-target="">
 <div class="step-header">
 <div class="step-number">2</div>
-<h3 data-ke-size="size23">단어 토큰화 <br />(Word Tokenization)</h3>
+<h3>단어 토큰화 <br>(Word Tokenization)</h3>
 </div>
-<p>띄어쓰기나 구두점 등 상식적인 구분자를 기준으로 텍스트를 단어(word) 단위로 분절하는 방식입니다.</p>
-<ul style="list-style-type: disc;" data-ke-list-type="disc">
-<li><b>작동 방식<br /></b>: I love studying NLP. &rarr;<b> ['I', 'love', 'studying', 'NLP', '.']</b></li>
-<li><b>장점<br /></b>: 간단하고 이해하기 쉽습니다.</li>
-<li><b>단점<br /></b>: study만 아는 모델이 studying을 만나면 <br /><b>처음 보는 단어(OOV)</b>로 인식하는 문제가 있습니다.</li>
-</ul>
+<p>띄어쓰기나 구두점 등 상식적인 구분자를 기준으로<br> 텍스트를 단어(word) 단위로 분절하는 방식입니다.</p>
+<div class="inner-card">
+    <ul>
+        <li><b>작동 방식</b><br>I love studying NLP. &rarr;<b> <br>['I', 'love', 'studying', 'NLP', '.']</b></li>
+        <li><b>장점</b><br>간단하고 이해하기 쉽습니다.</li>
+        <li><b>단점</b><br>'study'만 아는 모델이 'studying'을 만나면 <b><br>처음 보는 단어(OOV)</b>로 인식하는 문제가 있습니다.</li>
+    </ul>
+</div>
 </div>
 <div class="step-card highlight-purple" data-animation-target="">
 <div class="step-header">
 <div class="step-number">3</div>
-<h3 data-ke-size="size23">서브워드 토큰화 <br />(Subword Tokenization)</h3>
+<h3>서브워드 토큰화 <br>(Subword Tokenization)</h3>
 </div>
 <p>단어를 통계적으로 의미 있는 더 작은 단위(subword)로 분절하여, 단어와 글자의 장점을 모두 취하는 방식입니다.</p>
-<ul style="list-style-type: disc;" data-ke-list-type="disc">
-<li><b>작동 방식<br /></b>: preprocessing &rarr; ['pre', 'processing'] / studying &rarr; <b>['study', '##ing']</b></li>
-<li><b>장점<br /></b>: 처음 보는 단어가 나와도 아는 조각들의 조합으로 표현하여 OOV 문제를 해결합니다.</li>
-<li><b>종류<br /></b>: BPE, WordPiece 등</li>
-</ul>
+<div class="inner-card">
+    <ul>
+        <li><b>작동 방식</b><br>preprocessing &rarr; <br>['pre', 'processing'] / studying &rarr;<br> <b> ['study', '##ing']</b></li>
+        <li><b>장점</b><br>처음 보는 단어가 나와도 아는 조각들의 조합으로<br> 표현하여 OOV 문제를 효과적으로 해결합니다.</li>
+        <li><b>종류</b><br>BPE, WordPiece, SentencePiece 등</li>
+    </ul>
+</div>
 </div>
 <div class="step-card highlight-orange" data-animation-target="">
 <div class="step-header">
 <div class="step-number">4</div>
-<h3 data-ke-size="size23">형태소 토큰화 <br />(Morphological Tokenization)</h3>
+<h3>형태소 토큰화 <br>(Morphological Tokenization)</h3>
 </div>
-<p>단어를 언어의 문법적 최소 의미 단위인 형태소(morpheme)로 분절하는, 특히 한국어에 중요한 방식입니다.</p>
-<ul style="list-style-type: disc;" data-ke-list-type="disc">
-<li><b>작동 방식<br /></b>: 나는 공부를 했다. &rarr;<br />['나', '는', '공부', '를', '하', '었', '다'] (대명사, 조사, 명사, 조사, 동사 어근, 어미)</li>
-<li><b>장점<br /></b>: 언어의 문법적 구조를 정확하게 반영하여 정교한 분석이 가능합니다.</li>
-<li><b>종류<br /></b>: Mecab, Okt 와 같은 형태소 분석기를 사용합니다.</li>
-</ul>
+<p>단어를 언어의 문법적 최소 의미 단위인<br> 형태소(morpheme)로 분절하는 방식입니다.</p>
+<div class="inner-card">
+    <ul>
+        <li><b>작동 방식</b><br>나는 공부를 했다. &rarr;<br>['나', '는', '공부', '를', '하', '었', '다']<br> (대명사, 조사, 명사, 조사, 동사 어근, 어미)</li>
+        <li><b>장점</b><br>언어의 문법적 구조를 정확하게 반영하여<br> 정교한 분석이 가능합니다.</li>
+        <li><b>종류</b><br>Mecab, Okt, Komoran 등</li>
+    </ul>
+</div>
 </div>
 </div>
 <div class="section-title">
-<h2 data-ke-size="size26">언제 무엇을 쓸까?</h2>
+<h2>언제 무엇을 쓸까?</h2>
 </div>
-<div class="content-block highlight-gray" data-animation-target="">
-<ul style="list-style-type: disc;" data-ke-list-type="disc">
-<li><b>단어 토큰화<br /></b>: 간단한 텍스트 분석이나 전통적인 <b>통계 기반 모델(TF-IDF 등)</b>의 기준선을 만들 때 사용합니다.</li>
-<li><b>형태소 토큰화<br /></b>: 한국어의 문법적 특성을 정교하게 분석하거나, 검색 엔진처럼 단어의 원형이 중요할 때 <br />가장 효과적입니다.</li>
-<li><b>서브워드 토큰화<br /></b>: BERT, GPT와 같은 현대적인 딥러닝 모델을 사용하거나 여러 언어를 동시에 다룰 때 사용하는 <br />현재의 표준입니다.</li>
-<li><b>글자 토큰화<br /></b>: 특정 언어에 구애받지 않는 모델을 만들거나, 철자 단위의 패턴 분석이 필요할 때 등 <br />특수한 경우에 사용됩니다.</li>
-</ul>
+
+<div class="usage-cards-container" data-animation-target="">
+    <div class="usage-card">
+        <h3>현재의 표준은 서브워드 토큰화</h3>
+        <p>BERT, GPT와 같은 현대적인 딥러닝 모델은 이미 대규모 데이터로 학습된 <b>자체 서브워드 토크나이저를 함께 제공</b>합니다.<br> 대부분의 경우, 우리는 이 모델에 맞춰진 토크나이저를 <b>그대로 사용하는 것이 베스트 프랙티스</b>입니다.<br> 모델이 학습한 방식 그대로 텍스트를 이해시켜야 최고의 성능을 낼 수 있기 때문입니다.</p>
+    </div>
+    <div class="usage-card">
+        <h3>검색 및 정교한 분석에는 형태소 토큰화</h3>
+        <p>'아이폰'과 '아이폰으로'를 같은 단어로 인식해야 하는 검색 엔진이나, 법률/의료 문서처럼 문법적 분석이 중요한 도메인에서는 여전히 형태소 분석기가 매우 강력한 성능을 보입니다. 이 경우, 형태소 분석기로 텍스트를 먼저 처리한 뒤 다음 단계로 넘기기도 합니다.</p>
+    </div>
+    <div class="usage-card">
+        <h3>기준선(Baseline) 모델에는 단어 토큰화</h3>
+        <p>TF-IDF나 Word2Vec 같은 전통적인 통계 기반 모델의 성능을 빠르게 확인하기 위한 기준선을 만들 때,<br> 간단하고 직관적인 단어 토큰화를 사용하곤 합니다.</p>
+    </div>
 </div>
+
 </div>
 <script>
-    // 4. Interactivity & Highlighting
-    // Use a function to avoid polluting the global scope
     (function() {
         if (!('IntersectionObserver' in window)) {
             console.log("IntersectionObserver not supported, animations will not run.");
