@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
 <meta charset="UTF-8">
 <title>한국어 토큰화, 왜 어려울까?</title>
@@ -10,8 +10,8 @@
     body {
         font-family: 'Noto Sans KR', sans-serif;
         margin: 0;
-        background-color: #ffffff; /* Pure white background */
-        color: #212529; /* Primary Text Color */
+        background-color: #ffffff;
+        color: #212529;
         display: flex;
         justify-content: center;
         padding: 3rem 1rem;
@@ -23,7 +23,7 @@
     }
     
     .header, .section-title {
-        text-align: center; /* Centered top-level elements */
+        text-align: center;
     }
 
     .header h1 {
@@ -32,16 +32,15 @@
         margin-bottom: 0.5rem;
     }
     
-    /* Emphasis with font-weight only */
     strong, b {
         font-weight: 700;
-        color: #212529; /* Black color for emphasis */
+        color: #212529;
     }
     
     hr {
         border: none;
         height: 1px;
-        background-color: #dee2e6; /* Borders & Dividers color */
+        background-color: #dee2e6;
         margin: 3rem 0;
     }
 
@@ -61,7 +60,7 @@
     .model-compare {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem; /* Card Grid Gap */
+        gap: 1.5rem;
         margin-top: 2rem;
     }
 
@@ -71,12 +70,20 @@
         border-radius: 8px;
         padding: 1.5rem;
         text-align: left;
-        transition: box-shadow 0.3s ease;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .model-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
     }
 
     .model-card h3 {
         font-size: 1.5rem;
         margin: 0;
+        margin-bottom: 1rem;
+    }
+    .model-card p {
+        margin-bottom: 1rem;
     }
 
     .content-block {
@@ -87,12 +94,17 @@
         line-height: 1.8;
         font-size: 1rem;
         margin-top: 2rem;
-        transition: box-shadow 0.3s ease;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .content-block:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
     }
 
     aside {
         margin-top: 1.5rem;
-        background-color: #f8f9fa;
+        background-color: #ffffff;
+        border: 1px solid #e9ecef;
         border-radius: 6px;
         padding: 1rem;
     }
@@ -109,11 +121,6 @@
         margin-bottom: 0;
     }
     
-    /* 4. Interactivity & Highlighting */
-    .model-card:hover, .content-block:hover {
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
     .highlight-gray {
         background-color: #f8f9fa;
     }
@@ -122,23 +129,48 @@
         background-color: #f3f0ff;
         border-color: #dcd6ff;
     }
+    
+    .highlight-navy-light {
+        background-color: #f5f7fa;
+    }
 
     /* ▼▼▼ [수정된 부분] BPE 장단점 카드 스타일 ▼▼▼ */
-    .pros-cons-block h3 {
-        font-size: 1.75rem; /* 폰트 크기 키움 */
-        text-align: center; /* 가운데 정렬 */
-        margin-bottom: 1rem;
+    .pros-cons-card {
+        /* background-color: #ffffff; <-- 이 부분을 삭제했습니다 */
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 1.5rem;
+        text-align: left;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    .pros-cons-block ol {
+    /* ▲▲▲ [수정된 부분] BPE 장단점 카드 스타일 ▲▲▲ */
+    .pros-cons-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    }
+    .pros-cons-card h3 {
+        font-size: 1.75rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+    .pros-cons-card .inner-list {
+        padding: 1.5rem;
+        border-radius: 6px;
+        background-color: #ffffff; /* Inner list background is white */
+        border: 1px solid #e9ecef;
+    }
+    .pros-cons-card .inner-list ol {
         padding-left: 1.5rem;
         font-size: 1rem;
         line-height: 1.8;
+        margin: 0;
     }
-    .pros-cons-block li {
+    .pros-cons-card .inner-list li {
         margin-bottom: 1rem;
     }
-    /* ▲▲▲ [수정된 부분] BPE 장단점 카드 스타일 ▲▲▲ */
-
+    .pros-cons-card .inner-list li:last-child {
+        margin-bottom: 0;
+    }
 
     /* Responsive Layout */
     @media (max-width: 768px) {
@@ -151,89 +183,71 @@
 <div class="container">
     <div class="header">
         <h1>한국어 토큰화, 왜 어려울까?</h1>
-        <h2 style="background-color: #ffffff; color: #000000; text-align: center;" data-ke-size="size26">한국어 토큰화의 핵심 과제 : <b>교착어</b></h2>
+        <h2 style="font-size: 1.5rem; color: #6c757d; font-weight: 500;">한국어 토큰화의 핵심 과제<br><b>교착어</b></h2>
     </div>
-    <div class="content-block" data-animation-target="">
-        <p data-ke-size="size16"><b>토큰화(Tokenization)</b>는 문장을 의미 단위(토큰)로 분절하는 과정입니다. <br />영어와 달리 한국어 토큰화가 어려운 이유는, 단어의 핵심 의미(어간)에 문법 기능을 하는 <br /><b>여러 조사나 어미가 풀처럼 달라붙는</b> <b>교착어</b>의 특징 때문입니다.</p>
+    <div class="content-block highlight-gray">
+        <p><b>토큰화(Tokenization)</b>는 문장을 의미 단위(토큰)로 분절하는 과정입니다.<br>영어와 달리 한국어 토큰화가 어려운 이유는, 단어의 핵심 의미(어간)에 문법 기능을 하는<br><b>여러 조사나 어미가 풀처럼 달라붙는</b> <b>교착어</b>의 특징 때문입니다.</p>
         <aside>
-            <p data-ke-size="size16"><b>문제점<br /></b>: '잡다'라는 어간에 여러 접사가 붙어 '잡히시었겠더라'처럼 무수히 많은 단어가 파생됩니다. <br />단순 띄어쓰기로는 '잡다'라는 핵심 의미를 추출할 수 없습니다.</p>
-            <p data-ke-size="size16"><b>해결책<br /></b>: 따라서 어간과 접사를 분리하는 <b>형태소 분석</b>이 필수적입니다. <br />이는 <b>문장을 의미를 가진 최소 단위(형태소)로 분해</b>하고, <b>각 역할(품사)을 태깅하는 작업을 포함</b>합니다.<br> <b>Mecab(메캅)</b>이 대표적인 형태소 분석기입니다.</p>
+            <p><b>문제점</b><br>'잡다'라는 어간에 여러 접사가 붙어 '잡히시었겠더라'처럼 무수히 많은 단어가 파생됩니다.<br>단순 띄어쓰기로는 '잡다'라는 핵심 의미를 추출할 수 없습니다.</p>
+            <p><b>해결책</b><br>따라서 어간과 접사를 분리하는 <b>형태소 분석</b>이 필수적입니다.<br>이는 <b>문장을 의미를 가진 최소 단위(형태소)로 분해</b>하고,<br><b>각 역할(품사)을 태깅하는 작업을 포함</b>합니다.<br><b>Mecab(메캅)</b>이 대표적인 형태소 분석기입니다.</p>
         </aside>
     </div>
 
-    <div class="content-block" data-animation-target="">
-        <p data-ke-size="size16">전통적으로 한국어 처리는 형태소 분석기에 크게 의존했습니다. 하지만 BERT, GPT와 같은 <b>초거대 언어 모델(LLM)</b>이 등장하며 패러다임이 바뀌었습니다. 이 모델들은 특정 언어의 문법에 얽매이지 않고, <b>데이터 자체의 통계적 패턴</b>으로 언어를 배우는 방식을 채택했습니다.</p>
-        <p data-ke-size="size16">이러한 변화 속에서, 언어학적 지식 없이 데이터만으로 의미 단위를 찾아내는 <b>BPE(Byte-Pair Encoding)</b>가 현대 NLP의 핵심적인 토큰화 방식으로 자리 잡게 되었습니다. 이제부터 두 접근법의 차이를 알아보겠습니다.</p>
+    <div class="content-block">
+        <p>전통적으로 한국어 처리는 형태소 분석기에 크게 의존했습니다.<br>하지만 BERT, GPT와 같은 <b>초거대 언어 모델(LLM)</b>이 등장하며 패러다임이 바뀌었습니다.<br>이 모델들은 특정 언어의 문법에 얽매이지 않고, <b>데이터 자체의 통계적 패턴</b>으로 언어를 배우는 방식을 채택했습니다.</p>
+        <p>이러한 변화 속에서, 언어학적 지식 없이 데이터만으로 의미 단위를 찾아내는<br><b>BPE(Byte-Pair Encoding)</b>가 현대 NLP의 핵심적인 토큰화 방식으로 자리 잡게 되었습니다.<br>이제부터 두 접근법의 차이를 알아보겠습니다.</p>
     </div>
     <div class="section-title">
-        <h2 data-ke-size="size26">두 가지 접근법 : 형태소 분석기 vs. BPE</h2>
-        <p class="section-subtitle" data-ke-size="size16">한국어 토큰화 문제를 해결하기 위한 두 가지 핵심적인 방법론입니다.</p>
+        <h2>두 가지 접근법<br>형태소 분석기 vs. BPE</h2>
+        <p class="section-subtitle">한국어 토큰화 문제를 해결하기 위한 두 가지 핵심적인 방법론입니다.</p>
     </div>
     <div class="model-compare">
-        <div class="model-card highlight-gray" data-animation-target="">
-            <h3 data-ke-size="size23"><h3>형태소 분석기</h3>
-            <p data-ke-size="size16"><b>미리 학습된 문법 지식</b>과 사전을 이용해 단어를 분석적으로 분리합니다.</p>
-            <p data-ke-size="size16"><b>접근법</b></p>
-            <p data-ke-size="size16"><span style="font-size: 0.95rem; letter-spacing: 0px;">: <b>"'먹었다'는</b> 동사 어간 <b>'먹-'</b>과 과거형 어미 <br /><b>'-었-'</b>, 종결 어미 <b>'-다'</b>의 조합으로서, 이는 </span><span style="font-size: 0.95rem; letter-spacing: 0px;"><b>언어학적 지식</b>에 기반한 </span><b>하향식(Top-down)</b><span style="font-size: 0.95rem; letter-spacing: 0px;">으로 접근하는 방식입니다.</span></p>
+        <div class="model-card highlight-gray">
+            <h3>형태소 분석기</h3>
+            <p><b>미리 학습된 문법 지식</b>과 사전을 이용해<br>단어를 분석적으로 분리합니다.</p>
+            <p><b>접근법</b></p>
+            <p style="font-size: 0.95rem;"><b>"'먹었다'는</b> 동사 어간 <b>'먹-'</b>과 과거형 어미 <b>'-었-'</b>, 종결 어미 <b>'-다'</b>의 조합이다."<br>이는 <b>언어학적 지식</b>에 기반한 <b>하향식(Top-down)</b> 접근 방식입니다.</p>
         </div>
-        <div class="model-card highlight-purple" data-animation-target="">
-            <h3 data-ke-size="size23">BPE</h3>
-            <p data-ke-size="size16"><b>문법 지식 없이</b>, 방대한 텍스트에서 <b>통계적</b>으로 <br />자주 함께 나오는 글자 덩어리를 찾아냅니다.</p>
-            <p data-ke-size="size16"><b>접근법<br /></b><span style="color: #333333; text-align: left;">: "데이터를 보니&nbsp;</span><b>'먹'</b><span style="color: #333333; text-align: left;">과&nbsp;</span><b>'었'</b><span style="color: #333333; text-align: left;">,&nbsp;</span><b>'다'</b><span style="color: #333333; text-align: left;">는 각자 다른 단어에도 자주 등장하므로,</span><br /><span style="color: #333333; text-align: left;">독립적인 부품</span><b>(서브워드)</b><span style="color: #333333; text-align: left;">일 것이다. 이는 </span><b>데이터 빈도</b><span style="color: #333333; text-align: left;">에 기반한&nbsp;</span><b>상향식(Bottom-up)</b><span style="color: #333333; text-align: left;">으로 접근하는 방식입니다.</span></p>
+        <div class="model-card highlight-purple">
+            <h3>BPE</h3>
+            <p><b>문법 지식 없이</b>, 방대한 텍스트에서 <b>통계적</b>으로<br>자주 함께 나오는 글자 덩어리를 찾아냅니다.</p>
+            <p><b>접근법</b></p>
+            <p style="font-size: 0.95rem;">"데이터를 보니 <b>'먹'</b>과 <b>'었'</b>, <b>'다'</b>는 각자 다른 단어에도 자주 등장하므로,<br>독립적인 부품<b>(서브워드)</b>일 것이다."<br>이는 <b>데이터 빈도</b>에 기반한 <b>상향식(Bottom-up)</b> 접근 방식입니다.</p>
         </div>
     </div>
     <div class="section-title" style="margin-top: 2rem;">
-        <h2 data-ke-size="size26">BPE의 장단점</h2>
-        <p data-ke-size="size16"><span style="background-color: #ffffff; color: #666666; text-align: left;"> BPE는 <b>통계만</b>으로 형태소와 유사한 의미 단위를 발견하며, 다음과 같은 특징을 가집니다 </span></p>
+        <h2>BPE의 장단점</h2>
+        <p>BPE는 <b>통계만</b>으로 형태소와 유사한 의미 단위를 발견하며,<br>다음과 같은 특징을 가집니다.</p>
     </div>
 
-    <div class="content-block pros-cons-block" data-animation-target="">
-        <h3 data-ke-size="size23"><b>장점</b></h3>
-        <ol>
-            <li><b>범용성<br /></b>: 특정 언어의 <b>문법 지식이 필요 없어</b> BERT, GPT처럼 다국어 모델에 쉽게 적용할 수 있습니다.</li>
-            <li><b>신조어 처리<br /></b>: 사전에 없는 단어나 오타가 나와도 <b>통계적으로 분절하여 의미를 유추</b>합니다.</li>
-        </ol>
-        <h3 data-ke-size="size23" style="margin-top: 2rem;"><b>단점</b></h3>
-        <ol>
-            <li><b>정확성<br /></b>: 분절 <b>결과가 항상 문법적으로 완벽하지는 않을 수 있습니다.</b> <br />(예: '습니다'처럼 자주 쓰이는 어미는 하나의 토큰으로 통째로 합쳐버리기도 함)</li>
-        </ol>
+    <div class="model-compare">
+        <div class="pros-cons-card highlight-gray">
+            <h3><b>장점</b></h3>
+            <div class="inner-list">
+                <ol>
+                    <li><b>범용성</b><br>특정 언어의 <b>문법 지식이 필요 없어</b> BERT, GPT처럼<br>다국어 모델에 쉽게 적용할 수 있습니다.</li>
+                    <li><b>신조어 처리</b><br>사전에 없는 단어나 오타가 나와도<br><b>통계적으로 분절하여 의미를 유추</b>합니다.</li>
+                </ol>
+            </div>
+        </div>
+        <div class="pros-cons-card highlight-navy-light">
+            <h3><b>단점</b></h3>
+            <div class="inner-list">
+                <ol>
+                    <li><b>정확성</b><br>분절 <b>결과가 항상 문법적으로 완벽하지는 않을 수 있습니다.</b><br>(예: '습니다'처럼 자주 쓰이는 어미는 하나의 토큰으로 통째로 합쳐버리기도 함)</li>
+                </ol>
+            </div>
+        </div>
     </div>
     <div class="section-title">
-        <h2 data-ke-size="size26">정리 및 결론</h2>
+        <h2>정리 및 결론</h2>
     </div>
-    <div class="content-block" data-animation-target="">
-        <p data-ke-size="size16">한국어 토큰화의 여정은 <b>'어떻게 하면 의미를 잘 보존하며 단어를 나눌까?'</b>라는 질문에 대한 답을 찾는 과정이었습니다.<br> 우리는 두 가지 주요 해법을 살펴보았습니다.</p>
-        <p data-ke-size="size16">하나는 언어학적 지식을 바탕으로 문법 규칙에 따라 단어를 분해하는 <b>형태소 분석기</b>입니다.<br> 이 방식은 해석력이 높고 정확하지만, 사전 의존적이며 신조어에 취약한 단점이 있습니다.</p>
-        <p data-ke-size="size16">다른 하나는 언어와 무관하게 오직 데이터의 통계적 패턴만을 학습하는 <b>BPE</b>입니다.<br> 이 방식은 범용성과 확장성 덕분에 현대 초거대 언어 모델의 표준으로 자리 잡았습니다.</p>
-        <p data-ke-size="size16">결론적으로, 어떤 방식이 절대적으로 우월하다기보다는 <b>Task의 목적에 따라 적절한 도구를 선택</b>하는 것이 중요합니다.<br> 높은 해석력이 필요한 검색 엔진이나 간단한 텍스트 분석에는 여전히 형태소 분석기가 강력한 성능을 발휘하며, 대규모 딥러닝 모델을 다룰 때는 BPE에 대한 이해가 필수적입니다.</p>
+    <div class="content-block">
+        <p>한국어 토큰화의 여정은 <b>'어떻게 하면 의미를 잘 보존하며 단어를 나눌까?'</b><br>라는 질문에 대한 답을 찾는 과정이었습니다. 우리는 두 가지 주요 해법을 살펴보았습니다.</p>
+        <p>하나는 언어학적 지식을 바탕으로 문법 규칙에 따라 단어를 분해하는 <b>형태소 분석기</b>입니다.<br>이 방식은 해석력이 높고 정확하지만, 사전 의존적이며 신조어에 취약한 단점이 있습니다.</p>
+        <p>다른 하나는 언어와 무관하게 오직 데이터의 통계적 패턴만을 학습하는 <b>BPE</b>입니다.<br>이 방식은 범용성과 확장성 덕분에 현대 초거대 언어 모델의 표준으로 자리 잡았습니다.</p>
+        <p>결론적으로, 어떤 방식이 절대적으로 우월하다기보다는 <b>Task의 목적에 따라 적절한 도구를 선택</b>하는 것이 중요합니다.<br>높은 해석력이 필요한 검색 엔진이나 간단한 텍스트 분석에는 여전히 형태소 분석기가 강력한 성능을 발휘하며,<br>대규모 딥러닝 모델을 다룰 때는 BPE에 대한 이해가 필수적입니다.</p>
     </div>
 </div>
-<script>
-    // 4. Interactivity
-    // Use a function to avoid polluting the global scope
-    (function() {
-        if (!('IntersectionObserver' in window)) {
-            console.log("IntersectionObserver not supported, animations will not run.");
-            return;
-        }
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('[data-animation-target]').forEach((element) => {
-            element.style.opacity = '0';
-            element.style.transform = 'translateY(20px)';
-            element.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-            observer.observe(element);
-        });
-    })();
-</script>
 </body>
 </html>

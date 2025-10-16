@@ -8,24 +8,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* 1. Core Design Philosophy & Technical Specs */
+        /* 1. Core Styles */
         :root {
             --color-text-primary: #212529;
             --color-text-secondary: #6c757d;
             --color-border: #dee2e6;
             --color-bg-white: #ffffff;
-            --color-bg-subtle: #f8f9fa;
-            --color-step-icon-bg: #2c3e50;
+            --color-bg-subtle: #f8f9fa; /* 연한 회색 */
+            --color-bg-navy: #f5f7fa;   /* 연한 네이비 for <pre> */
             --font-family-base: 'Noto Sans KR', sans-serif;
-        }
-
-        html {
-            scroll-behavior: smooth;
         }
 
         body {
             font-family: var(--font-family-base);
-            font-size: 1rem; /* 16px */
+            font-size: 1rem;
             line-height: 1.7;
             background-color: var(--color-bg-white);
             color: var(--color-text-primary);
@@ -34,268 +30,185 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* 2. Typography & Hierarchy */
+        /* 2. Typography */
         h1, h2, h3, h4 {
             font-weight: 700;
             line-height: 1.3;
             margin-top: 0;
         }
-
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 900; /* Extra bold for main title */
-            margin-bottom: 0.5rem;
-        }
-
-        h2 {
-            font-size: 2rem;
-            margin-bottom: 0.75rem;
-        }
-
-        h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        h4 {
-            font-size: 1.2rem;
-            margin-top: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        p {
-            margin-top: 0;
-            margin-bottom: 1rem;
-        }
-        
-        strong, b {
-           font-weight: 700;
-           color: var(--color-text-primary);
-        }
-        
+        h1 { font-size: 2.5rem; font-weight: 900; margin-bottom: 0.5rem; }
+        h2 { font-size: 2rem; margin-bottom: 0.75rem; }
+        h3 { font-size: 1.5rem; margin-top: 0; margin-bottom: 1.5rem; }
+        h4 { font-size: 1.2rem; margin-top: 0; margin-bottom: 1rem; }
+        p { margin-top: 0; margin-bottom: 1rem; }
+        b, strong { font-weight: 700; }
         pre {
-            font-family: Consolas, 'Courier New', monospace;
-            background-color: #e9ecef;
-            padding: 1em;
-            border-radius: 4px;
-            font-size: 90%;
-            line-height: 1.5;
+            background-color: var(--color-bg-navy);
+            border: 1px solid #e3e8f0;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
             white-space: pre-wrap;
             word-wrap: break-word;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
         }
 
-        /* 3. Component Library & Structure */
+        /* 3. Layout & Components */
         .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .header p {
+            font-size: 1.125rem;
+            color: var(--color-text-secondary);
             max-width: 800px;
             margin: 0 auto;
         }
-
-        .header, .section-title {
+        .section-title {
             text-align: center;
-            margin: 4rem auto 3rem auto;
+            margin: 4rem 0 2rem 0;
         }
-        
-        .header {
-            margin-top: 0;
+        hr {
+            border: none;
+            border-top: 1px solid var(--color-border);
+            margin: 4rem auto;
         }
 
+        /* Card System */
         .card {
-            background-color: var(--color-bg-white);
             border: 1px solid var(--color-border);
-            border-radius: 0.75rem; /* 12px */
-            padding: 2rem;
+            border-radius: 0.75rem;
+            padding: 2.5rem;
             margin-bottom: 1.5rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.07);
         }
-        
-        .step-card {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            padding: 2.5rem;
-        }
-        
-        @media (min-width: 768px) {
-            .step-card {
-                flex-direction: row;
-                align-items: flex-start;
-            }
-        }
-        
-        .step-card-content {
-            flex: 1;
-        }
-        
-        .step-number {
-            flex-shrink: 0;
-            width: 50px;
-            height: 50px;
-            background-color: var(--color-step-icon-bg);
-            color: #fff;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.75rem;
-            font-weight: 700;
-            text-shadow: 1px 1px 0px rgba(255, 0, 85, 0.5), -1px -1px 0px rgba(0, 229, 255, 0.5);
-        }
-        
-        aside {
+        .highlight-gray {
             background-color: var(--color-bg-subtle);
-            border-left: 4px solid var(--color-border);
-            padding: 1rem 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 0 0.25rem 0.25rem 0;
-            font-size: 0.95rem;
         }
-        
-        aside p:last-child, aside ul:last-child, .card ol:last-child {
+        .sub-card {
+            background-color: var(--color-bg-white);
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .sub-card:first-of-type {
+            margin-top: 0;
+        }
+        .sub-card p, .sub-card ul, .sub-card ol {
             margin-bottom: 0;
         }
-
-        aside ul, .card ol {
+        .sub-card ul, .sub-card ol {
             padding-left: 20px;
         }
-        
-        aside li, .card li {
-            margin-bottom: 0.5rem;
+        .sub-card li {
+             margin-bottom: 0.5rem;
         }
-        
-        .fade-in-up {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-
-        .fade-in-up.visible {
-            opacity: 1;
-            transform: translateY(0);
+        .sub-card li:last-child {
+            margin-bottom: 0;
         }
     </style>
 </head>
 <body>
 
     <main class="container">
-        <header class="header fade-in-up">
+        <header class="header">
             <h1>미니배치(Minibatch) 생성과정</h1>
+            <p>AI 모델을 초고속으로 학습시키는 GPU는 <b>반듯하게 정렬된 숫자 블록(텐서)</b>만 이해하고 처리할 수 있습니다. 하지만 우리가 다루는 텍스트는 문장마다 길이가 제각각인, 불규칙한 데이터의 연속입니다. <br>이 둘 사이의 간극을 메우는 기술이 바로 미니배치 생성 과정입니다.</p>
         </header>
 
-        <section class="content-block card fade-in-up">
-            <p>AI 모델을 초고속으로 학습시키는 GPU는 <strong>반듯하게 정렬된 숫자 블록(텐서)</strong>만 이해하고 처리할 수 있습니다.<br> 하지만 우리가 다루는 텍스트는 문장마다 길이가 제각각인, 불규칙한 데이터의 연속이죠.</p>
-            <p>이 둘 사이의 간극을 메우는 기술이 바로 미니배치 생성 과정입니다.<br> 이 과정은 크게 두 단계의 문제를 해결하는 과정으로 나눌 수 있습니다.</p>
-        </section>
-
-        <article class="step-card card fade-in-up">
-            <div class="step-number">1</div>
-            <div class="step-card-content">
-                <h3>1단계 : 텍스트를 숫자 리스트로 변환</h3>
-                <p>가장 먼저 해결할 문제는 <strong>"글자를 어떻게 숫자로 바꾸는가?"</strong>입니다. GPU는 '사과'라는 글자를 직접 이해하지 못하므로, 우리는 일종의 '단어-숫자 번역사전(Vocabulary)'을 만듭니다.</p>
-                <aside>
-                    <h4>1. 단어장 생성</h4>
-                    <p>텍스트에 있는 모든 고유 단어(토큰)를 모아 번호표를 붙여줍니다.</p>
-                    <pre><strong>{'<pad>': 0, '나': 1, '는': 2, '사과': 3, '를': 4, ...}</strong></pre>
-                    <h4>2. 인덱싱(Indexing)</h4>
-                    <p>이 단어장을 기준으로 문장을 숫자들의 나열(리스트)로 바꿉니다.</p>
-                    <pre><strong>['나', '는', '사과', '를'] → [1, 2, 3, 4]</strong></pre>
-                </aside>
-                <p>이 과정을 통해 텍스트는 훨씬 효율적인 숫자 데이터로 압축됩니다.</p>
-            </div>
-        </article>
-
-        <article class="step-card card fade-in-up">
-            <div class="step-number">2</div>
-            <div class="step-card-content">
-                <h3>2단계 : 길이를 통일하여 텐서(Tensor)로 결합</h3>
-                <p>이제 모든 문장이 숫자 리스트로 바뀌었지만, 아직 <strong>"문장마다 길이가 다르다"</strong>는 문제가 남아있습니다. 길이가 다른 리스트들은 GPU가 한 번에 처리할 수 있는 반듯한 직사각형 형태로 쌓을 수 없습니다.</p>
-                <aside>
-                    <pre>[1, 2, 3, 4] (길이 4)
-[1, 5, 6]   (길이 3)</pre>
-                </aside>
-                <p>이때 사용하는 기술이 바로 <strong>패딩(Padding)</strong>입니다.<br> 한 묶음(미니배치) 내에서 가장 긴 문장을 기준으로, 나머지 짧은 문장들의 뒷부분을 의미 없는 <strong>특별 토큰 <code>&lt;pad&gt;</code>의 인덱스(0)</strong>로 채워 길이를 똑같이 맞춥니다.</p>
-                <aside>
-                    <p><strong>패딩 적용 후</strong></p>
-                    <pre>[1, 2, 3, 4]
-[1, 5, 6, <strong>0</strong>]</pre>
-                </aside>
-                <p>이제 길이가 같아진 숫자 리스트들을 차곡차곡 쌓으면,<br> GPU가 원하는 최종 데이터 형태인 <strong>텐서(Tensor)</strong>, 즉 <strong>미니배치</strong>가 완성됩니다.</p>
-            </div>
-        </article>
-
-        <div class="section-title fade-in-up">
-            <h2>왜 미니배치를 사용하는가?</h2>
+        <div class="section-title">
+            <h2>1. 텍스트를 숫자로 변환하기</h2>
         </div>
 
-        <section class="content-block card fade-in-up">
-            <p>미니배치(Minibatch)는 전체 학습 데이터셋을 여러 개의 작은 묶음으로 나눈 것입니다.<br> 이렇게 데이터를 쪼개서 사용하는 이유는 크게 <strong>계산 효율성</strong>과 <strong>학습 안정성</strong> 두 가지입니다.</p>
-            <aside>
-                <p><strong>1. 계산 효율성 (Computational Efficiency)</strong></p>
-                <p>여러 개의 데이터 샘플(벡터)을 하나의 미니배치(행렬/텐서)로 묶어서 전달하면, GPU는 병렬 처리를 통해 훨씬 빠른 속도로 연산을 수행할 수 있습니다.</p>
+        <section class="card highlight-gray">
+            <h3>1단계 :<br>텍스트를 숫자 리스트로 변환</h3>
+            <p>가장 먼저 해결할 문제는 <b>"글자를 어떻게 숫자로 바꾸는가?"</b>입니다.<br>GPU는 '사과'라는 글자를 직접 이해하지 못하므로, 우리는 일종의 '단어-숫자 번역사전(Vocabulary)'을 만듭니다.</p>
+            <div class="sub-card">
+                <h4>단어장 생성 및 인덱싱</h4>
+                <p>텍스트에 있는 모든 고유 단어(토큰)를 모아 번호표를 붙여 단어장을 생성한 뒤, 이 단어장을 기준으로 문장을 숫자들의 나열(리스트)로 바꿉니다.</p>
+                <pre><b>단어장</b><br><b>{'&lt;pad&gt;': 0, '나': 1, '는': 2, '사과': 3, '를': 4, ...}</b></pre>
 
-                <p style="margin-top:1.5rem;"><strong>2. 학습 안정성 (Training Stability)</strong></p>
-                <p>모델은 데이터의 예측 오차(그래디언트)를 기반으로 학습합니다. 미니배치는 이 오차 계산에서 다음과 같은 장점을 가집니다.</p>
+<pre><b>인덱싱</b><br><b>['나', '는', '사과', '를'] → [1, 2, 3, 4]</b></pre>
+            </div>
+        </section>
+
+        <div class="section-title">
+            <h2>2. 숫자 리스트를 텐서로 결합하기</h2>
+        </div>
+
+        <section class="card highlight-gray">
+            <h3>2단계 :<br>길이를 통일하여 텐서(Tensor)로 결합</h3>
+            <p>이제 모든 문장이 숫자 리스트로 바뀌었지만, 아직 <b>"문장마다 길이가 다르다"</b>는 문제가 남아있습니다.<br>길이가 다른 리스트들은 GPU가 한 번에 처리할 수 있는 반듯한 직사각형 형태로 쌓을 수 없습니다.</p>
+            <div class="sub-card">
+                <h4>패딩(Padding)</h4>
+                <p>한 묶음(미니배치) 내에서 가장 긴 문장을 기준으로,<br>나머지 짧은 문장들의 뒷부분을 의미 없는 특별 토큰 <code>&lt;pad&gt;</code>의 인덱스(0)로 채워 길이를 똑같이 맞춥니다.</p>
+                <pre><b>패딩 적용 전</b><br>[1, 2, 3, 4] (길이 4)<br>[1, 5, 6]   (길이 3)
+
+<b>패딩 적용 후</b><br>[1, 2, 3, 4]<br>[1, 5, 6, <b>0</b>]</pre>
+                <p>이제 길이가 같아진 숫자 리스트들을 차곡차곡 쌓으면,<br>GPU가 원하는 최종 데이터 형태인 <b>텐서(Tensor)</b>, 즉 <b>미니배치</b>가 완성됩니다.</p>
+            </div>
+        </section>
+
+        <hr>
+
+        <div class="section-title">
+            <h2>3. 왜 미니배치를 사용하는가?</h2>
+        </div>
+
+        <section class="card highlight-gray">
+            <h3>계산 효율성과 학습 안정성</h3>
+            <p>미니배치(Minibatch)는 전체 학습 데이터셋을 여러 개의 작은 묶음으로 나눈 것입니다.<br>이렇게 데이터를 쪼개서 사용하는 이유는 크게 <b>계산 효율성</b>과 <b>학습 안정성</b> 두 가지입니다.</p>
+            <div class="sub-card">
+                <h4>계산 효율성 (Computational Efficiency)</h4>
+                <p>여러 개의 데이터 샘플(벡터)을 하나의 미니배치(행렬/텐서)로 묶어서 전달하면,<br>GPU는 병렬 처리를 통해 훨씬 빠른 속도로 연산을 수행할 수 있습니다.</p>
+            </div>
+            <div class="sub-card">
+                <h4>학습 안정성 (Training Stability)</h4>
+                <p>모델은 데이터의 예측 오차(그래디언트)를 기반으로 학습합니다.<br>미니배치는 이 오차 계산에서 다음과 같은 장점을 가집니다.</p>
                 <ul>
-                    <li><strong>데이터 1개만 사용</strong><br>: 기울기가 불안정하고 노이즈가 심해, 학습 방향이 크게 흔들릴 수 있습니다.</li>
-                    <li><strong>전체 데이터 사용</strong><br>: 기울기는 가장 정확하지만, 계산에 많은 시간과 메모리가 소요됩니다.</li>
-                    <li><strong>미니배치 사용</strong><br>: 전체 데이터 기울기에 대한 <b>효율적인 근사치(approximation)</b> 역할을 합니다.<br> 빠른 속도와 안정적인 학습 방향이라는 두 마리 토끼를 모두 잡는 가장 현실적인 방법입니다.</li>
+                    <li><b>데이터 1개만 사용</b><br>기울기가 불안정하고 노이즈가 심해, 학습 방향이 크게 흔들릴 수 있습니다.</li>
+                    <li><b>전체 데이터 사용</b><br>기울기는 가장 정확하지만, 계산에 많은 시간과 메모리가 소요됩니다.</li>
+                    <li><b>미니배치 사용</b><br>전체 데이터 기울기에 대한 <b>효율적인 근사치(approximation)</b> 역할을 합니다. 빠른 속도와 안정적인 학습 방향이라는 두 마리 토끼를 모두 잡는 가장 현실적인 방법입니다.</li>
                 </ul>
-            </aside>
+            </div>
         </section>
 
-        <div class="section-title fade-in-up">
-            <h2>전체 프로세스 요약</h2>
+        <hr>
+
+        <div class="section-title">
+            <h2>4. 전체 프로세스 요약</h2>
         </div>
 
-        <section class="content-block card fade-in-up">
+        <section class="card highlight-gray">
             <h3>자연어 처리 기본 파이프라인</h3>
             <p>미니배치가 전체 과정에서 어디에 위치하는지 큰 그림으로 이해해 봅시다.</p>
-            <ol>
-                <li><strong>데이터 수집</strong><br> : 모델 학습에 필요한 텍스트 데이터를 수집합니다.</li>
-                <li><strong>텍스트 전처리</strong><br> : 수집한 텍스트에서 불필요한 기호, 오탈자 등을 제거하고 정제합니다.</li>
-                <li><strong>벡터화 (Vectorization)</strong><br> : 정제된 텍스트를 토큰화하고, <b>인덱싱</b>과 <b>패딩</b> 과정을 거쳐 모델이 이해할 수 있는 숫자 텐서로 변환합니다.</li>
-                <li><strong>모델 학습 (Model Training)</strong><br> : 벡터화된 데이터를 모델에 입력하여 가중치를 업데이트하며 학습을 진행합니다.
-                    <aside>
-                        <h4>⭐ 미니배치의 역할</h4>
-                        <p>바로 이 <strong>4. 모델 학습 단계</strong>에서, 전체 데이터셋을 GPU가 한 번에 처리할 수 있는 작은 묶음,<br> 즉 <b>미니배치</b>로 나누어 모델에 순서대로 주입합니다. <br><b>모델은 미니배치 하나를 처리할 때마다 가중치를 한 번씩 업데이트합니다.</b></p>
-                    </aside>
-                </li>
-                <li><strong>모델 평가 및 배포</strong><br> : 학습된 모델의 성능을 평가하고, 실제 서비스에 적용합니다.</li>
-            </ol>
+            <div class="sub-card">
+                <ol>
+                    <li><b>데이터 수집</b><br>모델 학습에 필요한 텍스트 데이터를 수집합니다.</li>
+                    <li><b>텍스트 전처리</b><br>수집한 텍스트에서 불필요한 기호, 오탈자 등을 제거하고 정제합니다.</li>
+                    <li><b>벡터화 (Vectorization)</b><br>정제된 텍스트를 토큰화하고, <b>인덱싱</b>과 <b>패딩</b> 과정을 거쳐 모델이 이해할 수 있는 숫자 텐서로 변환합니다.</li>
+                    <li><b>모델 학습 (Model Training)</b><br>벡터화된 데이터를 모델에 입력하여 가중치를 업데이트하며 학습을 진행합니다.</li>
+                    <li><b>모델 평가 및 배포</b><br>학습된 모델의 성능을 평가하고, 실제 서비스에 적용합니다.</li>
+                </ol>
+            </div>
+            <div class="sub-card">
+                <h4>⭐ 미니배치의 역할</h4>
+                <p>바로 이 <b>4. 모델 학습 단계</b>에서, 전체 데이터셋을 GPU가 한 번에 처리할 수 있는 작은 묶음,<br> 즉 <b>미니배치</b>로 나누어 모델에 순서대로 주입합니다. <br><b>모델은 미니배치 하나를 처리할 때마다 가중치를 한 번씩 업데이트합니다.</b></p>
+            </div>
         </section>
-        </main>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const animatedElements = document.querySelectorAll('.fade-in-up');
-
-            if ('IntersectionObserver' in window) {
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('visible');
-                            observer.unobserve(entry.target);
-                        }
-                    });
-                }, {
-                    threshold: 0.1
-                });
-
-                animatedElements.forEach(el => {
-                    observer.observe(el);
-                });
-            } else {
-                animatedElements.forEach(el => {
-                    el.classList.add('visible');
-                });
-            }
-        });
-    </script>
+    </main>
 
 </body>
 </html>

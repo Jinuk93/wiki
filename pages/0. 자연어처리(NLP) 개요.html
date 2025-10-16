@@ -101,7 +101,6 @@
         }
 
         .card {
-            background-color: var(--color-bg-white);
             border: 1px solid var(--color-border);
             border-radius: 0.75rem;
             padding: 2.5rem;
@@ -114,6 +113,11 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.07);
         }
+        
+        .card.bg-light-blue { background-color: #f0f7ff; }
+        .card.bg-light-green { background-color: #f0fff4; }
+        .card.bg-light-purple { background-color: #f9f0ff; }
+
 
         .steps-grid {
             display: grid;
@@ -153,7 +157,6 @@
             text-shadow: 1px 1px 0px rgba(255, 0, 85, 0.5), -1px -1px 0px rgba(0, 229, 255, 0.5);
         }
         
-        /* --- New Styles for Inner Task Cards --- */
         .task-card-container {
             margin-top: 2rem;
             display: flex;
@@ -162,8 +165,8 @@
         }
 
         .task-card {
-            background-color: var(--color-bg-white); /* White background as requested */
-            border: 1px solid #e9ecef; /* Slightly lighter border */
+            background-color: var(--color-bg-white); /* White background for inner cards */
+            border: 1px solid #e9ecef;
             border-radius: 0.5rem;
             padding: 1.5rem;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
@@ -180,104 +183,64 @@
             margin-bottom: 0;
             font-size: 0.95rem;
         }
-        /* --- End of New Styles --- */
-        
-        .fade-in-up {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
 
-        .fade-in-up.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
     </style>
 </head>
 <body>
 
     <main class="container">
-        <header class="header fade-in-up">
+        <header class="header">
             <h1> 자연어 처리(NLP) & 자연어 이해(NLU),<br> 자연어 생성(NLG)이란?</h1>
         </header>
 
         <div class="steps-grid">
-            <article class="step-card card fade-in-up">
+            <article class="step-card card bg-light-blue">
                 <div class="step-number">1</div>
                 <div class="step-card-content">
                     <h2>자연어 처리 (NLP)</h2>
-                    <p><strong>자연어 처리(Natural Language Processing, NLP)</strong>는<br> 컴퓨터가 인간의 언어(자연어)를 이해하고, 생성하며, 다룰 수 있도록 하는 인공지능의 한 분야입니다. NLP는 컴퓨터에게 언어 능력을 가르치는 모든 과정을 포괄하는 가장 넓은 개념입니다.</p>
+                    <p><strong>자연어 처리(Natural Language Processing, NLP)</strong>는<br>컴퓨터가 인간의 언어(자연어)를 이해하고, 생성하며, 다룰 수 있도록 하는 인공지능의 한 분야입니다.<br>NLP는 컴퓨터에게 언어 능력을 가르치는 모든 과정을 포괄하는 가장 넓은 개념입니다.</p>
                 </div>
             </article>
 
-            <article class="step-card card fade-in-up">
+            <article class="step-card card bg-light-green">
                 <div class="step-number">2</div>
                 <div class="step-card-content">
                     <h2>자연어 이해 (NLU)</h2>
-                    <p><strong>자연어 이해(Natural Language Understanding, NLU)</strong>는 NLP의 하위 분야로,<br> 컴퓨터가 텍스트의 진짜 의미와 의도를 파악하는 데 중점을 둡니다. 
-                    <br>즉, 입력(Input)을 <b>이해</b>하는 기술입니다.</p>
+                    <p><strong>자연어 이해(Natural Language Understanding, NLU)</strong>는 NLP의 하위 분야로,<br>컴퓨터가 텍스트의 진짜 의미와 의도를 파악하는 데 중점을 둡니다.<br>즉, 입력(Input)을 <b>이해</b>하는 기술입니다.</p>
                     
                     <div class="task-card-container">
                         <div class="task-card">
                             <h4>텍스트 분류 (Text Classification)</h4>
-                            <p>문장 전체의 의미와 문맥을 파악(NLU)하여<br> '긍정/부정', '뉴스 카테고리' 등 특정 레이블로 분류하는 핵심적인 이해 과제입니다.</p>
+                            <p>문장 전체의 의미와 문맥을 파악(NLU)하여<br>'긍정/부정', '뉴스 카테고리' 등 특정 레이블로 분류하는 핵심적인 이해 과제입니다.</p>
                         </div>
                         <div class="task-card">
                             <h4>기계 번역 (Machine Translation) - 인코더</h4>
-                            <p>번역 모델의 <strong>인코더(Encoder)</strong> 부분은 입력된 문장을 언어적으로 완벽히 이해(NLU)하여<br> 의미를 압축하는 역할을 수행합니다.</p>
+                            <p>번역 모델의 <strong>인코더(Encoder)</strong> 부분은 입력된 문장을 언어적으로 완벽히 이해(NLU)하여<br>의미를 압축하는 역할을 수행합니다.</p>
                         </div>
                     </div>
                 </div>
             </article>
 
-            <article class="step-card card fade-in-up">
+            <article class="step-card card bg-light-purple">
                 <div class="step-number">3</div>
                 <div class="step-card-content">
                     <h2>자연어 생성 (NLG)</h2>
-                    <p><strong>자연어 생성(Natural Language Generation, NLG)</strong> 역시 NLP의 하위 분야로, 컴퓨터가 내부적인 데이터나 이해한 내용을 바탕으로 새로운 문장을 만들어내는 데 중점을 둡니다. 즉, 출력(Output)을 <b>생성</b>하는 기술입니다.</p>
+                    <p><strong>자연어 생성(Natural Language Generation, NLG)</strong> 역시 NLP의 하위 분야로,<br>컴퓨터가 내부적인 데이터나 이해한 내용을 바탕으로 새로운 문장을 만들어내는 데 중점을 둡니다.<br>즉, 출력(Output)을 <b>생성</b>하는 기술입니다.</p>
                     
                     <div class="task-card-container">
                          <div class="task-card">
                             <h4>텍스트 생성 (Text Generation)</h4>
-                            <p>챗봇의 답변이나 기사/소설 요약문처럼, 특정 조건이나 데이터에 기반하여<br> 세상에 없던 새로운 문장을 창작(NLG)하는 대표적인 생성 과제입니다.</p>
+                            <p>챗봇의 답변이나 기사/소설 요약문처럼, 특정 조건이나 데이터에 기반하여<br>세상에 없던 새로운 문장을 창작(NLG)하는 대표적인 생성 과제입니다.</p>
                         </div>
                         <div class="task-card">
                             <h4>기계 번역 (Machine Translation) - 디코더</h4>
-                            <p>번역 모델의 <strong>디코더(Decoder)</strong> 부분은 인코더가 이해한 의미를 바탕으로,<br> 목표 언어의 문법에 맞게 새로운 문장을 생성(NLG)합니다.</p>
+                            <p>번역 모델의 <strong>디코더(Decoder)</strong> 부분은 인코더가 이해한 의미를 바탕으로,<br>목표 언어의 문법에 맞게 새로운 문장을 생성(NLG)합니다.</p>
                         </div>
                     </div>
                 </div>
             </article>
         </div>
     </main>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const animatedElements = document.querySelectorAll('.fade-in-up');
-
-            if ('IntersectionObserver' in window) {
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('visible');
-                            observer.unobserve(entry.target);
-                        }
-                    });
-                }, {
-                    threshold: 0.1
-                });
-
-                animatedElements.forEach(el => {
-                    observer.observe(el);
-                });
-            } else {
-                // Fallback for older browsers
-                animatedElements.forEach(el => {
-                    el.classList.add('visible');
-                });
-            }
-        });
-    </script>
 
 </body>
 </html>

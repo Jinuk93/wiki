@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>텍스트 전처리 완전 정복</title>
-<style>
+    <style>
         /* --- 기본 스타일 리셋 --- */
         * {
             margin: 0;
@@ -63,7 +63,7 @@
         .section-title .section-subtitle {
             font-size: 16px;
             color: #718096;
-            max-width: 700px; /* 2. 설명글 길이 증가 */
+            max-width: 700px;
             margin: 0 auto;
             line-height: 1.6;
         }
@@ -94,7 +94,6 @@
             margin-bottom: 20px;
         }
 
-        /* 1. 숫자 이모지 스타일 변경 */
         .step-number {
             position: relative;
             display: inline-flex;
@@ -102,16 +101,16 @@
             justify-content: center;
             width: 36px;
             height: 36px;
-            background: #2d3748; /* 배경색 통일 */
-            color: #ffffff; /* 기본 숫자 색상 */
+            background: #2d3748;
+            color: #ffffff;
             border-radius: 8px;
             font-size: 24px;
             font-weight: 700;
-            font-family: 'Arial Black', Gadget, sans-serif; /* 폰트 변경 */
-            overflow: hidden; /* 글리치 효과가 밖으로 나가지 않게 */
+            font-family: 'Arial Black', Gadget, sans-serif;
+            overflow: hidden;
             text-shadow: 
                 -1px -1px 0px rgba(255, 0, 0, 0.5),
-                1px 1px 0px rgba(0, 255, 255, 0.5); /* 글리치 효과 */
+                1px 1px 0px rgba(0, 255, 255, 0.5);
             transition: transform 0.3s ease;
         }
 
@@ -157,12 +156,16 @@
             padding: 30px;
             border-radius: 12px;
             border: 1px solid #e2e8f0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .task-main-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
         }
         
-        /* 5. 분류, 번역, 생성 카드 색상 추가 */
-        .task-card-classification { background-color: #f0f7ff; } /* 연한 파랑 */
-        .task-card-translation { background-color: #f0fff4; }   /* 연한 녹색 */
-        .task-card-generation { background-color: #f9f0ff; }    /* 연한 보라 */
+        .task-card-classification { background-color: #f0f7ff; }
+        .task-card-translation { background-color: #f0fff4; }
+        .task-card-generation { background-color: #f9f0ff; }
 
         .task-main-card > h3 {
             font-size: 24px;
@@ -205,7 +208,7 @@
             color: #4a5568;
         }
         .model-card .detail {
-            background: #f7fafc;
+            background: #f5f7fa; /* Deeply nested card color */
             padding: 15px;
             border-radius: 8px;
             font-size: 14px;
@@ -255,9 +258,9 @@
             <p>텍스트에서 분석에 불필요한 <b>노이즈를 제거</b>하는 과정입니다.</p>
             <div class="task-list">
                 <ul>
-                    <li><b>HTML 태그 제거</b><br>: 웹에서 수집한 데이터의<br> &lt;a&gt;, &lt;br&gt; 같은 태그들을 없애줍니다.<br><b>(예: BeautifulSoup, 정규식 사용)</b></li>
-                    <li><b>특수 문자 및 부호 제거</b><br>: 문장 분석에 불필요한 #, @, $ 같은 기호나<br> 문장 부호를 제거합니다.</li>
-                    <li><b>대소문자 통일 (Normalization)</b><br>: 'Apple'과 'apple'을 컴퓨터가 같은 단어로 인식하도록<br> 모두 대문자 혹은 소문자로 바꿔줍니다.</li>
+                    <li><b>HTML 태그 제거</b><br>웹에서 수집한 데이터의 &lt;a&gt;, &lt;br&gt; 같은<br> 태그들을 없애줍니다.<br><b>(예: BeautifulSoup, 정규식 사용)</b></li>
+                    <li><b>특수 문자 및 부호 제거</b><br>문장 분석에 불필요한 #, @, $ 같은 기호나<br> 문장 부호를 제거합니다.</li>
+                    <li><b>대소문자 통일 (Normalization)</b><br>'Apple'과 'apple'을 컴퓨터가 같은 단어로 인식하도록<br> 모두 대문자 혹은 소문자로 바꿔줍니다.</li>
                 </ul>
             </div>
         </div>
@@ -266,11 +269,11 @@
                 <div class="step-number">2</div>
                 <h3>토큰화 (Tokenization)</h3>
             </div>
-            <p>정제된 텍스트를 의미 있는<br> 최소 단위인 <b>토큰(token)으로 분절</b>하는 과정입니다.</p>
+            <p>정제된 텍스트를 의미 있는 최소 단위인<br><b>토큰(token)으로 분절</b>하는 과정입니다.</p>
             <div class="task-list">
                 <ul>
-                    <li><b>단어 토큰화</b><br>: 문장을 공백이나 문장 부호를 기준으로<br> 단어 단위로 나눕니다.</li>
-                    <li><b>문장 토큰화</b><br>: 긴 글(문서)을 마침표(.), 물음표(?) 등을<br> 기준으로 문장 단위로 나눌 수도 있습니다.</li>
+                    <li><b>단어 토큰화</b><br>문장을 공백이나 문장 부호를 기준으로<br> 단어 단위로 나눕니다.</li>
+                    <li><b>문장 토큰화</b><br>긴 글(문서)을 마침표(.), 물음표(?) 등을 기준으로<br> 문장 단위로 나눌 수도 있습니다.</li>
                 </ul>
             </div>
         </div>
@@ -279,10 +282,10 @@
                 <div class="step-number">3</div>
                 <h3>불용어 제거 (Stopword Removal)</h3>
             </div>
-            <p><b>의미 분석에 큰 도움이 되지 않는</b>,<br> 문법적 기능을 하는 <b>단어들을 제거</b>합니다.</p>
+            <p><b>의미 분석에 큰 도움이 되지 않는</b>,<br>문법적 기능을 하는 <b>단어들을 제거</b>합니다.</p>
             <div class="task-list">
                 <ul>
-                    <li><b>불용어(Stopwords)란?</b><br>: 은, 는, 이, 가 (한국어), a, the, is (영어) 처럼 의미는 거의 없지만 자주 등장하는 단어들을 말합니다.</li>
+                    <li><b>불용어(Stopwords)란?</b><br>은, 는, 이, 가 (한국어), a, the, is (영어) 처럼<br>의미는 거의 없지만 자주 등장하는 단어들을 말합니다.</li>
                 </ul>
             </div>
         </div>
@@ -291,11 +294,11 @@
                 <div class="step-number">4</div>
                 <h3>단어 형태 통일 (Normalization)</h3>
             </div>
-            <p>같은 의미를 가진 <b>여러 형태의 단어들을<br> 하나의 기본 형태로 통일</b>하는 작업입니다.</p>
+            <p>같은 의미를 가진 <b>여러 형태의 단어들을<br>하나의 기본 형태로 통일</b>하는 작업입니다.</p>
             <div class="task-list">
                 <ul>
-                    <li><b>어간 추출 (Stemming)</b><br>: 단어의 <b>뒷부분을 규칙에 따라 잘라</b> 원형을 찾습니다.<br> (예: studies, studying &rarr; <b>studi</b>)</li>
-                    <li><b>표제어 추출 (Lemmatization)</b><br>: 단어의 <b>품사 정보를 고려해 사전적인 기본형을 찾</b>습니다. (예: studies, studying &rarr; <b>study</b>)</li>
+                    <li><b>어간 추출 (Stemming)</b><br>단어의 <b>뒷부분을 규칙에 따라 잘라</b> 원형을 찾습니다.<br>(예: studies, studying &rarr; <b>studi</b>)</li>
+                    <li><b>표제어 추출 (Lemmatization)</b><br>단어의 <b>품사 정보를 고려해 사전적인 기본형을 찾</b>습니다.<br>(예: studies, studying &rarr; <b>study</b>)</li>
                 </ul>
             </div>
         </div>
@@ -305,56 +308,56 @@
 
     <div class="section-title">
         <h2>2부 : Task 중심의 전처리 전략</h2>
-        <p class="section-subtitle">모든 상황에 맞는 완벽한 전처리는 없습니다.<br> 내가 풀어야 할 문제와 사용할 모델에 따라 최적의 전략을 선택해야 합니다.</p>
+        <p class="section-subtitle">모든 상황에 맞는 완벽한 전처리는 없습니다.<br>내가 풀어야 할 문제와 사용할 모델에 따라 최적의 전략을 선택해야 합니다.</p>
     </div>
 
     <div class="strategy-task-cards">
         <div class="task-main-card task-card-classification">
-            <h3>Task 1 : 텍스트 분류 (Text Classification)</h3>
-            <p>문장의 의도나 감성을 파악하여 '스팸/정상', '긍정/부정', '뉴스 카테고리' 등 미리 정해진 범주로 나누는 작업입니다.</p>
+            <h3>Task 1: 텍스트 분류 (Text Classification)</h3>
+            <p>문장의 의도나 감성을 파악하여 '스팸/정상', '긍정/부정', '뉴스 카테고리' 등<br>미리 정해진 범주로 나누는 작업입니다.</p>
             <div class="model-compare">
                 <div class="model-card traditional">
                     <h4>전통 모델 (TF-IDF)</h4>
-                    <p>단어의 <b>순서(문맥)는 무시하고,<br> 문서 내 출현 빈도를 중심</b>으로 특징을 추출합니다.</p>
-                    <div class="detail">불용어, 조사 등을 적극적으로 제거하여 '영화', '재미', '최고' 같은 핵심 키워드만 남겨 통계적 중요도를 높입니다.</div>
+                    <p>단어의 <b>순서(문맥)는 무시하고,<br>문서 내 출현 빈도를 중심</b>으로 특징을 추출합니다.</p>
+                    <div class="detail">불용어, 조사 등을 적극적으로 제거하여<br> '영화', '재미', '최고' 같은<br>핵심 키워드만 남겨 통계적 중요도를 높입니다.</div>
                 </div>
                 <div class="model-card modern">
                     <h4>최신 모델 (BERT)</h4>
-                    <p><b>단어의 순서, 주변 단어와의 관계 속</b>에서<br> 동적인 의미를 파악합니다.</p>
+                    <p><b>단어의 순서, 주변 단어와의 관계 속</b>에서<br>동적인 의미를 파악합니다.</p>
                     <div class="detail">'돈 아깝지는 않다'와 같은 미묘한 표현을 이해하기 위해, '않다' 같은 단어나 문장 구조를 보존하는 것이 중요합니다.</div>
                 </div>
             </div>
         </div>
 
         <div class="task-main-card task-card-translation">
-            <h3>Task 2 : 기계 번역 (Machine Translation)</h3>
-            <p>하나의 언어로 된 문장을 다른 언어의 문장으로 의미와 구조를 유지하며 변환하는 작업입니다.</p>
+            <h3>Task 2: 기계 번역 (Machine Translation)</h3>
+            <p>하나의 언어로 된 문장을 다른 언어의 문장으로<br>의미와 구조를 유지하며 변환하는 작업입니다.</p>
             <div class="model-compare">
                 <div class="model-card traditional">
                     <h4>전통 모델 (SMT)</h4>
                     <p>단어와 구문이 <b>통계적으로 어떻게 대응되는지</b>를 학습합니다. 이를 위해 문장 구조를 단순화하는 것이 중요했습니다.</p>
-                    <div class="detail">복잡한 문장 구조를 단순화하고, 단어 형태를 통일(Normalization)하여 통계적 패턴을 더 쉽게 학습하도록 유도합니다.</div>
+                    <div class="detail">복잡한 문장 구조를 단순화하고 단어 형태를 통일하여<br>통계적 패턴을 더 쉽게 학습하도록 유도합니다.</div>
                 </div>
                 <div class="model-card modern">
                     <h4>최신 모델 (Transformer)</h4>
                     <p>문장 전체의 <b>의미와 문법적 구조를 벡터로 이해</b>하여 번역합니다. 원문의 뉘앙스를 그대로 전달하는 것이 핵심입니다.</p>
-                    <div class="detail">정보 손실을 막기 위해 오타 수정 외에는 거의 원본 그대로를 사용합니다. 문장 부호 하나도 중요한 의미를 가질 수 있습니다.</div>
+                    <div class="detail">정보 손실을 막기 위해 오타 수정 외에는 거의 원본 그대로를 사용합니다.<br>문장 부호 하나도 중요한 의미를 가질 수 있습니다.</div>
                 </div>
             </div>
         </div>
 
         <div class="task-main-card task-card-generation">
-            <h3>Task 3 : 텍스트 생성 (Generation)</h3>
-            <p>챗봇 답변, 문서 요약, 소설 창작 등 주어진 조건에 따라 세상에 없던 새로운 문장을 만들어내는 작업입니다.</p>
+            <h3>Task 3: 텍스트 생성 (Generation)</h3>
+            <p>챗봇 답변, 문서 요약, 소설 창작 등 주어진 조건에 따라<br>세상에 없던 새로운 문장을 만들어내는 작업입니다.</p>
             <div class="model-compare">
                 <div class="model-card traditional">
                     <h4>전통 모델 (RNN)</h4>
-                    <p>학습 데이터의 <b>패턴을 모방하여 문장을 생성</b>합니다.<br> 입력 데이터의 일관성이 결과물의 품질에 큰 영향을 미칩니다.</p>
+                    <p>학습 데이터의 <b>패턴을 모방하여 문장을 생성</b>합니다.<br>입력 데이터의 일관성이 결과물의 품질에 큰 영향을 미칩니다.</p>
                     <div class="detail">HTML 태그나 특수문자 같은 명백한 노이즈는 제거하되, 문장의 자연스러움을 위해 불용어 등은 남겨두는 경우가 많았습니다.</div>
                 </div>
                 <div class="model-card modern">
                     <h4>최신 모델 (GPT)</h4>
-                    <p>인간처럼 <b>자연스럽고 창의적인 문장을 만들기 위해</b>,<br> 최대한 많은 언어적 패턴과 뉘앙스를 학습해야 합니다.</p>
+                    <p>인간처럼 <b>자연스럽고 창의적인 문장을 만들기 위해</b>,<br>최대한 많은 언어적 패턴과 뉘앙스를 학습해야 합니다.</p>
                     <div class="detail">"I am <b>not</b> happy"에서 'not'을 제거하면 의미가 반전되듯, 원본을 거의 그대로 사용하여 언어의 모든 측면을 학습합니다.</div>
                 </div>
             </div>
@@ -362,43 +365,6 @@
     </div>
 
 </div>
-
-<script>
-    // --- 스크롤에 따른 부드러운 등장 애니메이션 ---
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-                observer.unobserve(entry.target); // 한 번 실행 후 관찰 중지
-            }
-        });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.step-card, .model-card, .task-main-card').forEach((element) => {
-        element.style.opacity = '0';
-        element.style.transform = 'translateY(20px)';
-        element.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-        observer.observe(element);
-    });
-    
-    // --- 카드 호버 효과 ---
-    const stepCards = document.querySelectorAll('.step-card');
-    stepCards.forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            const number = card.querySelector('.step-number');
-            if (number) {
-                number.style.transform = 'scale(1.15) rotate(5deg)';
-            }
-        });
-        card.addEventListener('mouseleave', () => {
-            const number = card.querySelector('.step-number');
-            if (number) {
-                number.style.transform = 'scale(1) rotate(0deg)';
-            }
-        });
-    });
-</script>
 
 </body>
 </html>
