@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPL과 크로스 엔트로피 이해하기</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-text-color: #212529;
+            --secondary-text-color: #6c757d;
+            --background-color: #ffffff;
+            --conceptual-card-bg: #f8f9fa;
+            --sub-card-bg: #ffffff;
+            --border-color: #e9ecef;
+            --shadow-color: rgba(0, 0, 0, 0.05);
+            --hover-shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            background-color: var(--background-color);
+            color: var(--primary-text-color);
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1, h2 {
+            text-align: center;
+            font-weight: 700;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-text-color);
+        }
+        
+        /* 첫번째 h2의 상단 마진은 조금 더 주기 */
+        .conceptual-card > h2:first-of-type {
+            margin-top: 0;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        
+        h4 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            margin: 0 0 1rem 0;
+            color: var(--primary-text-color);
+        }
+
+        p.subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--secondary-text-color);
+            max-width: 700px;
+            margin: 0 auto 3rem auto;
+        }
+        
+        .card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .conceptual-card {
+            background-color: var(--conceptual-card-bg);
+            padding: 2.5rem;
+            box-shadow: 0 4px 6px var(--shadow-color);
+        }
+
+        .card.conceptual-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px var(--hover-shadow-color);
+        }
+        
+        .sub-card {
+            background-color: var(--sub-card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .main-divider {
+            border: none;
+            height: 1px;
+            background-color: #ced4da;
+            margin: 4rem auto;
+        }
+
+        .section-divider {
+            border: none;
+            height: 1px;
+            background-color: #dde2e7;
+            margin: 2.5rem auto;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>퍼플렉시티(Perplexity, PPL)</h1>
+        <p class="subtitle">
+            <b>퍼플렉시티(Perplexity, PPL)</b>는 언어 모델이 얼마나 <b>'헷갈려 하는지'</b>를 나타내는 성능 평가 지표입니다. 
+            즉, 이 <b>점수가 낮을수록 모델이 다음에 올 단어를 더 확신에 차서 잘 예측</b>한다는 의미이며, <b>성능이 좋다고 평가합니다.</b>
+        </p>
+        <div class="card conceptual-card">
+            <h2>퍼플렉시티 : '선택지'의 개수 헷갈리는 정도</h2>
+            <div>
+                <p>
+                    퍼플렉시티를 가장 쉽게 이해하는 방법은 <b>'모델이 다음 단어를 예측할 때, 몇 개의 단어를 놓고 고민하는가?'</b>로<br> 생각하는 것입니다. 따라서, 모델이 헷갈리는 후보 단어의 개수가 적을수록, 즉 PPL 점수가 낮을수록<br> 다음에 올 단어를 더 명확하게 알고 있다는 의미이므로 더 뛰어난 언어 모델입니다.
+                </p>
+                <div class="card-grid">
+                    <div class="sub-card">
+                        <h4>PPL = 10 이라는 의미</h4>
+                        <p>모델이 다음 단어를 예측할 때, 평균적으로 <b>10개의 단어를 비슷한 후보로 놓고</b> 헷갈려 하고 있다는 뜻입니다.</p>
+                    </div>
+                    <div class="sub-card">
+                        <h4>PPL = 100 이라는 의미</h4>
+                        <p>모델이 다음 단어를 예측할 때, 평균적으로 <b>100개의 단어 중에서 고민하고 있다는 뜻</b>입니다.</p>
+                    </div>
+                </div>
+            </div>
+            <hr class="section-divider">
+            <h2>PPL은 어떻게 계산될까?</h2>
+            <div>
+                <p>
+                    PPL은 문장의 확률에 역수를 취해서 계산합니다. 복잡한 수식보다는 개념적으로 이해하는 것이 더 중요합니다.
+                </p>
+                <div class="card-grid">
+                    <div class="sub-card">
+                        <h4>1. 모델이 문장에 확률을 부여합니다</h4>
+                        <p>모델은 <b>"오늘 날씨 좋다"</b>라는 문장이 얼마나 그럴듯한지 확률(예: 0.01)을 계산합니다. 
+                        <br>이 확률은 이전 단어들이 주어졌을 때 다음 단어가 나올 확률을 계속 곱해서 계산됩니다.</p>
+                    </div>
+                    <div class="sub-card">
+                        <h4>2. 확률에 역수를 취합니다</h4>
+                        <p>모델이 계산한 문장 확률의 역수를 취하여 PPL 값을 얻습니다.
+                        <br><b>- 확률이 높다</b> (모델이 문장을 확신한다)<br> → 역수를 취하면 <b>PPL 값은 낮아집니다.</b>
+                        <br><b>- 확률이 낮다</b> (모델이 문장을 어색해한다)<br> → 역수를 취하면 <b>PPL 값은 높아집니다.</b></p>
+                    </div>
+                </div>
+            </div>
+            <hr class="section-divider">
+            <h2>PPL의 활용</h2>
+            <div>
+                <div class="card-grid">
+                    <div class="sub-card">
+                        <h4>모델 성능 비교</h4>
+                        <p>두 개의 다른 언어 모델 A와 B가 있을 때, 
+                        <br>같은 데이터셋으로 PPL을 측정하여 <b>더 낮은 점수가 나온 모델</b>이 더 우수하다고 판단할 수 있습니다.</p>
+                    </div>
+                    <div class="sub-card">
+                        <h4>학습 모니터링</h4>
+                        <p>모델이 학습을 거듭할수록 <b>검증 데이터(validation data)</b>에 대한 PPL이 점점 낮아지는 것을 확인하며 학습이 잘 되고 있는지 모니터링할 수 있습니다.</p>
+                    </div>
+                </div>
+            </div>
+            <hr class="section-divider">
+            <div class="sub-card">
+                <h3>결론적으로</h3>
+                <p style="margin-bottom: 0;">
+                    PPL은 언어 모델의 <b>불확실성(uncertainty)</b>을 정량적으로 보여주는 지표이며, 
+                    <br><b>점수가 낮을수록 더 우수한 모델임을 의미합니다.</b>
+                </p>
+            </div>
+        </div>
+
+        <hr class="main-divider">
+
+        <h1>크로스 엔트로피 (Cross-Entropy)</h1>
+        <p class="subtitle">
+            모델을 훈련시키기 위한 핵심 <b>손실 함수(Loss Funtion)</b>이자,<br>예측과 정답 사이의 <b>'거리'</b>를 측정하는 기준입니다.
+        </p>
+
+        <div class="card conceptual-card">
+            <h2>크로스 엔트로피 정의</h2>
+            <p>
+                크로스 엔트로피는 모델의 예측 확률 분포가 실제 정답 분포와 얼마나 다른지를 나타내는 값입니다.
+                <br>
+                이 값이 바로 모델의 <b>손실(Loss)</b>이 되며, 모델은 훈련을 통해 이 손실 값을 최소화하는 것을 목표로 합니다.
+            </p>
+            
+            <hr class="section-divider">
+
+            <h2>수치의 높낮음이 나타내는 의미</h2>
+            <div class="sub-card">
+                <p style="margin: 0;">
+                    <b>- 손실(Loss)이 낮다</b>: 모델의 예측이 정답과 가깝다는 의미입니다. (훈련이 잘 되고 있음)
+                    <br>
+                    <b>- 손실(Loss)이 높다</b>: 모델의 예측이 정답과 멀다는 의미입니다. (훈련이 더 필요함)
+                </p>
+            </div>
+
+            <hr class="section-divider">
+            
+            <h2>손실(Loss)이 계산되는 방식</h2>
+            <div class="sub-card">
+                 <p>
+                   손실 값은 <b>-log(모델이 정답 클래스를 예측한 확률)</b> 이라는 수식으로 계산됩니다.
+                   <br>
+                   로그(log) 함수의 특성상, 입력값(모델의 예측 확률)이 1에 가까우면 결과는 0에 수렴하고, 입력값이 0에 가까워지면 결과는 양의 무한대로 커집니다.
+                </p>
+                <p style="margin-bottom: 0;">
+                   이 때문에 모델이 정답을 <b>90%(0.9)의 확률</b>로 예측하면 손실은 <b>-log(0.9) ≈ 0.1</b>로 매우 낮지만,
+                   <br>
+                   정답을 <b>10%(0.1)의 확률</b>로 예측하면 손실은 <b>-log(0.1) ≈ 2.3</b>으로 훨씬 커집니다.
+                   <br>
+                   이러한 계산 방식은 모델이 정답을 조금이라도 낮은 확률로 예측할 경우, 손실 값을 크게 증가시켜 더 정답에 가깝게 예측하도록 가중치를 수정하는 역할을 합니다.
+                </p>
+            </div>
+
+            <hr class="section-divider">
+
+            <h2>PPL과의 관계</h2>
+            <p>
+                크로스 엔트로피와 PPL은 개념적으로, 그리고 수학적으로 매우 밀접하게 연결되어 있습니다.
+            </p>
+            <div class="sub-card">
+                 <h4>훈련의 '과정'과 성능의 '결과'</h4>
+                 <p>
+                    <b>크로스 엔트로피</b>는 모델을 올바른 방향으로 이끄는 <b>'훈련 과정'의 나침반(손실 함수)</b>입니다.
+                    <br>
+                    모델은 매 훈련 단계마다 이 손실 값을 줄이기 위해 노력합니다.
+                 </p>
+                 <p style="margin-bottom: 0;">
+                    <b>퍼플렉시티(PPL)</b>는 그 훈련이 끝난 뒤 모델이 얼마나 똑똑해졌는지를 보여주는 <b>'성능 결과'에 대한 성적표(평가 지표)</b>입니다.
+                    <br>
+                    손실을 줄이는 훈련이 잘 되었다면, 당연히 PPL 점수도 낮게 나옵니다.
+                 </p>
+             </div>
+             <p style="margin-top: 1.5rem; margin-bottom: 0;">
+                결론적으로, 두 지표는 <b>PPL = exp(Cross-Entropy)</b> 라는 직접적인 수학적 관계로 묶여 있어, 하나의 값을 낮추는 것은 다른 하나의 값을 낮추는 것과 동일한 목표를 가집니다.
+             </p>
+        </div>
+        
+        <hr class="main-divider">
+
+        <h1>최종 결론</h1>
+        <div class="card conceptual-card" style="text-align: center;">
+            <p style="margin: 0.5rem 0; font-size: 1.2rem; font-weight: 500;">
+                훈련 과정에서 <b>'크로스 엔트로피 손실'</b>을 최소화하는 것은,
+                <br>
+                성능 지표인 <b>'낮은 PPL'</b> 점수를 달성하기 위한 직접적이고 수학적인 방법입니다.
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>
