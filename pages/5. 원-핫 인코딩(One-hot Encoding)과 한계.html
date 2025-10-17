@@ -77,6 +77,19 @@
             border-top: 1px solid var(--color-border);
             margin: 4rem auto;
         }
+        
+        /* === [추가] 전환 텍스트 스타일 === */
+        .transition-text {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--color-text-secondary);
+            max-width: 800px;
+            margin: 2.5rem auto 0 auto;
+            padding: 2rem;
+            background-color: var(--color-bg-subtle);
+            border-radius: 0.75rem;
+            border: 1px solid var(--color-border);
+        }
 
         /* Card System */
         .card {
@@ -93,6 +106,11 @@
         }
         .highlight-gray {
             background-color: var(--color-bg-subtle);
+        }
+        /* === [추가] 오렌지색 카드 === */
+        .highlight-orange {
+            background-color: #fffaf0; /* FloralWhite */
+            border-color: #ffebd7;
         }
         .sub-card {
             background-color: var(--color-bg-white);
@@ -125,6 +143,7 @@
         </div>
 
         <section class="card highlight-gray">
+            <p>컴퓨터는 글자를 직접 이해할 수 없기 때문에, 텍스트를 숫자 형태의 벡터(Vector)로 변환하는 '벡터화' 과정이 필수적입니다. <b>원-핫 인코딩은 이 벡터화의 가장 기본적인 방법 중 하나입니다.</b></p>
             <h3>핵심 개념과 작동 방식</h3>
             <p><strong>원-핫 인코딩</strong>은 단어를 표현하는 가장 기초적이고 직관적인 방법으로, 단어장의 모든 단어에 고유 번호를 부여하고 <b>해당 번호의 위치만 1로, 나머지는 모두 0으로</b> 표시하는 방식입니다.</p>
 
@@ -161,6 +180,9 @@
             </div>
         </section>
 
+        <div class="transition-text">
+            <p>이처럼 원-핫 인코딩은 단어의 의미를 담지 못하는 명확한 한계가 있었습니다.<br>이러한 문제를 해결하기 위해, 단어의 의미를 벡터에 <b>'임베딩(Embedding)'</b>하는 새로운 접근 방식이 등장했습니다. 이제 워드 임베딩에 대해 알아보겠습니다.</p>
+        </div>
         <hr>
 
         <div class="section-title">
@@ -201,12 +223,11 @@ vector('왕') - vector('남자') + vector('여자') ≈ vector('여왕')</pre>
         <div class="section-title">
             <h2>3. 결론</h2>
         </div>
-        <section class="card highlight-gray">
+        <section class="card highlight-orange">
             <h3>단순한 기호에서 의미를 지닌 좌표로</h3>
             <p><strong>원-핫 인코딩</strong>은 단어를 기계가 읽도록 바꾸는 첫 걸음이었지만 의미를 담지 못했습니다.<br><br><strong>워드 임베딩</strong>은 이러한 한계를 극복하고 단어의 '의미'를 벡터 공간의 '좌표'로 표현하는 혁신을 이루었으며, 이 개념은 오늘날 BERT, GPT와 같은 거의 모든 현대 자연어 처리 모델의 근간이 되는 핵심 아이디어입니다.</p>
         </section>
-
-    </main>
+        </main>
 
 </body>
 </html>

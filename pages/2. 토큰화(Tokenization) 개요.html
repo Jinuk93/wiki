@@ -220,6 +220,12 @@
     .highlight-dark-purple { background-color: #f3f0ff; border-color: #e0d9ed; }
     .highlight-dark-teal { background-color: #edf7f7; border-color: #dbe8e8; }
     .highlight-dark-gray { background-color: #f8f9fa; border-color: #e9ecef; }
+    
+    /* === 추가된 부분: 연한 핑크색 하이라이트 === */
+    .highlight-pink {
+        background-color: #fff0f5; /* LavenderBlush */
+        border-color: #ffe4e1;  /* MistyRose */
+    }
 
     /* A container for the goal cards */
     .goal-container {
@@ -258,7 +264,7 @@
 <p class="section-subtitle">토큰화의 진짜 목표는 단순히 텍스트를 나누는 것에서 그치지 않습니다.<br>최종 목표는 텍스트를 모델이 이해할 수 있는 숫자 시퀀스로 변환하는 것입니다.</p>
 </div>
 
-<!-- ▼▼▼ [수정된 부분] 카드 구조 변경 ▼▼▼ -->
+
 <div class="goal-container">
     <div class="card-grid-container">
         <div class="single-card">
@@ -278,7 +284,7 @@
         </div>
     </div>
 </div>
-<!-- ▲▲▲ [수정된 부분] 카드 구조 변경 ▲▲▲ -->
+
 
 
 <div class="section-title">
@@ -347,7 +353,7 @@
 </div>
 
 <div class="usage-cards-container">
-    <div class="usage-card">
+    <div class="usage-card highlight-pink">
         <h3>현재의 표준은 서브워드 토큰화</h3>
         <p>BERT, GPT와 같은 현대적인 딥러닝 모델은 이미 대규모 데이터로 학습된 <b>자체 서브워드 토크나이저를 함께 제공</b>합니다.
         <br>대부분의 경우, 우리는 이 모델에 맞춰진 토크나이저를 <b>그대로 사용하는 것이 베스트 프랙티스</b>입니다. 

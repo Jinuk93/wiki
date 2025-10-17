@@ -16,7 +16,6 @@
             --color-bg-white: #ffffff;
             --color-bg-subtle: #f8f9fa;
             --color-step-icon-bg: #2c3e50;
-            --color-bg-navy-light: #f5f7fa; /* Deeply Nested Card Color */
             --font-family-base: 'Noto Sans KR', sans-serif;
         }
 
@@ -56,6 +55,12 @@
         h3 {
             font-size: 1.5rem;
             margin-bottom: 1rem;
+        }
+        
+        h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--color-step-icon-bg);
         }
 
         p {
@@ -115,13 +120,11 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.07);
         }
 
-        /* ▼▼▼ [수정된 부분] steps-grid의 2열 그리드 삭제 ▼▼▼ */
         .steps-grid {
             display: grid;
             grid-template-columns: 1fr; /* Stack cards vertically */
             gap: 1.5rem;
         }
-        /* ▲▲▲ [수정된 부분] steps-grid의 2열 그리드 삭제 ▲▲▲ */
 
         .step-card {
             display: flex;
@@ -155,6 +158,31 @@
             text-shadow: 1px 1px 0px rgba(255, 0, 85, 0.5), -1px -1px 0px rgba(0, 229, 255, 0.5);
         }
         
+        /* === [추가] 알고리즘 카드 컨테이너 === */
+        .algo-card-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .algo-card-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* === [추가] 알고리즘 개별 카드 === */
+        .algo-card {
+            background-color: var(--color-bg-white);
+            border: 1px solid var(--color-border);
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+        }
+        .algo-card p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
         .model-compare-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -167,10 +195,6 @@
             }
         }
         
-        .model-card {
-            background-color: var(--color-bg-subtle);
-        }
-        
         .model-card h3 {
             font-size: 1.25rem;
             border-bottom: 1px solid var(--color-border);
@@ -179,6 +203,16 @@
         }
         .model-card ul {
             padding-left: 20px;
+        }
+
+        /* === [추가] 장점/단점 카드 색상 === */
+        .bg-light-blue {
+            background-color: #f0f7ff;
+            border-color: #dbeafe;
+        }
+        .bg-light-red {
+            background-color: #fff1f2;
+            border-color: #fecdd3;
         }
 
         aside {
@@ -194,12 +228,6 @@
             margin-bottom: 0;
             padding-left: 0;
             list-style: none;
-        }
-        aside li {
-            margin-bottom: 1rem;
-        }
-        aside li:last-child {
-            margin-bottom: 0;
         }
         
         .conclusion {
@@ -246,15 +274,21 @@
 
         <section class="card">
             <p>이 똑똑한 '단어 쪼개기'는 주로 아래 세 가지 알고리즘을 통해 이루어집니다.<br>이 중 가장 대표적이고 기본이 되는 BPE 알고리즘의 작동 방식을 자세히 살펴보겠습니다.</p>
-            <aside>
-                <ul>
-                    <li><strong>BPE (Byte Pair Encoding)</strong><br>글자 단위에서 시작해 가장 자주 함께 나오는 글자 쌍을 합쳐<br>하나의 토큰으로 만드는 과정을 반복</li>
-                    <li><strong>WordPiece</strong><br>BPE와 유사하지만, 단순히 빈도수가 아닌<br>'데이터의 의미를 가장 잘 보존할 가능성(Likelihood)'이 높은 쌍을 병합합니다. (BERT에서 사용)</li>
-                    <li><strong>SentencePiece</strong><br>띄어쓰기까지 하나의 문자로 취급하여<br>언어에 구애받지 않고 토큰화를 수행합니다.</li>
-                </ul>
-            </aside>
+            <div class="algo-card-container">
+                <div class="algo-card">
+                    <h4>BPE<br> (Byte Pair Encoding)</h4>
+                    <p>글자 단위에서 시작해 <b>가장 자주 함께 나오는</b> 글자 쌍을 합쳐 <b>하나의 토큰</b>으로 만드는 과정을 반복</p>
+                </div>
+                <div class="algo-card">
+                    <h4>WordPiece</h4>
+                    <p>BPE와 유사하지만, 빈도수가 아닌 '의미를 가장 잘 보존할 가능성(Likelihood)'이 높은 쌍을 병합 (BERT에서 사용)</p>
+                </div>
+                <div class="algo-card">
+                    <h4>SentencePiece</h4>
+                    <p>띄어쓰기까지 하나의 문자로 취급하여 언어에 구애받지 않고 토큰화를 수행</p>
+                </div>
+            </div>
         </section>
-        
         <div class="section-title">
             <h2>알고리즘 상세 분석: BPE (Byte-Pair Encoding)</h2>
             <p>BPE는 어떻게 최적의 서브워드 어휘집(Vocabulary)을 만들까요?<br><code>low lowest newest</code> 라는 텍스트를 예시로 학습 과정을 살펴보겠습니다.</p>
@@ -297,7 +331,7 @@
         </div>
 
         <section class="model-compare-grid">
-            <div class="model-card card">
+            <div class="model-card card bg-light-blue">
                 <h3>장점</h3>
                 <ul>
                     <li><strong>OOV 문제 해결</strong><br>모르는 단어를 크게 줄여 모델의 이해력을 높입니다.</li>
@@ -306,7 +340,7 @@
                     <li><strong>다양한 언어 적용</strong><br>특히 조사와 어미가 발달한 한국어('챗봇'+'##이란')에 효과적입니다.</li>
                 </ul>
             </div>
-            <div class="model-card card highlight-navy-light">
+            <div class="model-card card bg-light-red">
                 <h3>단점</h3>
                 <ul>
                     <li><strong>고유 의미 손실</strong><br>'해바라기'가 '해'+'##바라기'로 나뉘면, 'sunflower'라는 고유한 의미가 약해질 수 있습니다.</li>
@@ -315,7 +349,6 @@
                 </ul>
             </div>
         </section>
-
         <p class="conclusion">
             이러한 단점들에도 불구하고, OOV 문제를 해결하는 이점이 워낙 막강하기 때문에<br><b>현대 NLP 모델들은 서브워드 방식을 표준으로 채택하고 있습니다.</b>
         </p>

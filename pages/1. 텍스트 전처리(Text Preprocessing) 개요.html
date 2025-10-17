@@ -163,9 +163,10 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
         }
         
-        .task-card-classification { background-color: #f0f7ff; }
-        .task-card-translation { background-color: #f0fff4; }
-        .task-card-generation { background-color: #f9f0ff; }
+        /* === 수정된 카드 색상 === */
+        .task-card-classification { background-color: #f1f3f5; } /* 연한 그레이 */
+        .task-card-translation { background-color: #eef2f9; }   /* 연한 네이비 */
+        .task-card-generation { background-color: #e9ecef; }   /* 연한 블랙(회색) */
 
         .task-main-card > h3 {
             font-size: 24px;
@@ -313,7 +314,7 @@
 
     <div class="strategy-task-cards">
         <div class="task-main-card task-card-classification">
-            <h3>Task 1: 텍스트 분류 (Text Classification)</h3>
+            <h3>Task 1: 텍스트 분류 (Text Classification) - NLU</h3>
             <p>문장의 의도나 감성을 파악하여 '스팸/정상', '긍정/부정', '뉴스 카테고리' 등<br>미리 정해진 범주로 나누는 작업입니다.</p>
             <div class="model-compare">
                 <div class="model-card traditional">
@@ -330,7 +331,7 @@
         </div>
 
         <div class="task-main-card task-card-translation">
-            <h3>Task 2: 기계 번역 (Machine Translation)</h3>
+            <h3>Task 2: 기계 번역 (Machine Translation) - NLU & NLG</h3>
             <p>하나의 언어로 된 문장을 다른 언어의 문장으로<br>의미와 구조를 유지하며 변환하는 작업입니다.</p>
             <div class="model-compare">
                 <div class="model-card traditional">
@@ -347,7 +348,7 @@
         </div>
 
         <div class="task-main-card task-card-generation">
-            <h3>Task 3: 텍스트 생성 (Generation)</h3>
+            <h3>Task 3: 텍스트 생성 (Generation) - NLG</h3>
             <p>챗봇 답변, 문서 요약, 소설 창작 등 주어진 조건에 따라<br>세상에 없던 새로운 문장을 만들어내는 작업입니다.</p>
             <div class="model-compare">
                 <div class="model-card traditional">

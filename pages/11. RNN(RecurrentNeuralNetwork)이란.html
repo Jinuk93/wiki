@@ -40,7 +40,6 @@
             text-align: left; /* 첫 문단 왼쪽 정렬 */
         }
 
-
         /* --- 구분선 --- */
         hr.section-divider {
             border: none;
@@ -53,6 +52,19 @@
             text-align: center;
             margin-bottom: 2rem;
         }
+        
+        .section-title.sub-group { /* NLU, NLG 그룹 제목 */
+            margin-top: 3.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .section-title.sub-group h2 {
+             font-size: 1.75rem;
+             border-top: 2px solid #212529;
+             display: inline-block;
+             padding-top: 1.5rem;
+        }
+
 
         .section-title h2 {
             font-size: 2rem;
@@ -90,7 +102,7 @@
         
         .card h4 {
             font-size: 1.15rem;
-            font-weight: 500;
+            font-weight: 700;
             margin-top: 1.5rem;
             margin-bottom: 0.5rem;
             color: #343a40;
@@ -117,6 +129,59 @@
             border: 1px solid #dee2e6;
         }
 
+        /* === 카드 내부의 흰색 카드 === */
+        .inner-white-card {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .inner-white-card h4 {
+            margin-top: 0;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 0.75rem;
+        }
+
+        /* === 색상 강조 카드 === */
+        .bg-light-orange {
+            background-color: #fff4e6;
+            border-color: #ffe8cc;
+        }
+        
+        /* === 톤온톤 카드 색상 === */
+        .bg-tone-base-blue {
+            background-color: #f0f7ff;
+            border-color: #dbeafe;
+        }
+        .bg-tone-inner-blue {
+            background-color: #e0f0ff;
+            border-color: #cce4ff;
+        }
+
+        /* === 비교 테이블 스타일 === */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+        }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: center;
+        }
+        .comparison-table th {
+            background-color: #f8f9fa;
+            font-weight: 700;
+        }
+        .comparison-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .comparison-table td:first-child {
+            font-weight: 500;
+        }
+
     </style>
 </head>
 <body>
@@ -126,34 +191,35 @@
     <header class="page-header">
         <h2>RNN(Recurrent Neural Network)이란?</h2>
         <p>
-        <b>순환 신경망(RNN, Recurrent Neural Network)</b>은 인공 신경망의 한 종류로, 내부에 <b>순환(Recurrent)</b>하는 구조를 사용하여 <b>순서가 있는 데이터(Sequential Data)</b>를 처리하는 데 특화된 모델입니다.
-        <br>여기서 <b>'순환'</b>이란, 각 단계의 계산 결과가 단순히 출력으로 끝나는 것이 아니라, 다음 단계의 입력으로 다시 사용되는 <b>되먹임(loop)</b> 구조를 의미합니다.
-        이 순환 구조를 통해 <b>'과거를 기억하는'</b> 아이디어가 구현됩니다. RNN은 <b>은닉 상태(Hidden State)</b>라는 내부적인 <b>'기억 장치'</b>를 가집니다.<br> 매 순간, 모델은 <b>'새로운 입력'</b>과 <b>'이전까지의 기억(은닉 상태)'</b>을 함께 받아 새로운 기억을 만듭니다.<br> 이 새로운 기억이 다음 순간으로 계속 전달되며 정보가 누적됩니다.
+            우리가 "나는 오늘 점심으로 맛있는" 까지 읽었을 때, 뒤에 "파스타를 먹었다"가 나올 것을 자연스럽게 예상하는 이유는 <b>앞의 단어들을 기억</b>하고 있기 때문입니다.
+            <br><br><b>순환 신경망(RNN)</b>은 바로 이 아이디어를 흉내 낸 모델입니다. 일반 신경망과 달리, RNN은 <b>순서가 있는 데이터(Sequential Data)</b>를 처리하기 위해 '기억'을 가집니다. 이 기억 장치를 <b>은닉 상태(Hidden State)</b>라고 부르며, 모델은 각 단어를 읽을 때마다 <b>'새로운 단어 정보'</b>와 <b>'이전까지의 기억'</b>을 종합하여 기억을 계속 업데이트합니다.
+            <br><br>이처럼 <b>과거의 정보를 다음 단계로 계속 되돌려 보내는(Recurrent)</b> 순환 구조 덕분에, RNN은 문장, 시계열 데이터, 음악과 같이 순서가 매우 중요한 문제를 푸는 데 특화되어 있습니다.
         </p>
-    </header>
+        </header>
+    
     <div class="card">
-        <h3>RNN의 구조와 동작 원리 : 하나의 셀, 하나의 규칙</h3>
-        <p>RNN의 모든 동작은 <strong>하나의 RNN 셀(Cell)</strong>과 <strong>하나의 규칙서(가중치)</strong>를 반복적으로 사용합니다.</p>
+        <h3>하나의 '가중치(Weights)'로 시퀀스 독파하기</h3>
+        <p>RNN이 문장 전체를 처리할 때, 각 단어마다 새로운 규칙을 적용하는 것이 아닙니다. 대신, 모든 단어를 처리하는 데 <b>단 하나의 동일한 규칙서, 즉 '공유되는 가중치(Shared Weights)'</b>를 반복적으로 사용합니다.
+        <br><br>
+        첫 단어를 읽고 기억을 만든 뒤, 두 번째 단어를 읽을 때도 <b>똑같은 가중치</b>를 사용하여 '새 단어'와 '첫 단어의 기억'을 종합합니다. 이 과정을 문장 끝까지 반복합니다. 이 <b>'가중치 공유'</b> 매커니즘 덕분에 RNN은 시퀀스의 길이에 상관없이 동일한 구조로 효율적인 학습이 가능하며, 시퀀스 내의 보편적인 패턴을 학습할 수 있습니다.</p>
     </div>
-
     <div class="card">
         <h3>RNN 셀(Cell)의 구조</h3>
-        <img src="../assets/RNN.png" alt="RNN Cell Unfolding Diagram">
+        <img src="https://i.imgur.com/vTq7kGg.png" alt="RNN Cell Unfolding Diagram">
         <p>하나의 RNN 셀은 특정 시점 t에서 다음과 같은 입출력 구조를 가집니다.</p>
-        <p>
-            <strong>Input Layer (입력)</strong><br>
-            - 현재 정보 (xt) : 해당 시점의 새로운 데이터<br>
-            - 과거 기억 (ht−1) : 바로 직전 시점까지의 정보를 요약한 은닉 상태
-        </p>
-        <p>
-            <strong>Hidden Layer</strong><br>
-            - 새로운 기억 (ht) : 현재 정보와 과거 기억을 종합하여 업데이트된 새로운 은닉 상태 (다음 시점으로 전달됨)
-        </p>
-        <p>
-            <strong>Output Layer (출력)</strong><br>
-            - 현재 결과 (ot) : 해당 시점에서 내놓는 예측값
-        </p>
-   </div>
+        
+        <div class="inner-white-card">
+            <ol style="padding-left: 20px; margin: 0;">
+                <li><strong>입력 (Input)</strong><br>
+                    - <b>현재 정보 (xt)</b> : 해당 시점의 새로운 데이터 (예: 문장의 현재 단어)<br>
+                    - <b>과거 기억 (ht−1)</b> : 바로 직전 시점까지의 정보를 요약한 은닉 상태</li>
+                <li style="margin-top: 1rem;"><strong>은닉 상태 (Hidden State)</strong><br>
+                    - <b>새로운 기억 (ht)</b><br>: 현재 정보(xt)와 과거 기억(ht-1)을 종합하여 업데이트된 새로운 은닉 상태.<br>이 값은 다음 시점으로 전달됩니다.</li>
+                <li style="margin-top: 1rem;"><strong>출력 (Output)</strong><br>
+                    - <b>현재 결과 (ot)</b> : 해당 시점에서 내놓는 예측값 (예: 다음에 올 단어 예측)</li>
+            </ol>
+        </div>
+        </div>
 
     <div class="card">
         <h3>💡 최초의 기억은 어떻게?</h3>
@@ -168,29 +234,30 @@
     <hr class="section-divider">
 
     <div class="section-title">
-        <h2>RNN의 학습 과정 : 순전파부터 역전파까지 ⚙️</h2>
+        <h2>RNN의 학습 과정 : 순전파부터 역전파까지</h2>
         <p>RNN의 학습은 언롤링된 네트워크 위에서 <strong>순전파 → 손실 계산 → 역전파(BPTT)</strong> 의 과정을 거칩니다.</p> </div>
 
     <div class="card">
-        <h3>1. 순전파 (Forward Pass)</h3>
-        <p>입력 시퀀스를 모델에 흘려보내며 각 시점의 기억(은닉 상태)과 예측값(출력)을 차례대로 계산하는 단계입니다.</p>
-        <p><strong>은닉 상태 계산</strong><br> : "<strong>현재 입력(xt)"</strong>과 "이전 은닉 상태(ht−1)"를 각각의 가중치와 곱한 뒤 합쳐,<br> 새로운 은닉 상태(ht)를 만듭니다.</p>
-        <p><strong>출력 계산</strong><br> : 계산된 <strong>"은닉 상태(ht)"</strong>를 다시 가중치와 곱해 최종 예측값(yt)으로 변환합니다.</p>
+        <h3>1. 순전파 (Forward Pass) : 앞에서부터 차근차근 읽기</h3>
+        <p>순전파는 모델이 문장을 <b>처음부터 끝까지 순서대로 읽어나가는 과정</b>입니다. 
+        <br>각 시점(단어)마다 모델은 <b>'현재 단어'와 '이전까지의 기억(은닉 상태)'</b>을 입력받아, <b>'가중치'</b>에 따라 계산하여 '새로운 기억'과 '현재 시점의 예측'을 내놓습니다. 이 '새로운 기억'은 다시 다음 시점으로 전달됩니다.<br>이 과정이 문장 끝까지 반복됩니다.</p>
     </div>
     
     <div class="card">
-        <h3>2. 손실 계산 (Loss Calculation)</h3>
-        <p>순전파를 통해 얻은 <b>예측값(yt)이 실제 정답과 얼마나 다른지(오차)를 계산</b>하는 단계입니다.<br>
-        각 시점의 오차(ℓt)를 모두 합산하여 전체 시퀀스에 대한 <strong>총손실(L)</strong>을 구합니다.<br> 이 <strong>총손실(L)</strong>이 바로 다음에 이어질 역전파 단계의 출발점이 됩니다.</p>
+        <h3>2. 손실 계산 (Loss Calculation) : 정답과 비교하며 채점하기</h3>
+        <p>순전파가 끝나면 모델이 내놓은 예측값들과 실제 정답들을 비교합니다. 
+        <br>마치 선생님이 학생의 답안지를 채점하듯, <b>각 시점의 예측이 얼마나 틀렸는지(오차)를 계산</b>합니다. 
+        <br>그리고 이 모든 시점의 <b>오차들을 합산</b>하여 <b>'총 틀린 점수', 즉 총손실(Total Loss)</b>을 구합니다.<br>이 총손실 값이 클수록 모델이 잘못 예측했다는 의미입니다.</p>
     </div>
 
     <div class="card">
-        <h3>3. BPTT (Backpropagation Through Time)</h3>
-        <p>계산된 <strong>총손실(L)</strong>을 마지막 시점부터 첫 시점까지 시간의 역순으로 전파하며,<br> 모든 시점에서 <strong>공유되는 가중치(Wxh,Whh,Why)</strong>를 얼마나 수정해야 할지 기울기를 계산하는 알고리즘입니다.<br> 
-        BPTT를 통해 RNN은 전체 시퀀스의 시간적 의존성을 반영하여 학습할 수 있습니다.<br> 
-        학습의 마지막 단계에서는 BPTT로 모은 기울기 정보를 <strong>옵티마이저(Optimizer, 예: Adam, SGD)</strong>에 전달하여 최종적으로 가중치를 업데이트합니다.<br>이 전체 과정(순전파~업데이트)을 여러 번 반복하며 모델의 성능을 점차 개선시킵니다.</p>
+        <h3>3. BPTT (Backpropagation Through Time) : 오답노트 작성하기</h3>
+        <p>BPTT는 <b>'시간을 거슬러 올라가는 역전파'</b>라는 뜻으로, 
+        <br>계산된 총손실을 바탕으로 <b>'오답의 원인을 찾아가는 과정'</b>입니다. 모델은 문장의 맨 마지막부터 처음까지 거꾸로 되짚어가며, "이런 큰 오답이 나온 것은 <b>결국 어떤 가중치 때문이었을까?"</b>를 추적합니다. 
+        <br><br>시간을 거슬러 올라가며 각 시점의 오차에 <b>어떤 가중치가 얼마나 영향을 미쳤는지(기울기)를 계산</b>합니다. 
+        <br>모든 시점에서 동일한 가중치가 사용되었기 때문에, <b>각 시점에서 계산된 기울기들은 모두 합산되어 해당 가중치를 얼마나 수정해야 할지</b>에 대한 최종 정보가 됩니다. 
+        <br>이렇게 모인 기울기 정보를 <b>옵티마이저(Optimizer)</b>에 전달하여 <b>가중치를 올바른 방향으로 조금씩 수정</b>하며 학습을 반복합니다.</p>
     </div>
-
     <hr class="section-divider">
 
     <div class="section-title">
@@ -198,17 +265,16 @@
         <p>기본적인 RNN은 구조적 한계로 인해 몇 가지 중요한 문제점을 가집니다.</p>
     </div>
 
-    <div class="card">
+    <div class="card bg-light-orange">
         <h3>1. 장기 의존성 문제 (Long-term Dependency)</h3>
         <p>가장 치명적인 문제로, 시퀀스가 길어질수록 <b>초반부의 중요한 정보가 뒤쪽까지 제대로 전달되지 못하고</b><br> 기억에서 사라지는 현상입니다. 이는 아래 설명할 기울기 문제 때문에 발생합니다.</p>
     </div>
 
-    <div class="card">
+    <div class="card bg-light-orange">
         <h3>2. 기울기 소실 / 폭주 (Vanishing / Exploding Gradient)</h3>
         <p>BPTT 과정에서 동일한 가중치가 반복적으로 곱해지면서, <br><b>기울기가 0에 가깝게 사라지거나(소실) 무한대로 커져버리는(폭주) 현상</b>이 발생합니다.
         <br>이로 인해 학습이 멈추거나 불안정해집니다.</p>
     </div>
-
     <div class="card">
         <h3>3. 병렬 연산의 어려움</h3>
         <p>RNN은 이전 시점의 계산이 끝나야 다음 시점의 계산을 시작할 수 있는 순차적인 구조입니다.
@@ -221,11 +287,10 @@
         <h2> 해결 방안</h2>
     </div>
 
-    <div class="card">
+    <div class="card bg-light-orange">
         <h3>게이트 RNN (LSTM · GRU) ✨</h3>
         <p>정보의 흐름을 통제하는 <strong>'게이트(Gate)'</strong>를 내부에 두어, <br><b>중요한 정보는 오래 보존하고 불필요한 정보는 걸러내어</b><br>장기 의존성 문제를 해결하는 가장 근본적인 해결책입니다.</p>
     </div>
-
     <div class="card">
         <h3>기울기 클리핑 (Gradient Clipping)</h3>
         <p>기울기가 일정 임계값을 넘으면 강제로 잘라내어 기울기 폭주를 막는 기술적 방법입니다.</p>
@@ -238,63 +303,147 @@
 
     <hr class="section-divider">
 
-<div class="section-title">
+    <div class="section-title">
         <h2>RNN의 입출력 구조</h2>
     </div>
 
     <div class="card">
-        <h3>One-to-One & One-to-Many</h3>
-        
-        <h4>1. One-to-One (비순차적 처리)</h4>
-        <p>하나의 입력을 받아 하나의 출력을 내는 가장 기본적인 신경망 구조입니다.<br> RNN의 핵심인 <b>'순환'</b> 기능을 사용하지 않기 때문에, <b>RNN의 대표적인 활용 사례로 보기는 어렵습니다.</b><br>
-        <b>예시</b> : 공부 시간(입력 1개)으로 시험 점수(출력 1개) 예측하기</p>
-        
-        <hr style="border-top: 1px solid #e9ecef; margin: 2rem 0;">
+        <h3>One-to-One (기본 회귀/분류)</h3>
+        <p>하나의 입력을 받아 하나의 출력을 내는 가장 기본적인 신경망 구조입니다.<br> RNN의 핵심인 <b>'순환'</b> 기능을 사용하지 않기 때문에, <b>RNN의 대표적인 활용 사례로 보기는 어렵습니다.</b></p>
+        <p><b>작동 원리 예시</b><br>: RNN 셀에 '10시간 공부'라는 입력(x)이 들어가면, 순환 고리(과거 기억)를 거치지 않고 바로 '95점'이라는 출력(y)이 나옵니다. 과거의 기억이 필요 없는 단순한 매핑 작업입니다.</p>
+    </div>
 
-        <h4>2. One-to-Many (생성 모델)</h4>
-        <p>하나의 '씨앗' 같은 입력을 받아 <b>여러 개의 연속된 데이터(시퀀스)</b>를 출력합니다.<br> 주로 <b>'생성'</b> 작업에 쓰입니다.</p>
-        <p><b>- 이미지 캡셔닝</b><br>: 이미지의 특징 벡터(One)를 입력받아, 이미지를 설명하는 문장(Many)을 생성합니다.<br>
-        <b>- 텍스트 생성</b><br>: 문장의 주제(One)를 입력받아, 그에 맞는 글(Many)을 자동으로 작문합니다.<br>
-        <b>- 음악 생성</b><br>: 음악 장르나 첫 음(One)을 입력받아, 어울리는 멜로디(Many)를 생성합니다.</p>
+    <!-- ▼▼▼ NLU 그룹 ▼▼▼ -->
+    <div class="section-title sub-group">
+        <h2>NLU 중심 구조 (이해 및 분류)</h2>
     </div>
 
     <div class="card">
-        <h3>Many-to-One</h3>
+        <h3>Many-to-One (NLU, 분류)</h3>
         <p><b>입력 N개 (시퀀스) → 출력 1개</b></p>
         <p>순차적인 데이터를 모두 입력받은 후, 마지막에 단 하나의 결론을 도출합니다.</p>
+        <p><b>작동 원리 예시</b><br>: "이 영화 정말 최고예요!" 라는 문장을 RNN에 넣습니다. 모델은 '이' → '영화' → '정말' → '최고예요!' 순서로 단어를 읽으며 기억(은닉 상태)을 계속 업데이트합니다. 마지막 단어까지 읽고 난 최종 기억에는 문장 전체의 긍정적인 뉘앙스가 압축되어 있으며, 이 최종 기억을 바탕으로 '긍정'이라는 단 하나의 라벨(One)을 출력합니다.</p>
         
-        <h4>주요 활용 Task</h4>
-        <p><b>감성 분석 (Sentiment Analysis)</b><br>: 영화 리뷰 문장(단어 시퀀스) 전체를 읽고, 최종적으로 '긍정' 또는 '부정'이라는 단 하나의 라벨을 출력합니다.<br>
-        <b>문서 분류</b><br>: 뉴스 기사 전체를 읽고 '스포츠', '정치' 등 카테고리 하나를 결정합니다.</p>
-        
-        <h4>코드 관점의 차이점</h4>
-        <p>RNN이 “<b>문장 전체”</b>를 끝까지 다 읽도록 순전파를 진행합니다. 중간 단계의 출력들은 모두 무시하고,<br> 오직 <b>마지막 시점의 은닉 상태(final hidden state)</b>만을 사용합니다. <br>이 '최종 요약 벡터'를 분류기(nn.Linear)에 넣어 단 하나의 결과를 얻습니다.</p>
+        <div class="inner-white-card">
+            <h4>주요 활용 Task</h4>
+            <p><b>① 감성 분석</b><br>: 영화 리뷰 문장을 읽고 '긍정' 또는 '부정' 라벨을 출력합니다.<br>
+            <b>② 문서 분류</b><br>: 뉴스 기사 전체를 읽고 '스포츠', '정치' 등 카테고리 하나를 결정합니다.</p>
+        </div>
+        <div class="inner-white-card">
+            <h4>시퀀스 관점</h4>
+            <p>RNN이 “<b>문장 전체”</b>를 끝까지 다 읽도록 순전파를 진행합니다. 중간 단계의 출력들은 모두 무시하고, 오직 <b>마지막 시점의 은닉 상태(final hidden state)</b>만을 사용합니다. <br>이 '최종 요약 벡터'를 분류기(nn.Linear)에 넣어 단 하나의 결과를 얻습니다.</p>
+        </div>
+    </div>
+    
+    <div class="card bg-tone-base-blue">
+        <h3>동기식 Many-to-Many (시퀀스 레이블링, Non-Auto-regressive)</h3>
+        <p>입력 시퀀스의 길이와 출력 시퀀스의 길이가 같고, <b>각 시점의 입력이 각 시점의 출력과 1:1로 대응됩니다.</b></p>
+        <p><b>작동 원리 예시</b><br>: "I love you"라는 문장이 입력되면, 첫 단어 'I'를 읽고 '대명사'라고 출력합니다. 그 다음, 'love'를 읽고 '동사'라고 출력합니다. 이처럼 각 단어를 읽는 매 순간마다, 그 단어에 해당하는 레이블을 즉시 출력하며, <b>앞선 출력('대명사')이 다음 출력('동사')에 영향을 주지 않습니다.</b> 각 출력이 독립적이므로 이를 <b>비-자기회귀(Non-Auto-regressive)</b> 방식이라고 합니다.</p>
+        <div class="card bg-tone-inner-blue">
+             <p><b>주요 활용 Task</b><br>
+            <b>① 품사 태깅</b>: 문장의 각 단어에 "명사, 동사, 조사" 등의 품사를 붙입니다.<br>
+            <b>② 개체명 인식</b>: 문장의 각 단어가 '인물', '장소', '기관' 중 어디에 속하는지 태깅합니다.</p>
+        </div>
+         <div class="card bg-tone-inner-blue">
+            <p><b>병렬 처리 관점</b><br>
+            모든 시점의 출력이 서로 독립적으로 계산될 수 있으므로, 전체 출력 시퀀스를 <b>완벽하게 병렬 처리</b>할 수 있습니다. 이는 매우 빠른 계산 속도로 이어집니다.</p>
+        </div>
+    </div>
+
+    <!-- ▼▼▼ NLG 그룹 ▼▼▼ -->
+    <div class="section-title sub-group">
+        <h2>NLG 중심 구조 (생성 및 변환)</h2>
     </div>
 
     <div class="card">
-        <h3>Many-to-Many 📜➡️📜</h3>
-        <p><b>입력 N개 (시퀀스) → 출력 M개 (시퀀스)</b></p>
-        <p>이 구조는 입력과 출력 시퀀스의 관계에 따라 두 가지로 나뉩니다.</p>
-
-        <h4>1. 동기식 (Synced) Many-to-Many</h4>
-        <p>입력 시퀀스의 길이와 출력 시퀀스의 길이가 같고, <b>각 시점의 입력이 각 시점의 출력과 1:1로 대응됩니다.</b></p>
-        <p><b>주요 활용 Task</b><br>
-        <b>품사 태깅 (Part-of-Speech, POS Tagging)</b><br>: "I love you" (3개 단어)를 입력받아, 각 단어에 해당하는 "대명사, 동사, 대명사" (3개 품사)를 출력합니다.<br>
-        <b>영상 프레임별 분류</b><br>: 영상의 각 프레임(입력 시퀀스)이 '광고'인지 '본방송'인지 등을 판단합니다.</p>
-        <p><b>코드 관점의 차이점</b><br>
-        RNN이 “<b>문장 전체”</b>를 읽습니다.<br> 마지막 은닉 상태만 쓰는 Many-to-One과 달리, <b>모든 시점의 출력(sequence of outputs)</b>을<br> 전부 사용합니다. 이 출력 시퀀스 전체를 분류기에 넣어 각 단어에 대한 예측값을 얻습니다.</p>
-        
-        <hr style="border-top: 1px solid #e9ecef; margin: 2rem 0;">
-
-        <h4><b>2. 비동기식 (Delayed) Many-to-Many (Seq2Seq)</b>👍</h4>
-        <p>Many-to-Many 구조에서 <b>비동기식</b>을 압도적으로 더 많이 사용합니다.<br> 입력 시퀀스를 모두 읽은 후에, 그 의미를 바탕으로 새로운 출력 시퀀스를 생성합니다.<br> 입력과 출력의 길이가 달라도 괜찮습니다.<br> 이 구조를 특별히 <b>Seq2Seq (Encoder-Decoder) 모델</b>이라고 부릅니다.</p>
-        <p><b>주요 활용 Task</b><br>
-        <b>기계 번역</b><br>: "안녕하세요" (1개 단어)를 입력받아, "Hello" (1개 단어) 또는 "How are you" (3개 단어)를 출력합니다.<br>
-        <b>챗봇</b><br>: 사용자의 질문(입력 시퀀스)을 이해하고 답변(출력 시퀀스)을 생성합니다.</p>
-        <p><b>코드 관점의 차이점</b><br>
-        <b>인코더(Encoder) RNN</b><br>: 입력 문장 전체를 읽고, 그 의미를 하나의 <b>문맥 벡터(context vector)</b>로 압축합니다. (Many-to-One과 유사)<br>
-        <b>디코더(Decoder) RNN</b><br>: 인코더가 만든 문맥 벡터를 자신의 첫 번째 은닉 상태 초기값으로 받습니다. 이후, 디코더는 이 문맥을 바탕으로 출력 시퀀스를 한 단어씩 생성합니다. (One-to-Many와 유사)</p>
+        <h3>One-to-Many (NLG, 생성, Auto-regressive)</h3>
+        <p>하나의 '씨앗' 같은 입력을 받아 <b>여러 개의 연속된 데이터(시퀀스)</b>를 출력합니다.<br> 주로 <b>'생성'</b> 작업에 쓰입니다.</p>
+        <p><b>작동 원리 예시</b><br>: 모델에 '사랑'이라는 단어(One)를 입력하면, RNN은 이 단어를 첫 기억으로 삼습니다. 그 다음부터는 이전 기억을 바탕으로 '고백'을 생성하고, <b>생성된 '고백'을 다시 입력으로 넣어</b> '연인'을 생성하는 식으로 연쇄적인 출력을 만들어냅니다. 이처럼 <b>이전 단계의 출력이 다음 단계의 입력이 되는 방식</b>을 <b>자기회귀(Auto-regressive)</b>라고 합니다.</p>
+        <div class="inner-white-card">
+             <h4>주요 활용 Task</h4>
+            <p><b>① 이미지 캡셔닝</b><br>: 이미지를 보고 "A dog is running" 문장을 생성합니다.<br>
+            <b>② 텍스트 생성</b><br>: '겨울'이라는 주제로 시를 작문합니다.<br>
+            <b>③ 음악 생성</b><br>: '클래식' 장르로 멜로디를 작곡합니다.</p>
+        </div>
+        <div class="inner-white-card">
+            <h4>병렬 처리 관점</h4>
+            <p>이러한 자기회귀 방식은 한 번에 하나의 토큰만 생성할 수 있어, 출력 시퀀스 전체를 <b>병렬적으로 한 번에 생성하는 것은 불가능합니다.</b> 따라서 생성 속도가 상대적으로 느립니다.</p>
+        </div>
     </div>
+    
+    <div class="card bg-tone-base-blue">
+        <h3>비동기식 Many-to-Many (NLU → NLG, 번역/챗봇)👍</h3>
+        <p>입력 시퀀스를 <b>모두 읽은 후에(NLU)</b>, 그 의미를 바탕으로 새로운 출력 시퀀스를 <b>생성(NLG)</b>합니다. <b>입력과 출력의 길이가 달라도 괜찮습니다.</b><br> 이 구조를 특별히 <b>Seq2Seq (Encoder-Decoder) 모델</b>이라고 부릅니다.</p>
+         <div class="card bg-tone-inner-blue">
+            <p><b>주요 활용 Task</b><br>
+            <b>① 기계 번역</b><br>: "안녕하세요" (1개 단어)를 "How are you" (3개 단어)로 번역합니다.<br>
+            <b>② 챗봇</b><br>: 사용자의 질문을 이해하고 답변 문장을 생성합니다.</p>
+        </div>
+         <div class="card bg-tone-inner-blue">
+            <p><b>작동 원리 (Encoder-Decoder)</b><br>
+            <b>① 인코더(Encoder) RNN</b><br>: 입력 문장 전체를 읽고, 그 의미를 하나의 <b>문맥 벡터(context vector)</b>로 압축합니다. (Many-to-One과 유사)<br>
+            <b>② 디코더(Decoder) RNN - 자기회귀(Auto-regressive) 방식</b><br>: 인코더가 만든 문맥 벡터를 바탕으로, <b>이전 단계의 출력 단어를 다음 입력으로 삼아</b> 순차적으로 출력 시퀀스를 생성합니다. (One-to-Many와 유사)</p>
+        </div>
+        <div class="card bg-tone-inner-blue">
+            <p><b>병렬 처리 관점</b><br>
+            인코더는 입력 시퀀스 전체를 한 번에 처리할 수 있어 병렬화가 용이합니다(특히 트랜스포머 구조에서). 하지만, <b>디코더는 자기회귀(Auto-regressive) 방식</b>이므로, 출력 단어는 반드시 하나씩 순차적으로 생성해야 합니다. 이 때문에 번역이나 챗봇의 답변 생성 속도에 병목 현상이 발생합니다.</p>
+        </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="section-title">
+        <h2>입출력 구조 한눈에 비교하기</h2>
+    </div>
+
+    <table class="comparison-table">
+        <thead>
+            <tr>
+                <th>구조</th>
+                <th>주요 Task</th>
+                <th>자기회귀(AR) 여부</th>
+                <th>병렬 처리</th>
+                <th>대표 예시</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><b>One-to-One</b></td>
+                <td>기본 회귀/분류</td>
+                <td>해당 없음</td>
+                <td>가능</td>
+                <td>이미지 분류</td>
+            </tr>
+            <tr>
+                <td><b>Many-to-One</b></td>
+                <td>NLU (분류)</td>
+                <td>Non-Auto-regressive</td>
+                <td>입력만 가능</td>
+                <td>감성 분석</td>
+            </tr>
+            <tr>
+                <td><b>동기식 M-to-M</b></td>
+                <td>NLU (레이블링)</td>
+                <td>Non-Auto-regressive</td>
+                <td>완전 가능 (입/출력)</td>
+                <td>품사 태깅</td>
+            </tr>
+             <tr>
+                <td><b>One-to-Many</b></td>
+                <td>NLG (생성)</td>
+                <td><b>Auto-regressive</b></td>
+                <td>출력 불가</td>
+                <td>텍스트 생성</td>
+            </tr>
+            <tr>
+                <td><b>비동기식 M-to-M</b></td>
+                <td>NLU → NLG (변환)</td>
+                <td>Decoder만 <b>Auto-regressive</b></td>
+                <td>인코더만 가능</td>
+                <td>기계 번역</td>
+            </tr>
+        </tbody>
+    </table>
 
 </div>
 </body>
