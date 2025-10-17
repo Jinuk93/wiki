@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>텍스트 분류 (Text Classification) 코드 구현</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #e9ecef;
+            color: #212529;
+            line-height: 1.7;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1, h2, h3, h4 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        h3 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        h4 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        
+        p:last-child {
+            margin-bottom: 0;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6c757d;
+            font-size: 1.25rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #dee2e6;
+            margin: 4rem 0;
+        }
+
+        .card {
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            padding: 2rem;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .conceptual-card {
+            background-color: #f8f9fa;
+        }
+        
+        .sub-card {
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 0.375rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        pre {
+            background-color: #f5f7fa;
+            border: 1px solid #e9ecef;
+            border-radius: 0.25rem;
+            padding: 1rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        b, strong {
+            font-weight: 700;
+        }
+        
+        .code-title {
+            font-family: monospace;
+            background-color: #e9ecef;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 1.5rem;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>텍스트 분류 (Text Classification) 코드 구현</h1>
+        <p class="subtitle">
+            이론이 실제 코드로 어떻게 구현되는지 프로젝트 구조를 통해 알아봅니다.
+        </p>
+        
+        <h2>1단계 <span class="code-title">dataset.py</span> 데이터 준비 시스템</h2>
+        <div class="card conceptual-card">
+            <h3>데이터 재료 손질법 명세서</h3>
+            <p>이 파일은 <b>'데이터 파일로부터 딱 한 줄의 문장을 가져와, 모델이 먹을 수 있는 숫자 배열로 만드는 법'</b>을 정의합니다. `torch.utils.data.Dataset`을 상속받아 우리만의 데이터셋 규칙을 만듭니다.</p>
+            
+            <div class="sub-card">
+                <h4>핵심 역할</h4>
+                <p>
+                    <strong>초기화 (__init__)</strong>
+                    <br>
+                    : 데이터 파일(`ratings_train.tsv` 등)을 불러와 메모리에 올리고, 
+                    <br>단어와 고유 번호(ID)가 매핑된 단어 사전(vocab)을 준비하는 등 최초 1회만 실행되는 준비 작업을 합니다.
+                </p>
+                 <p>
+                    <strong>데이터 길이 (__len__)</strong>
+                    <br>
+                    : 전체 데이터가 총 몇 개인지 알려주는 역할을 합니다.
+                </p>
+                <p>
+                    <strong>데이터 처리 (__getitem__)</strong>
+                    <br>
+                    : `idx(인덱스)`번째 데이터를 실제로 처리하는 핵심 로직입니다. 
+                    <br>문장을 단어 단위로 쪼개고(토큰화), 단어 사전을 참고해 단어를 숫자 ID 배열로 변환한 뒤 텐서 형태로 반환합니다. 
+                    <br><b>임베딩 벡터는 여기서 만들지 않습니다.</b>
+                </p>
+            </div>
+            
+            <div class="sub-card">
+                <h4>예시 코드</h4>
+                <pre><b>
+# text_classification/dataset.py
+import torch
+from torch.utils.data import Dataset
+
+class TextClassificationDataset(Dataset):
+    def __init__(self, file_path, vocab):
+        self.data = self.load_data(file_path) 
+        self.vocab = vocab
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, idx):
+        sentence, label = self.data[idx]
+        tokens = self.tokenize(sentence)
+        token_ids = [self.vocab.get(token, self.vocab['&lt;unk&gt;']) for token in tokens]
+        
+        return torch.tensor(token_ids), torch.tensor(label)
+               </b></pre>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>2단계 <span class="code-title">models/rnn.py</span> 모델의 뇌 설계</h2>
+        <div class="card conceptual-card">
+            <h3>모델 설계도</h3>
+            <p>이론에서 봤던 <b>Embedding Layer → RNN → Linear Layer</b> 구조가 그대로 코드로 나타납니다.
+            <br>`torch.nn.Module`을 상속받아 모델의 뼈대를 구성합니다.</p>
+            
+            <div class="sub-card">
+                <h4>핵심 역할</h4>
+                <p>
+                    <strong>부품 정의 (__init__)</strong>
+                    <br>
+                    : 모델에 필요한 부품(레이어)들을 미리 정의합니다. 
+                    <br>바로 여기서 <b>`nn.Embedding`</b> 레이어를 선언하여, `DataLoader`가 배달해 준 '정수 ID 배열'을 받아 
+                    <br>'임베딩 벡터'로 변환할 준비를 합니다. 이 레이어의 <b>가중치는 학습 과정에서 계속 업데이트됩니다.</b>
+                </p>
+                <p>
+                    <strong>데이터 흐름 정의 (forward)</strong>
+                    <br>
+                    : 데이터가 모델을 통과하는 실제 흐름을 정의합니다. 
+                    <br>정수 ID 배열이 임베딩 레이어를 통과해 벡터 시퀀스가 되고, 이어서 RNN 레이어와 Linear 레이어를 차례로 거쳐<br><b>최종 예측값(Logits)이 나오는 과정을 코드로 작성합니다.</b>
+                </p>
+            </div>
+
+            <div class="sub-card">
+                <h4>예시 코드</h4>
+                <pre><b>
+# text_classification/models/rnn.py
+import torch.nn as nn
+
+class RNNClassifier(nn.Module):
+    def __init__(self, vocab_size, embedding_dim, hidden_size, num_classes):
+        super().__init__()
+        self.embedding_layer = nn.Embedding(vocab_size, embedding_dim)
+        self.rnn_layer = nn.RNN(
+            input_size=embedding_dim, 
+            hidden_size=hidden_size, 
+            batch_first=True,
+            bidirectional=True
+        )
+        self.linear_layer = nn.Linear(hidden_size * 2, num_classes)
+
+    def forward(self, x):
+        embedded = self.embedding_layer(x)
+        outputs, hidden = self.rnn_layer(embedded)
+        logits = self.linear_layer(hidden.squeeze(0))
+        return logits
+                </b></pre>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>3단계 <span class="code-title">trainer.py</span> 훈련 과정 지휘</h2>
+        <div class="card conceptual-card">
+            <h3>훈련 총감독</h3>
+            <p>모델과 데이터 파이프라인이 준비되었으니, 이들을 엮어서 실제 학습을 진행시키는 지휘자가 필요합니다.<br> 모델 학습의 전체 사이클을 관리하는 클래스나 함수를 포함합니다.</p>
+            <div class="sub-card">
+                <h4>핵심 역할</h4>
+                <p>
+                    <strong>훈련 루프 (Train Loop)</strong>
+                    <br>
+                    : 정해진 에폭(Epoch)만큼 훈련을 반복합니다. 각 스텝마다 `DataLoader`로부터 미니배치를 받아 모델에 주입하고, 나온 예측값과 실제 정답을 비교하여 오차(Loss)를 계산합니다.
+                </p>
+                 <p>
+                    <strong>역전파 및 업데이트</strong>
+                    <br>
+                    : 계산된 오차를 바탕으로 역전파(`loss.backward()`)를 수행하여 각 가중치의 기울기를 계산하고, 옵티마이저(`optimizer.step()`)를 통해 모델의 가중치를 정답에 더 가까워지는 방향으로 업데이트합니다.
+                </p>
+            </div>
+            <div class="sub-card">
+                <h4>예시 코드</h4>
+                <pre><b>
+# text_classification/trainer.py
+class Trainer:
+    def __init__(self, model, train_loader, optimizer, criterion):
+        self.model = model
+        self.train_loader = train_loader
+        self.optimizer = optimizer
+        self.criterion = criterion
+        
+    def train(self, num_epochs):
+        for epoch in range(num_epochs):
+            self.model.train()
+            for batch_texts, batch_labels in self.train_loader:
+                self.optimizer.zero_grad()
+                logits = self.model(batch_texts)
+                loss = self.criterion(logits, batch_labels)
+                loss.backward()
+                self.optimizer.step()
+                </b></pre>
+            </div>
+        </div>
+        
+        <hr>
+
+        <h2>4단계 <span class="code-title">train.py / classify.py</span> 실행</h2>
+        <div class="card conceptual-card">
+             <h3>모든 부품 조립 및 실행</h3>
+             <p>위에서 만든 모든 부품들(Dataset, Model, Trainer)을 조립해서 실제로 학습을 시작하고,<br>학습된 모델로 새로운 데이터를 예측하는 실행 스크립트입니다.</p>
+             <div class="sub-card">
+                 <h4>train.py - 학습 시작</h4>
+                 <p>데이터셋, 데이터로더, 모델, 옵티마이저 등 학습에 필요한 모든 객체를 생성하고, 
+                 <br>`Trainer` 객체에 전달하여 `train()` 메소드를 호출함으로써 전체 학습 과정을 시작합니다.</p>
+                 <pre><b>
+# train.py
+from text_classification.dataset import TextClassificationDataset
+from text_classification.models.rnn import RNNClassifier
+from text_classification.trainer import Trainer
+from torch.utils.data import DataLoader
+
+# 1. 데이터셋 및 DataLoader 생성
+train_dataset = TextClassificationDataset(...)
+train_loader = DataLoader(train_dataset, batch_size=64, ...)
+
+# 2. 모델, 옵티마이저 등 생성
+model = RNNClassifier(...)
+optimizer = torch.optim.Adam(model.parameters())
+criterion = nn.CrossEntropyLoss()
+
+# 3. Trainer 생성 및 학습 시작
+trainer = Trainer(model, train_loader, optimizer, criterion)
+trainer.train(num_epochs=10)
+                 </b></pre>
+             </div>
+             <div class="sub-card">
+                 <h4>classify.py - 새로운 문장 분류</h4>
+                 <p>학습이 완료되어 저장된 모델 가중치(`best_model.pth`)와 단어 사전을 불러옵니다. 새로운 문장이 들어오면 <b>학습 때와 똑같은 방식</b>으로 전처리하여 숫자 배열로 만든 뒤, 모델에 입력하여 분류 결과를 예측합니다.</p>
+                 <pre><b>
+# classify.py
+import torch
+
+# 1. 학습된 모델과 단어 사전 불러오기
+model.load_state_dict(torch.load('best_model.pth'))
+model.eval() # 예측 모드로 전환
+
+# 2. 새로운 문장 전처리
+new_sentence = "이 영화는 정말 감동적이었어요."
+token_ids = preprocess(new_sentence, vocab) 
+input_tensor = torch.tensor([token_ids])
+
+# 3. 모델로 예측 수행
+logits = model(input_tensor)
+prediction = torch.argmax(logits, dim=1).item()
+print(f"분류 결과: {'긍정' if prediction == 1 else '부정'}")
+                 </b></pre>
+             </div>
+        </div>
+    </div>
+</body>
+</html>
