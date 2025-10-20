@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>효율적인 메모리 사용: Mixed Precision Training</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f7f8fc;
+            color: #495057;
+            margin: 0;
+            padding: 0;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #212529;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        p.subtitle {
+            font-size: 1.15rem;
+            color: #6c757d;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #212529;
+            text-align: center;
+            margin: 60px 0 30px 0;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #212529;
+            margin-top: 0;
+            margin-bottom: 15px; /* Increased bottom margin */
+        }
+
+        h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #343a40;
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #495057;
+        }
+        
+        p.secondary {
+             color: #6c757d;
+             font-size: 1.05rem;
+        }
+
+        /* Use <b> tag directly in HTML for emphasis */
+        b { 
+            font-weight: 700;
+            color: #343a40;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #dee2e6;
+            margin: 60px 0;
+        }
+
+        .card {
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+        }
+
+        .conceptual-card {
+            background-color: #f8f9fa;
+            padding: 24px 30px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .conceptual-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .sub-card {
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin-top: 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+        }
+        
+        .side-by-side-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .side-by-side-container > .sub-card {
+            flex: 1;
+            margin-top: 0;
+        }
+        
+        pre {
+            background-color: #f5f7fa;
+            border: 1px solid #e0e6ed;
+            border-radius: 6px;
+            padding: 16px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            margin-top: 10px;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .side-by-side-container {
+                flex-direction: column;
+            }
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>효율적인 메모리 사용</h1>
+        <p class="subtitle">Mixed Precision Training 중심으로 살펴보기</p>
+
+        <hr>
+        <h2>섹션 1: 거대 모델 시대의 고민 - 메모리 장벽</h2>
+
+        <div class="card conceptual-card">
+            <h3>왜 메모리 효율성이 중요해졌을까</h3>
+            <p class="secondary">트랜스포머와 같은 현대 AI 모델들은 점점 더 커지고 강력해지고 있습니다. 하지만 이러한 발전은 필연적으로 더 많은 계산 자원을 요구하게 됩니다.</p>
+            
+            <div class="sub-card">
+                <h4>GPU의 한계</h4>
+                <p>모델 학습은 대부분 GPU를 통해 이루어지는데, GPU에는 두 가지 주요한 제약이 있습니다.</p>
+                <p><b>1. GPU 메모리 (VRAM)</b><br>
+                모델의 크기(파라미터 수)가 커지거나, 한 번에 처리하는 데이터 양(배치 사이즈)이 늘어나면 GPU 메모리가 부족해 학습 자체가 불가능해질 수 있습니다.</p>
+                <p><b>2. 연산 속도</b><br>
+                GPU는 병렬 연산에 특화되어 있지만, 사용하는 숫자의 정밀도(Precision)에 따라 연산 속도가 달라집니다. 일반적으로 정밀도가 높을수록(예: 32비트 부동소수점) 연산 속도는 느려집니다.</p>
+            </div>
+            <p class="secondary">따라서, 우리는 제한된 GPU 자원 하에서 더 크고 복잡한 모델을 더 빠르게 학습시키기 위한 <b>'효율적인 메모리 사용'</b> 방법을 고민해야 합니다.</p>
+        </div>
+
+        <hr>
+        <h2>섹션 2: 간단한 아이디어 - 낮은 정밀도 사용 (FP16)</h2>
+
+        <div class="card conceptual-card">
+            <h3>메모리 절약과 속도 향상을 위한 첫걸음</h3>
+            <p class="secondary">가장 직관적인 효율화 방법은 사용하는 숫자의 정밀도를 낮추는 것입니다.</p>
+
+            <div class="sub-card">
+                 <h4>기본 정밀도 FP32 (Single Precision)</h4>
+                 <p>대부분의 딥러닝 모델은 기본적으로 <b>FP32 (32비트 부동소수점)</b> 형식으로 숫자를 저장하고 계산합니다. 이는 넓은 범위의 숫자를 비교적 정밀하게 표현할 수 있습니다.</p>
+            </div>
+            
+            <div class="sub-card">
+                 <h4>낮은 정밀도 옵션 FP16 (Half Precision)</h4>
+                 <p><b>FP16 (16비트 부동소수점)</b>은 FP32보다 절반의 비트만 사용하여 숫자를 표현합니다.</p>
+                 <p><b>FP16 사용의 장점</b></p>
+                 <p><b>1. 메모리 절약</b><br>
+                 각 숫자가 차지하는 메모리가 절반으로 줄어듭니다. 이는 같은 VRAM으로 <b>더 큰 모델</b>을 올리거나 <b>더 큰 배치 사이즈</b>를 사용할 수 있게 해줍니다.</p>
+                 <p><b>2. 연산 속도 향상</b><br>
+                 최신 GPU(예: Nvidia의 Tensor Cores)는 FP16 연산을 FP32보다 훨씬 빠르게 처리하도록 설계되었습니다. 따라서 학습 속도가 빨라질 수 있습니다.</p>
+            </div>
+        </div>
+
+        <hr>
+        <h2>섹션 3: 함정 카드 발동 - 순수 FP16의 문제점</h2>
+
+        <div class="card conceptual-card">
+            <h3>정밀도를 낮췄을 때 발생하는 문제들</h3>
+             <p class="secondary">FP16은 매력적인 장점을 가지고 있지만, 단순히 모든 계산을 FP16으로 바꾸면 예상치 못한 문제가 발생하여 학습이 제대로 이루어지지 않거나 실패할 수 있습니다.</p>
+             
+             <div class="sub-card">
+                  <h4>FP16의 치명적 약점: 제한된 표현 범위</h4>
+                  <p>FP16은 FP32에 비해 표현할 수 있는 숫자의 범위가 훨씬 좁습니다. 너무 작은 숫자나 너무 큰 숫자는 제대로 표현하지 못합니다.</p>
+             </div>
+             
+             <div class="side-by-side-container">
+                  <div class="sub-card">
+                       <h4>문제 1: 언더플로우 (Underflow)</h4>
+                       <p>모델 학습에 중요한 역할을 하는 <b>아주 작은 기울기(Gradient) 값</b>들이 FP16의 표현 범위를 벗어나 <b>0으로 처리</b>될 수 있습니다. 이렇게 되면 해당 가중치는 더 이상 업데이트되지 않아 학습이 멈추거나 성능이 저하됩니다.</p>
+                       <p></p>
+                  </div>
+                  <div class="sub-card">
+                       <h4>문제 2: 오버플로우 (Overflow)</h4>
+                        <p>계산 중간 과정에서 발생하는 값이 FP16이 표현할 수 있는 최대 범위를 넘어서면 <b>Inf (무한대)</b>나 <b>NaN (Not a Number)</b> 값으로 변해버릴 수 있습니다. 이는 결국 학습 과정을 완전히 망가뜨립니다.</p>
+                  </div>
+            </div>
+            <p class="secondary">결론적으로, 모델의 모든 계산을 단순히 FP16으로 바꾸는 '순수 FP16' 학습 방식은 불안정하여 실제 적용이 어렵습니다.</p>
+        </div>
+
+        <hr>
+        <h2>섹션 4: 해결책 등장 - 혼합 정밀도 학습 (Mixed Precision Training)</h2>
+
+        <div class="card conceptual-card">
+            <h3>FP32의 안정성과 FP16의 효율성을 동시에</h3>
+            <p class="secondary">이 문제를 해결하기 위해 <b>'혼합 정밀도 학습(Mixed Precision Training)'</b>이라는 영리한 방법이 제안되었습니다. 이름 그대로, FP32와 FP16을 적절히 섞어 사용하는 방식입니다.</p>
+
+            <div class="sub-card">
+                <h4>핵심 아이디어</h4>
+                <p><b>"계산은 빠르고 메모리를 적게 먹는 FP16으로 하되, 중요한 정보는 안정적인 FP32로 관리하자!"</b></p>
+            </div>
+
+            <div class="sub-card">
+                <h4>작동 방식 (단계별 요약)</h4>
+                 <p></p>
+                <p><b>1. 마스터 가중치 유지 (FP32)</b><br>
+                모델의 원본 가중치는 항상 안정적인 <b>FP32</b> 형태로 저장하고 관리합니다.</p>
+                <p><b>2. FP16 변환 및 계산 (FP16)</b><br>
+                각 학습 반복(iteration)마다 FP32 마스터 가중치를 <b>FP16으로 복사</b>합니다.<br>
+                Forward Pass (예측)와 Backward Pass (기울기 계산)는 이 <b>FP16 가중치와 활성화(activation) 값</b>들을 사용하여 빠르게 수행합니다.</p>
+                <p><b>3. 손실 스케일링 (Loss Scaling)</b><br>
+                Backward Pass를 수행하기 <b>전에</b>, 계산된 손실(Loss) 값에 <b>큰 스케일링 인자(scaling factor)</b>를 곱해줍니다. 이는 최종적으로 계산될 기울기 값들을 인위적으로 크게 '뻥튀기' 시키는 효과를 줍니다.<br>
+                <b>이유</b> 아주 작은 기울기 값들이 FP16 계산 중 0으로 변하는(언더플로우) 것을 방지하기 위함입니다.</p>
+                 <p><b>4. 가중치 업데이트 (FP32)</b><br>
+                FP16으로 계산된 (뻥튀기 된) 기울기를 다시 원래 스케일로 되돌리기 위해 <b>스케일링 인자로 나누어줍니다 (Unscaling).</b><br>
+                이 최종 기울기 값을 사용하여 <b>FP32 마스터 가중치를 업데이트</b>합니다.</p>
+            </div>
+            
+            <div class="sub-card">
+                 <h4>결과</h4>
+                  <p>이 방식을 사용하면, <b>메모리 사용량을 줄이고 학습 속도를 높이면서도</b>, FP32로 학습한 것과 <b>비슷하거나 때로는 더 좋은 성능</b>을 얻을 수 있습니다.</p>
+                  <p></p>
+            </div>
+        </div>
+
+        <hr>
+        <h2>섹션 5: 또 다른 16비트 옵션 - BF16 (bfloat16)</h2>
+
+        <div class="card conceptual-card">
+            <h3>범위를 중시하는 16비트 형식</h3>
+            <p class="secondary">FP16 외에도 <b>BF16 (bfloat16)</b>이라는 또 다른 16비트 부동소수점 형식이 있습니다.</p>
+
+            <div class="sub-card">
+                <h4>BF16의 특징</h4>
+                 <p>[Image comparing bit allocation of FP32, FP16, BF16]</p>
+                <p>BF16은 FP16과 달리, 숫자의 정밀도를 나타내는 <b>가수부(fraction) 비트 수를 줄이는 대신</b>, 숫자의 표현 범위를 나타내는 <b>지수부(exponent) 비트 수를 FP32와 동일하게</b> 유지합니다.</p>
+            </div>
+            
+            <div class="side-by-side-container">
+                <div class="sub-card">
+                     <h4>장점</h4>
+                     <p>FP32와 동일한 표현 범위를 가지므로, FP16에서 문제가 되었던 <b>언더플로우 및 오버플로우 문제 발생 가능성이 훨씬 낮습니다.</b></p>
+                     <p>이 덕분에 복잡한 <b>손실 스케일링(Loss Scaling) 과정이 대부분 필요 없어집니다.</b></p>
+                </div>
+                 <div class="sub-card">
+                     <h4>단점</h4>
+                     <p>가수부 비트 수가 FP16보다 적기 때문에, 표현 가능한 숫자의 <b>정밀도는 상대적으로 낮습니다.</b></p>
+                     <p>또한, BF16 연산을 지원하는 <b>최신 하드웨어(예: Nvidia Ampere 아키텍처 GPU, Google TPU v2 이상)</b>가 필요합니다.</p>
+                </div>
+           </div>
+        </div>
+
+        <hr>
+        <h2>섹션 6: 편리하게 사용하기 - 라이브러리와 도구</h2>
+
+        <div class="card conceptual-card">
+            <h3>자동화된 혼합 정밀도 학습</h3>
+            <p class="secondary">혼합 정밀도 학습의 과정을 직접 구현하는 것은 상당히 복잡합니다. 다행히 주요 딥러닝 프레임워크와 라이브러리에서 이를 쉽게 사용할 수 있도록 지원합니다.</p>
+
+            <div class="sub-card">
+                <h4>자동 혼합 정밀도 (Automatic Mixed Precision, AMP)</h4>
+                <p>PyTorch나 TensorFlow 같은 프레임워크는 <b>AMP</b> 기능을 제공합니다. 개발자는 간단한 코드 몇 줄만 추가하면(예: PyTorch의 `autocast`, `GradScaler`), 프레임워크가 알아서 데이터 타입 변환, 손실 스케일링 등을 자동으로 처리해줍니다.</p>
+                <pre># PyTorch AMP 예시 (매우 간략화)
+scaler = GradScaler()
+
+for data, target in dataloader:
+    with autocast(dtype=torch.float16): # FP16 계산 영역 지정
+        output = model(data)
+        loss = criterion(output, target)
+    
+    scaler.scale(loss).backward() # 스케일링된 손실로 기울기 계산
+    scaler.step(optimizer)        # 기울기 언스케일링 및 업데이트
+    scaler.update()               # 스케일러 업데이트
+    optimizer.zero_grad()</pre>
+            </div>
+            
+            <div class="sub-card">
+                 <h4>Hugging Face `Trainer`</h4>
+                 <p>Hugging Face의 `Trainer` 클래스를 사용하면 더욱 간편합니다. `TrainingArguments` 객체를 생성할 때 <b>`fp16=True`</b> 또는 <b>`bf16=True`</b> 옵션만 설정해주면, 내부적으로 AMP를 활성화하여 혼합 정밀도 학습을 수행합니다.</p>
+            </div>
+        </div>
+
+        <hr>
+        <h2>섹션 7: 더 나아가기 - 기타 메모리 효율화 기법들</h2>
+
+        <div class="card conceptual-card">
+             <h3>탐구해볼 만한 다른 기술들</h3>
+             <p class="secondary">혼합 정밀도 학습 외에도 거대 모델 학습 시 메모리 효율성을 높이기 위한 다양한 기법들이 연구되고 사용됩니다.</p>
+             
+             <div class="sub-card">
+                  <h4>Gradient Checkpointing (or Activation Checkpointing)</h4>
+                  <p>Forward Pass 중에 계산되는 모든 중간 활성화(activation) 값들을 메모리에 저장해두는 대신, Backward Pass 시점에 필요한 일부 값들을 재계산하는 방식입니다. <b>메모리 사용량을 크게 줄이는 대신 계산 시간이 약간 늘어나는</b> 트레이드오프가 있습니다.</p>
+             </div>
+              <div class="sub-card">
+                  <h4>Quantization (양자화)</h4>
+                   <p>모델 가중치나 활성화 값을 FP16/BF16보다 더 낮은 정밀도인 <b>INT8 (8비트 정수)</b> 또는 심지어 <b>INT4</b> 등으로 변환하는 기술입니다. 주로 학습이 완료된 모델을 배포(inference)할 때 사용되지만, 학습 과정 중에 적용하는 Quantization-Aware Training (QAT) 같은 기법도 있습니다. 정확도 손실이 발생할 수 있지만, 메모리 및 속도 향상 효과가 매우 큽니다.</p>
+             </div>
+             <div class="sub-card">
+                 <h4>DeepSpeed / Parallelism (병렬 처리)</h4>
+                 <p>모델이나 데이터를 여러 GPU 또는 여러 장비에 분산하여 처리하는 기술입니다. Microsoft의 DeepSpeed 라이브러리는 ZeRO(Zero Redundancy Optimizer)와 같은 고급 메모리 최적화 기법을 제공하여 단일 GPU로는 불가능한 거대 모델 학습을 가능하게 합니다. 3D Parallelism 등 다양한 병렬 처리 전략이 존재합니다.</p>
+             </div>
+        </div>
+        
+        <hr>
+        <h2>섹션 8: 결론 (Wrap-up)</h2>
+        
+        <div class="card conceptual-card">
+            <h3>거대 모델 학습을 위한 필수 전략</h3>
+            <p>모델의 크기가 계속 커짐에 따라, 제한된 <b>VRAM을 효율적으로 활용하는 것</b>이 거대 언어 모델(LLM) 등을 다루는 데 있어 매우 중요해졌습니다.</p>
+            <p><b>혼합 정밀도 학습(Mixed Precision Training)</b>은 약간의 정밀도를 희생하여 FP32 대신 <b>FP16 또는 BF16</b>과 같은 낮은 정밀도 데이터 타입을 활용하는 핵심 전략입니다.</p>
+             <div class="sub-card">
+                 <h4>핵심 요약</h4>
+                 <p><b>장점</b><br>
+                 메모리 사용량 감소 (더 큰 모델/배치 가능), 연산 속도 향상.</p>
+                 <p><b>FP16 주의점</b><br>
+                 언더플로우/오버플로우 위험으로 <b>손실 스케일링(Loss Scaling)</b> 필요.</p>
+                 <p><b>BF16 특징</b><br>
+                 FP32와 유사한 범위, 스케일링 불필요, 최신 하드웨어 요구.</p>
+                 <p><b>성능 영향</b><br>
+                 대부분의 경우, FP32 대비 <b>성능 저하가 거의 없거나 오히려 향상</b>될 수 있음.</p>
+                 <p><b>적용 편의성</b><br>
+                 PyTorch AMP, HuggingFace Trainer 등을 통해 <b>쉽게 적용 가능.</b></p>
+            </div>
+            <p>이러한 메모리 효율화 기법들은 앞으로 LLM을 다루는 데 있어 더욱 중요해질 필수적인 내용들입니다.</p>
+        </div>
+
+    </div>
+
+</body>
+</html>
